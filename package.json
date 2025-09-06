@@ -1,0 +1,22 @@
+{
+  "name": "kyo-kan",
+  "version": "1.0.0",
+  "description": "",
+  "license": "AGPL-3.0-or-later",
+  "author": "",
+  "main": "./exports/index.cjs",
+  "module": "./exports/index.mjs",
+  "types": "./exports/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./exports/index.d.ts",
+      "module": "./exports/index.mjs",
+      "import": "./exports/index.mjs",
+      "require": "./exports/index.cjs",
+      "default": "./exports/index.mjs"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
