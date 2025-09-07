@@ -52,7 +52,7 @@ class WorkflowStep {
     * @param {RepositryContext} context 
     *  
     */
-    addUnit(name, data, unitId, context) {
+    addWorkflowUnit(name, data, unitId, context) {
         /**
          * @type {WorkflowData}
          */

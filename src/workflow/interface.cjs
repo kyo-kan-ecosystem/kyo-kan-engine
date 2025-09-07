@@ -12,6 +12,16 @@ class Workflow {
     applyConfigure(configure, context) {
 
     }
+    /**
+    * 
+    * @param {int} data
+    * @param {RepositryContext} context 
+    *  
+    */
+    addWorkflowUnit(name, data, unitId, context) {
+
+    }
+    enter
     back() {
 
     }
