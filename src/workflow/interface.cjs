@@ -12,7 +12,10 @@ class Workflow {
     applyConfigure(configure, context) {
 
     }
-    resolve() {
+    back() {
+
+    }
+    backAll() {
 
     }
     exec() {
