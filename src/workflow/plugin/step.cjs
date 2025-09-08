@@ -1,16 +1,16 @@
-const { RepositryContext } = require("../repositry/base.cjs")
+
 
 
 /**
- * @typedef {import("./protocol").ApplyResponse} ApplyResponse
- * @typedef {import("./protocol").UnitConfigure} UnitConfigure
- * @typedef {{steps:str[]}} WorkflowData
+ * @typedef {import("../protocol").ApplyResponse<number>} ApplyResponse
+ * @typedef {import("../protocol").UnitConfigure<number>} UnitConfigure
+ * @typedef {{steps:any[]}} WorkflowData
  */
-class WorkflowStep {
+class WorkflowPluginStep {
     /**
      * 
      * @param {any[]} configures
-     * @param {RepositryContext} context 
+     * @param {import("../protocol").WorkflowContext} context 
      * @returns {ApplyResponse}  
      */
     applyConfigure(name, configures, context) {
@@ -48,7 +48,7 @@ class WorkflowStep {
     }
     /**
     * 
-    * @param {int} data
+    * @param {number} data
     * @param {RepositryContext} context 
     *  
     */

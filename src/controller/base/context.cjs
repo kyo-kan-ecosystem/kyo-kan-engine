@@ -1,40 +1,87 @@
-class ControllerContext {
+const { ExecutorPluginRepositry } = require("../../executor/repositry/plugin.cjs");
+const { ExecutorWorknodeRepositry } = require("../../executor/repositry/worknode.cjs");
+
+const { WorkflowPluginRepositry } = require("../../workflow/repositry/plugin.cjs");
+const { WorkflowRepositry } = require("../../workflow/repositry/workflow.cjs");
+/**
+ * @typedef {{
+ *      workflows: typeof WorkflowRepositry,
+ *      worknodes: typeof ExecutorWorknodeRepositry,
+ *      plugins: {
+ *           workflows: typeof WorkflowPluginRepositry,
+ *           executors: typeof ExecutorPluginRepositry
+ *      }} } RepositryClasses
+    
+ * 
+ */
+/**
+ * @type {RepositryClasses}
+ */
+const DEFAULT_REPOSITRY_CLASSES = {
+    workflows: WorkflowRepositry,
+    worknodes: ExecutorWorknodeRepositry,
+    plugins: {
+        workflows: WorkflowPluginRepositry,
+        executors: ExecutorPluginRepositry
+    }
+
+
+}
+
+/**
+ * @typedef {{workflows:any, worknodes:any, plugins?:{workflows:WorkflowPluginRepositry, executors:ExecutorPluginRepositry}}} BasicData
+ */
+class BasicFunctionContext {
     /**
-     * 
-     * @param {*} states 
-     * @param {*} workflowUints 
+     * @param {BasicData} [initData={}] 
+     * @param {RepositryClasses} repositryClasses 
      */
-    constructor(states = [], workflowUints) {
+    constructor(initData = {}, repositryClasses = DEFAULT_REPOSITRY_CLASSES) {
         /**
-         * @type {Array}
+         * @type {WorkflowRepositry}
          */
-        this.states = states
+        this.workflows = new repositryClasses.workflows(initData.workflows || {})
+        /**
+         * @type {ExecutorWorknodeRepositry}
+         */
+        this.worknodes = new repositryClasses.worknodes(initData.worknodes || {})
+        /**
+         * @type {{
+         *  workflows: WorkflowPluginRepositry,
+         *  executors: ExecutorPluginRepositry
+         * 
+         * }}
+         */
+        this.plugins = {}
+        if (initData.plugins) {
+            this.plugins = initData.plugins
 
-        this.workflowUints = workflowUints
+
+        }
+        else {
+            this.plugins.workflows = new repositryClasses.plugins.workflows({})
+            this.plugins.executors = new repositryClasses.plugins.executors({})
+        }
+
+
+
     }
     /**
      * 
-     * @returns {false | any}
+     * @returns {{workflows:any, executors:any}}
      */
-    getState() {
-        if (this.states.length == 0) {
-            return false
-        }
-        return this.states[this.states.length - 1]
+    getPluginMap() {
+        /**
+         * @type {workflows:any, executors:any}
+         */
+        return { workflows: this.plugins.workflows.getSerializeDatas(), executors: this.plugins.executors.getSerializeDatas }
     }
-    popState() {
-        if (this.states.length == 0) {
-            return false
-        }
-        this.states.pop()
-        return this.getState()
+    getWorkflowConfigure() {
+        return { workflows: this.workflows.getSerializeDatas(), worknodes: this.worknodes.getSerializeDatas() }
     }
-    pushState(state) {
-        this.states.push(state)
+    setCalleId(calleId) {
+        this.workflows.calleId = calleId
 
-    }
-    updateState(state) {
-        this.states[this.states.length - 1] = state
     }
 
 
