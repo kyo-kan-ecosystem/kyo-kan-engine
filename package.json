@@ -17,6 +17,12 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test_single": "mocha",
+    "test": "mocha./**/*.test.{js, cjs, mjs}"
+  },
+  "devDependencies": {
+    "chai": "^6.0.1",
+    "mocha": "^11.7.2",
+    "sinon": "^21.0.0"
   }
 }

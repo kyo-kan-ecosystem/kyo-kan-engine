@@ -1,0 +1,35 @@
+javascriptでJSdocの型設定付きで以下の関数を実装
+
+・引数にrequest, firstFunc, contextを受け取る
+・Array型の変数funcsArrayを作り、firstFuncを入れる
+・空のArray型としてresponsesを初期化
+・funcsArrayが空でない間以下を繰り返す
+　　・funcsArrayから関数を一つpop
+        ・関数にrequestとcontextを与えて非同期実行。結果としてstateとresponse_unitsを受け取る
+　　・response_unitsとresponsesを結合
+　　・stateのメンバー変数modeに設定された文字列によって、以下のように分岐
+　　　　・'wait'ならば
+                        ・contextのメンバー変数statesのupdate関数にstateを渡してstateとresponsesをリターン
+　　　　・'go'ならば
+　　　　　　・contextのメンバー変数statesのupdate関数にstateを渡す
+　　　　　　・contextのメンバー変数workflowsのgetCurrentWorkflowからworkflowを取得
+　　　　　　・workflowのgetExecuteFunctionをcontextを引数に実行し、戻り値executeFuncをfuncsに追加
+　　　　'goSub'ならば
+　　　　　　・contextのメンバー変数statesのupdate関数にstateを渡す
+                       ・contextのgoSub関数を実行
+　　　　　　・contextのメンバー変数workflowsの関数getCurrentWorkflowを実行しworkflowを取得
+　　　　　　・workflowのenterSubworkflowをcontextを引数として実行し、戻り値executeFuncをfuncsに追加
+　　　　'end'ならば
+　　　　　　・contextのendSub関数を引数なし実行。戻り値としてflagを受け取る
+　　　　　　・flagがfalseならばstateとresponsesをリターン
+　　　　　　・flagがtrueならば
+　　　　　　　　・contextのメンバー変数workflowsのgetCurrentWorkflow関数を実行し、workflowを取得
+　　　　　　　　・workflowのreturnFromSubworkflowをcontextを引数として実行し、戻り値executeFuncをfuncsに追加
+　　　　'back'ならば
+                   ・contextのメンバー変数statesのupdate関数にstateを渡す
+　　　　　・contextのメンバー変数workflowsのgetCurrentWorkflow関数を実行し、workflowを取得
+　　　　　・workflowのback関数をcontextを引数に実行し、戻り値executeFuncをfuncsに追加
+　　　　'resetBack'ならば
+　　　　　・contextのreset関数を引数なし実行
+                   ・contextのメンバー変数workflowsの関数getCurrentWorkflowを実行しworkflowを取得
+　　　　　・workflowのenterSubworkflowをcontextを引数として実行し、戻り値executeFuncをfuncsに追加

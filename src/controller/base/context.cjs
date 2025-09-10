@@ -83,6 +83,27 @@ class BasicFunctionContext {
         this.workflows.calleId = calleId
 
     }
+    clone() {
+        /**
+         * @typedef {keyof BasicFunctionContext} _keys
+         * 
+         */
+        const cloneKey = 'workflows';
+        const ret = {}
+        for (const key in this) {
+            if (cloneKey == key) {
+                const element = this[key]
+                ret[key] = element.clone()
+
+            }
+            else {
+                ret[key] = this[key]
+            }
+
+        }
+        return ret
+
+    }
 
 
 
