@@ -1,42 +1,42 @@
-const { ExecutorPluginRepositry } = require("../../executor/repositry/plugin.cjs");
-const { ExecutorWorknodeRepositry } = require("../../executor/repositry/worknode.cjs");
-
-const { WorkflowPluginRepositry } = require("../../workflow/repositry/plugin.cjs");
-const { WorkflowRepositry } = require("../../workflow/repositry/workflow.cjs");
-/**
- * @typedef {{
- *      workflows: typeof WorkflowRepositry,
- *      worknodes: typeof ExecutorWorknodeRepositry,
- *      plugins: {
- *           workflows: typeof WorkflowPluginRepositry,
- *           executors: typeof ExecutorPluginRepositry
- *      }} } RepositryClasses
-    
- * 
- */
-/**
- * @type {RepositryClasses}
- */
-const DEFAULT_REPOSITRY_CLASSES = {
-    workflows: WorkflowRepositry,
-    worknodes: ExecutorWorknodeRepositry,
-    plugins: {
-        workflows: WorkflowPluginRepositry,
-        executors: ExecutorPluginRepositry
-    }
 
 
-}
+
 
 /**
- * @typedef {{workflows:any, worknodes:any, plugins?:{workflows:WorkflowPluginRepositry, executors:ExecutorPluginRepositry}}} BasicData
+ * @typedef {Object} Workflow
+ * @property {function(Object): Function} getExecuteFunction - 実行関数を取得
+ * @property {function(Object): Function} enterSubworkflow - サブワークフローに入る
+ * @property {function(Object): Function} returnFromSubworkflow - サブワークフローから戻る
+ * @property {function(Object): Function} back - 前の状態に戻る
  */
-class BasicFunctionContext {
+
+/**
+ * @typedef {Object} Workflows
+ * @property {function(): Workflow} getCurrentWorkflow - 現在のワークフローを取得
+ */
+
+/**
+ * @typedef {Object} Context
+ * @property {States} states - 状態管理オブジェクト
+ * @property {Workflows} workflows - ワークフロー管理オブジェクト
+ * @property {function(): void} goSub - サブルーチンに移行する関数
+ * @property {function(): boolean} endSub - サブルーチンを終了する関数
+ * @property {function(): void} reset - リセット関数
+ */
+
+
+
+
+
+
+class Context {
     /**
      * @param {BasicData} [initData={}] 
      * @param {RepositryClasses} repositryClasses 
      */
-    constructor(initData = {}, repositryClasses = DEFAULT_REPOSITRY_CLASSES) {
+    constructor() {
+
+
         /**
          * @type {WorkflowRepositry}
          */
@@ -71,9 +71,7 @@ class BasicFunctionContext {
      * @returns {{workflows:any, executors:any}}
      */
     getPluginMap() {
-        /**
-         * @type {workflows:any, executors:any}
-         */
+
         return { workflows: this.plugins.workflows.getSerializeDatas(), executors: this.plugins.executors.getSerializeDatas }
     }
     getWorkflowConfigure() {
@@ -81,6 +79,10 @@ class BasicFunctionContext {
     }
     setCalleId(calleId) {
         this.workflows.calleId = calleId
+
+    }
+
+    setState(state) {
 
     }
     clone() {
@@ -108,4 +110,8 @@ class BasicFunctionContext {
 
 
 
+
 }
+
+
+module.exports = { Context }

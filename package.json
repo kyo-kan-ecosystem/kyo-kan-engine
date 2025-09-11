@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test_single": "mocha",
-    "test": "mocha./**/*.test.{js, cjs, mjs}"
+    "test": "mocha ./**/*.test.{js, cjs, mjs}"
   },
   "devDependencies": {
     "chai": "^6.0.1",

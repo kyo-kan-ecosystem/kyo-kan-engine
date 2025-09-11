@@ -1,6 +1,10 @@
 /**
+ * @typedef {'wait'|'go'|'goSub'|'end'|'back'|'resetBack'} executeMode - 実行モード ('wait', 'go', 'goSub', 'end', 'back', 'resetBack')
+*/
+
+/**
  * @typedef {Object} State
- * @property {string} mode - 実行モード ('wait', 'go', 'goSub', 'end', 'back', 'resetBack')
+ * @property {executeMode} mode 
  */
 
 /**
@@ -80,9 +84,9 @@ async function executeWorkflow(request, firstFunc, context) {
             case 'goSub':
                 context.states.update(state);
                 context.goSub();
-                const goSubWorkflow = context.workflows.getCurrentWorkflow();
-                const goSubExecuteFunc = goSubWorkflow.enterSubworkflow(context);
-                funcsArray.push(goSubExecuteFunc);
+                const subWorkflow = context.workflows.getCurrentWorkflow();
+                const subExecuteFunc = subWorkflow.enterSubworkflow(context);
+                funcsArray.push(subExecuteFunc);
                 break;
 
             case 'end':

@@ -5,22 +5,17 @@ const { create_id } = require("../../util/create_id.cjs")
  */
 class WorkflowRepositry extends Repositry {
 
-    constructor(datas = {}) {
-        super(datas)
-        this.calleId = null
 
+    set(name, data, calleId) {
+
+        const id = create_id(calleId, name)
+        super.set(id, data)
+        return { name, calleId }
 
     }
-    set(name, data) {
-
-        const id = create_id(this.calleId, name)
-        super.set(id, data)
-        return { name, calleId: this.calleId }
-
-    }
-    get(name, data) {
-        const id = create_id(this.calleId, name)
-        super.set(id, data)
+    get(name, calleId) {
+        const id = create_id(calleId, name)
+        super.get(id, data)
     }
 
 }
