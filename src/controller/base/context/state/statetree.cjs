@@ -57,7 +57,7 @@ class StateTree {
     }
     setSerializedData(datas) {
         for (const [key, value] of Object.entries(datas)) {
-            serializedData[key] = value.getSerializedData();
+            this._paths[key] = new this._stateClass(value);
 
         }
     }
