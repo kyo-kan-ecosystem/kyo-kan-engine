@@ -18,12 +18,12 @@ describe('executeWorkflow', () => {
 
         mockWorkflow = {
             getExecuteFunction: sinon.stub(),
-            enterSubworkflow: sinon.stub(),
             returnFromSubworkflow: sinon.stub(),
             back: sinon.stub()
         };
 
         mockWorkflows = {
+            enterSubworkflow: sinon.stub(),
             getCurrentWorkflow: sinon.stub().returns(mockWorkflow)
         };
 
@@ -96,7 +96,7 @@ describe('executeWorkflow', () => {
             const firstFunc = sinon.stub().resolves({ state: state1, response_units: response_units1 });
             const subFunc = sinon.stub().resolves({ state: state2, response_units: response_units2 });
 
-            mockWorkflow.enterSubworkflow.returns(subFunc);
+            mockWorkflows.enterSubworkflow.returns(subFunc);
 
             const result = await executeWorkflow(request, firstFunc, mockContext);
 
@@ -105,7 +105,7 @@ describe('executeWorkflow', () => {
                 responses: ['response1', 'response2']
             });
             expect(mockContext.goSub).to.have.been.calledOnce;
-            expect(mockWorkflow.enterSubworkflow).to.have.been.calledOnceWith(mockContext);
+            expect(mockWorkflows.enterSubworkflow).to.have.been.calledOnceWith(mockContext);
         });
     });
 
@@ -187,7 +187,7 @@ describe('executeWorkflow', () => {
             const firstFunc = sinon.stub().resolves({ state: state1, response_units: response_units1 });
             const resetFunc = sinon.stub().resolves({ state: state2, response_units: response_units2 });
 
-            mockWorkflow.enterSubworkflow.returns(resetFunc);
+            mockWorkflows.enterSubworkflow.returns(resetFunc);
 
             const result = await executeWorkflow(request, firstFunc, mockContext);
 
@@ -196,7 +196,7 @@ describe('executeWorkflow', () => {
                 responses: ['response1', 'response2']
             });
             expect(mockContext.reset).to.have.been.calledOnce;
-            expect(mockWorkflow.enterSubworkflow).to.have.been.calledOnceWith(mockContext);
+            expect(mockWorkflows.enterSubworkflow).to.have.been.calledOnceWith(mockContext);
         });
     });
 

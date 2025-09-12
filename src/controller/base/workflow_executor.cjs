@@ -20,15 +20,15 @@
 
 /**
  * @typedef {Object} Workflow
- * @property {function(Object): Function} getExecuteFunction - 実行関数を取得
- * @property {function(Object): Function} enterSubworkflow - サブワークフローに入る
- * @property {function(Object): Function} returnFromSubworkflow - サブワークフローから戻る
+ * @property {function(Object): Function} getExecuteFunction - 実行関数を取得 
+ * @property {function(Object): Function} returnFromSubworkflow - サブワークフローから戻った時の処理
  * @property {function(Object): Function} back - 前の状態に戻る
  */
 
 /**
  * @typedef {Object} Workflows
  * @property {function(): Workflow} getCurrentWorkflow - 現在のワークフローを取得
+ * @property {function(): Workflow} getSubworkflow - サブワークフローの取得
  */
 
 /**
@@ -121,3 +121,5 @@ async function executeWorkflow(request, firstFunc, context) {
     // funcsArrayが空になった場合（通常は到達しない）
     return { state: null, responses };
 }
+
+mo

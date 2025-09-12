@@ -1,14 +1,14 @@
 class Stack {
     /**
      * 
-     * @param {any[]} elements 
+     * @param {any} elements 
      * 
      */
-    constructor(elements = []) {
+    constructor(elements) {
         /**
          * @type {Array}
          */
-        this._elements = elements.copyWithin()
+        this._elements = (elements || []).copyWithin()
 
 
     }
@@ -41,3 +41,4 @@ class Stack {
 
 
 }
+module.exports = { Stack }

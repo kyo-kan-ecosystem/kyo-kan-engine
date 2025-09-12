@@ -109,3 +109,5 @@ class ContextRepositries {
 
     }
 }
+
+module.exports = { ContextRepositries }
