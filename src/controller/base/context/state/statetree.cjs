@@ -15,9 +15,9 @@ class StateTree {
 
 
         this._stateClass = stateClass;
-        this._initID(initData);
         this._initPaths(initData);
-        this._setId(0)
+        this._count = 1
+        this._id = 1
 
     }
     isEnd() {
@@ -32,8 +32,26 @@ class StateTree {
          */
         const responseObj = new this.constructor(false, this._stateClass)
         responseObj.setPaths(this._paths)
-        responseObj._id = this._id
+        responseObj._count = this._count
+        responseObj._setId(this._id)
         return responseObj;
+
+    }
+    splitTree(splitCount) {
+        let count = 0
+        const results = []
+        const linkPath = this._id
+        const init = { linkPath }
+        while (count < splitCount) {
+            const id = this._count
+            this._count += 1
+            count += 1
+            this._paths[id] = new this._stateClass(init)
+            results.push(this.switchId(id))
+
+        }
+        return results
+
 
     }
     _setId(id) {
@@ -53,20 +71,7 @@ class StateTree {
     get() {
         return this._paths[this._id].get()
     }
-    /**
-     * 
-     * @param {Object?} initData 
-     */
-    _initID(initData) {
-        if (!initData) {
 
-            this._count = -1
-        }
-        else {
-
-            this._count = Object.keys(initData).length - 1
-        }
-    }
     /**
      * 
      * @param {any} initData 
@@ -82,7 +87,7 @@ class StateTree {
 
         }
         if (init === null) {
-            this._paths[this.topId] = new this._stateClass()
+            this._paths[this.topId] = new this._stateClass({ id: this.topId })
 
         }
         else {
@@ -94,22 +99,28 @@ class StateTree {
 
 
     }
+    /**
+     * 
+     * @param {{paths:any[], count:number}} datas 
+     */
     setSerializedData(datas) {
-        for (const [key, value] of Object.entries(datas)) {
+        for (const [key, value] of Object.entries(datas.paths)) {
             this._paths[key] = new this._stateClass(value);
 
         }
+        this._count = datas.count
     }
     getSerializedData() {
-        const serializedData = {};
+        const paths = {};
         for (const [key, value] of Object.entries(this._paths)) {
-            serializedData[key] = value.getSerializedData();
+            paths[key] = value.getSerializedData();
 
         }
-        return serializedData
+        return { paths, count: this._count }
     }
     setPaths(paths) {
         this._paths = paths
+
 
     }
 

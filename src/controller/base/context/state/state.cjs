@@ -13,7 +13,7 @@ class StateNode extends Stack {
      */
     constructor(args) {
         super(args.elemnts)
-        this._setLinkePath(args)
+        this._setLinkPath(args)
 
 
 
