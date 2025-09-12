@@ -39,6 +39,7 @@ class StateTree {
     }
     splitTree(splitCount) {
         let count = 0
+
         const results = []
         const linkPath = this._id
         const init = { linkPath }
@@ -50,9 +51,13 @@ class StateTree {
             results.push(this.switchId(id))
 
         }
+        this.getNode().addLinkedCount(splitCount)
         return results
 
 
+    }
+    getNode() {
+        return this._paths[this._id]
     }
     _setId(id) {
         const _id = id || 0;
