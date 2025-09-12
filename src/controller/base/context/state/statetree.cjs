@@ -15,9 +15,43 @@ class StateTree {
 
 
         this._stateClass = stateClass;
-
-        this._initPaths(initData);
         this._initID(initData);
+        this._initPaths(initData);
+        this._setId(0)
+
+    }
+    isEnd() {
+        return this._paths[this._id].isEmpty()
+    }
+    isTop() {
+        return this.topId == this._id
+    }
+    switchId(id) {
+        /**
+         * @type {typeof this}
+         */
+        const responseObj = new this.constructor(false, this._stateClass)
+        responseObj.setPaths(this._paths)
+        responseObj._id = this._id
+        return responseObj;
+
+    }
+    _setId(id) {
+        const _id = id || 0;
+        this._id = _id;
+
+    }
+    /**
+     * 
+     * @param {*} state 
+     */
+    update(state) {
+
+        this._paths[this._id].update(state)
+
+    }
+    get() {
+        return this._paths[this._id].get()
     }
     /**
      * 
@@ -51,6 +85,11 @@ class StateTree {
             this._paths[this.topId] = new this._stateClass()
 
         }
+        else {
+            this.setSerializedData(initData)
+
+
+        }
 
 
 
@@ -69,18 +108,12 @@ class StateTree {
         }
         return serializedData
     }
-    setPath(paths) {
+    setPaths(paths) {
         this._paths = paths
 
     }
 
-    clone() {
 
-        se
-        const newTree = new this.constructor()
-
-        return newTree;
-    }
 
 
 

@@ -84,7 +84,7 @@ async function executeWorkflow(request, firstFunc, context) {
             case 'goSub':
                 context.states.update(state);
                 context.goSub();
-                const subWorkflow = context.workflows.getCurrentWorkflow();
+                const subWorkflow = context.workflows.getSubworkflow();
                 const subExecuteFunc = subWorkflow.enterSubworkflow(context);
                 funcsArray.push(subExecuteFunc);
                 break;
@@ -122,4 +122,4 @@ async function executeWorkflow(request, firstFunc, context) {
     return { state: null, responses };
 }
 
-mo
+module.exports = { executeWorkflow }

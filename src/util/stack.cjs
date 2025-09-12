@@ -12,6 +12,9 @@ class Stack {
 
 
     }
+    isEmpty() {
+        return this._elements.length == 0
+    }
     /**
      * 
      * @returns {false | any}

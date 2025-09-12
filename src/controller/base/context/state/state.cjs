@@ -18,6 +18,7 @@ class StateNode extends Stack {
 
 
     }
+
     /**
     *@param {StateInit} args 
     */
