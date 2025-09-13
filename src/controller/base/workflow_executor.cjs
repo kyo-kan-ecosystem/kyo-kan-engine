@@ -1,13 +1,15 @@
 /**
- * @typedef {'wait'|'go'|'goSub'|'end'|'back'|'resetBack'} executeMode - 実行モード ('wait', 'go', 'goSub', 'end', 'back', 'resetBack')
+ * @typedef {import("../protocol").executeMode} executeMode
 */
 
 /**
- * @typedef {Object} State
- * @property {executeMode} mode 
+ * @typedef {import("../protocol").State} State
+ * 
  */
 
 /**
+ * 
+ * @typedef {import("../protocol").State} State
  * @typedef {Object} ExecutionResult
  * @property {State} state - 実行後の状態
  * @property {Array} response_units - レスポンス単位の配列
@@ -28,7 +30,7 @@
 /**
  * @typedef {Object} Workflows
  * @property {function(): Workflow} getCurrentWorkflow - 現在のワークフローを取得
- * @property {function(): Workflow} getSubworkflow - サブワークフローの取得
+ * 
  */
 
 /**
@@ -67,22 +69,22 @@ async function executeWorkflow(request, firstFunc, context) {
 
         // response_unitsとresponsesを結合
         responses = responses.concat(response_units);
+        context.states.update(state);
 
         // stateのmodeによって分岐
         switch (state.mode) {
             case 'wait':
-                context.states.update(state);
+
                 return { state, responses };
 
             case 'go':
-                context.states.update(state);
                 const goWorkflow = context.workflows.getCurrentWorkflow();
                 const goExecuteFunc = goWorkflow.getExecuteFunction(context);
                 funcsArray.push(goExecuteFunc);
                 break;
 
             case 'goSub':
-                context.states.update(state);
+
                 context.goSub();
                 const subWorkflow = context.workflows.getSubworkflow();
                 const subExecuteFunc = subWorkflow.enterSubworkflow(context);
@@ -94,13 +96,13 @@ async function executeWorkflow(request, firstFunc, context) {
                 if (!flag) {
                     return { state, responses };
                 }
-                const endWorkflow = context.workflows.getCurrentWorkflow();
-                const endExecuteFunc = endWorkflow.returnFromSubworkflow(context);
-                funcsArray.push(endExecuteFunc);
+                const superWorkflow = context.workflows.getCurrentWorkflow();
+                const superExecuteFunc = superWorkflow.returnFromSubworkflow(context);
+                funcsArray.push(superExecuteFunc);
                 break;
 
             case 'back':
-                context.states.update(state);
+
                 const backWorkflow = context.workflows.getCurrentWorkflow();
                 const backExecuteFunc = backWorkflow.back(context);
                 funcsArray.push(backExecuteFunc);

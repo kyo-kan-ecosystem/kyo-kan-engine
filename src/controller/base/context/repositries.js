@@ -37,14 +37,7 @@ const { WorkflowRepositry } = require("../../../workflow/repositry/workflow.cjs"
  */
 
 
-/**
- * @typedef {{
- *      configures:ContextRepositryConfigures,
- *      plugins?:ContextRepositryPlugins,
- *      classes?:ContextRepositryClasses  
- * }} RepositryData
- * 
- */
+
 
 
 

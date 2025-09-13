@@ -6,7 +6,7 @@ const { Stack } = require("../../../../util/stack.cjs");
  */
 
 
-class StateNode extends Stack {
+class StateBranch extends Stack {
     /**
      * 
      * @param {StateInit} args 
@@ -53,4 +53,4 @@ class StateNode extends Stack {
     }
 }
 
-module.exports = { StateNode }
+module.exports = { StateBranch }

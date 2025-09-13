@@ -10,10 +10,10 @@
  * @property {function(Object): Function} back - 前の状態に戻る
  */
 
-/**
- * @typedef {Object} Workflows
- * @property {function(): Workflow} getCurrentWorkflow - 現在のワークフローを取得
- */
+const { States } = require("./state/states.cjs");
+const { Workflows } = require("./workflows.cjs");
+
+
 
 /**
  * @typedef {Object} Context
@@ -24,45 +24,27 @@
  * @property {function(): void} reset - リセット関数
  */
 
+/**
+ * @typedef {{
+ *      states:typeof States
+ *      workflows:typeof Workflows
+ *       
+ * }} classes
+ */
 
-
+/
 
 
 
 class Context {
     /**
-     * @param {BasicData} [initData={}] 
-     * @param {RepositryClasses} repositryClasses 
+     * @param {BasicData? | false} [initData={}] 
+     * @param {RepositryClasses?} repositryClasses 
      */
     constructor() {
 
-
-        /**
-         * @type {WorkflowRepositry}
-         */
-        this.workflows = new repositryClasses.workflows(initData.workflows || {})
-        /**
-         * @type {ExecutorWorknodeRepositry}
-         */
-        this.worknodes = new repositryClasses.worknodes(initData.worknodes || {})
-        /**
-         * @type {{
-         *  workflows: WorkflowPluginRepositry,
-         *  executors: ExecutorPluginRepositry
-         * 
-         * }}
-         */
-        this.plugins = {}
-        if (initData.plugins) {
-            this.plugins = initData.plugins
-
-
-        }
-        else {
-            this.plugins.workflows = new repositryClasses.plugins.workflows({})
-            this.plugins.executors = new repositryClasses.plugins.executors({})
-        }
-
+        this.repositries = repositries
+        this.states = this.states
 
 
     }
