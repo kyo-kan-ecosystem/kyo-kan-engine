@@ -13,10 +13,10 @@ class WorkflowRepositry extends Repositry {
         return { name, calleId }
 
     }
-    get(name, calleId) {
-        const id = create_id(calleId, name)
-        super.get(id, data)
+    getId(name, calleId) {
+        return create_id(calleId, name)
     }
+
 
 }
 

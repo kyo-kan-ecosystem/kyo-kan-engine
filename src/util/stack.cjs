@@ -1,43 +1,67 @@
+
+const deepmerge = require("deepmerge")
+
+
+/**
+ * @template StackItem
+ */
 class Stack {
     /**
      * 
-     * @param {any} elements 
+     * @param {StackItem[]} items 
      * 
      */
-    constructor(elements) {
+    constructor(items) {
         /**
-         * @type {Array}
+         * @type {StackItem[]}
          */
-        this._elements = (elements || []).copyWithin()
+        this._items = (items || []).copyWithin()
 
 
     }
     isEmpty() {
-        return this._elements.length == 0
+        return this._items.length == 0
     }
     /**
      * 
      * @returns {false | any}
      */
-    get() {
-        if (this._elements.length == 0) {
+    get(position = 0) {
+        const _position = this._items.length - 1 - position
+        if (_position < 0) {
             return false
         }
-        return this._elements[this._elements.length - 1]
+        return this._items[_position]
     }
     pop() {
-        if (this._elements.length == 0) {
+        if (this._items.length == 0) {
             return false
         }
-        this._elements.pop()
+        this._items.pop()
         return this.get()
     }
-    push(element) {
-        this._elements.push(element)
+    push(item) {
+        this._items.push(item)
 
     }
-    update(element) {
-        this._elements[this._elements.length - 1] = element
+    /**
+     * 
+     * @param {Partial<StackItem>} upData 
+     * @param {true?} isFullOverWrite 
+     */
+    update(upData, isFullOverWrite) {
+        if (isFullOverWrite === true) {
+            this._items[this._items.length - 1] = upData
+        }
+        else {
+            const item = this._items[this._items.length - 1]
+            this._items[this._items.length - 1] = deepmerge(item, upData)
+        }
+
+    }
+    getSerializedData() {
+        return this._items
+
     }
 
 
@@ -45,22 +69,25 @@ class Stack {
 
 }
 
+
 /**
- * @template StateClass
+ * @template {Stack} StackClass
  * 
  */
 class StackTree {
     /**
-     *
+     * 
      * @param {Object | null} initData 
-     * @param {any} stateClass 
+     * @param {StackClass} stackClass 
      */
-    constructor(initData = null, stateClass = StateNode) {
+    constructor(initData = null, stackClass = Stack) {
 
-
-        this._stackClass = stateClass;
         /**
-         * @type {{[x in any]: StateClass}}
+         * @type {typeof StackClass}
+         */
+        this._stackClass = stackClass;
+        /**
+         * @type {{[x in any]: StackClass}}
          */
         this._branches = {}
         this._initBranches(initData);
@@ -114,15 +141,16 @@ class StackTree {
     }
     /**
      * 
-     * @param {*} state 
+     * @param {*} state
+     * @param {true?} isFullOverWrite  
      */
-    update(state) {
+    update(state, isFullOverWrite) {
 
-        this._branches[this._id].update(state)
+        this._branches[this._id].update(state, isFullOverWrite)
 
     }
-    get() {
-        return this._branches[this._id].get()
+    get(position) {
+        return this._branches[this._id].get(position)
     }
 
     /**
@@ -136,7 +164,7 @@ class StackTree {
             return
 
         }
-        if (init === null) {
+        if (!init) {
             this._branches[this.topId] = new this._stackClass({ id: this.topId })
 
         }
@@ -151,14 +179,14 @@ class StackTree {
     }
     /**
      * 
-     * @param {{paths?:any[]}} datas 
+     * @param {any[]} datas 
      */
     setSerializedData(datas) {
-        for (const [key, value] of Object.entries(datas.paths || [])) {
+        for (const [key, value] of Object.entries(datas || [])) {
             this._branches[key] = new this._stackClass(value);
 
         }
-        this._count = datas.count
+        this._count = datas.length
     }
     getSerializedData() {
         const paths = {};
@@ -176,6 +204,13 @@ class StackTree {
     removeBranch(id) {
         delete this._branches[id]
     }
+    pushBranch(data) {
+        this._branches[this.id].push(data)
+    }
+    popBranch() {
+        return this._branches[this.id].pop()
+    }
+
 
 
 

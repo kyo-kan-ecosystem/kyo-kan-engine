@@ -1,25 +1,29 @@
 
 /**
  * @typedef {import("./state/states.cjs").States} States
+ * @typedef {import("./repositries").Repositries} Repositries
  * 
  * */
 /**
- * @typedef {{executorId:any}} ExecutorState
- * @typedef {{name:any}} WorkflowState
- * @typedef  {{workflow:WorkflowState, executor:ExecutorState}} StateType
+ * @typedef {import("../../protocol.d.ts").StateType} StateType
+ * @typedef {import("../../../workflow/plugin/interface.cjs").Workflow} Workflow
+ * @typedef {{states:States,repositries:Repositries}} WorkflowsInit
+ * @typedef {import("../../protocol.d.ts").WorkflowState} WorkflowState
  */
 class Workflows {
     /**
      * 
-     * @param {States} states 
-     * @param {import("./repositries").ContextRepositries} repositries 
+     * @param {WorkflowsInit} initData 
      */
-    constructor(states, repositries) {
+    constructor(initData) {
         /**
          * @type {States}
          */
-        this.states = states
-        this.repositries = repositries
+        this.states = initData.states
+        /**
+         * @type {Repositries}
+         */
+        this.repositries = initData.repositries
 
     }
     getCurrentWorkflow() {
@@ -28,6 +32,30 @@ class Workflows {
          */
         const state = this.states.get()
         const configure = this.repositries.configures.workflows.get(state.workflow.name, state.executor.executorId)
+
+    }
+    /**
+     * @returns {Workflow}
+     */
+    goSub() {
+        /**
+         * @type {StateType}
+        */
+        const superState = this.states.get(1)
+        /**
+         * @type {WorkflowState}
+         */
+        const subWorkflowState = Object.assign({}, superState.workflow.subwWorkflow)
+        subWorkflowState.id = this.repositries.configures.workflows.getId(subWorkflowState.name, superState.executor.executorId)
+
+
+        /**
+         * @type {Partial<StateType>}
+         */
+        const updateState = { workflow: subWorkflowState }
+        this.states.update(updateState)
+
+
 
     }
 

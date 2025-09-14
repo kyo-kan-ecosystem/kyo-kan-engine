@@ -2,10 +2,8 @@
  * @typedef {import("../protocol").executeMode} executeMode
 */
 
-/**
- * @typedef {import("../protocol").State} State
- * 
- */
+const { Workflows } = require("./context/workflows.cjs");
+
 
 /**
  * 
@@ -25,11 +23,12 @@
  * @property {function(Object): Function} getExecuteFunction - 実行関数を取得 
  * @property {function(Object): Function} returnFromSubworkflow - サブワークフローから戻った時の処理
  * @property {function(Object): Function} back - 前の状態に戻る
+ * @property {function(Object): Function} returnAsReset - リセットして戻った時の処理
  */
 
 /**
- * @typedef {Object} Workflows
- * @property {function(): Workflow} getCurrentWorkflow - 現在のワークフローを取得
+ * @typedef {import("./context/workflows.cjs").Workflows} Workflows
+ * 
  * 
  */
 
@@ -84,21 +83,21 @@ async function executeWorkflow(request, firstFunc, context) {
                 break;
 
             case 'goSub':
-
                 context.goSub();
-                const subWorkflow = context.workflows.getSubworkflow();
-                const subExecuteFunc = subWorkflow.enterSubworkflow(context);
+                const subExecuteFunc = context.workflows.getCurrentWorkflow().enterWorkflow(context);
+
+
                 funcsArray.push(subExecuteFunc);
                 break;
 
             case 'end':
-                const flag = context.endSub();
-                if (!flag) {
+                const isTopOnEnd = context.endSub();
+                if (!isTopOnEnd) {
                     return { state, responses };
                 }
-                const superWorkflow = context.workflows.getCurrentWorkflow();
-                const superExecuteFunc = superWorkflow.returnFromSubworkflow(context);
-                funcsArray.push(superExecuteFunc);
+                const superWorkflowOnEnd = context.workflows.getCurrentWorkflow();
+                const superExecuteFuncOnEnd = superWorkflowOnEnd.returnFromSubworkflow(context);
+                funcsArray.push(superExecuteFuncOnEnd);
                 break;
 
             case 'back':
@@ -108,11 +107,20 @@ async function executeWorkflow(request, firstFunc, context) {
                 funcsArray.push(backExecuteFunc);
                 break;
 
-            case 'resetBack':
+            case 'rewind':
                 context.reset();
                 const resetWorkflow = context.workflows.getCurrentWorkflow();
-                const resetExecuteFunc = resetWorkflow.enterSubworkflow(context);
+                const resetExecuteFunc = resetWorkflow.resetBack(context);
                 funcsArray.push(resetExecuteFunc);
+                break;
+            case "rewindReturn":
+                const isTopOnRewindReturn = context.endSub();
+                if (!isTopOnRewindReturn) {
+                    return { state, responses };
+                }
+                const superWorkflowOnResetReturn = context.workflows.getCurrentWorkflow();
+                const executeFuncOnResetReturn = superWorkflowOnResetReturn.returnAsReset(context);
+                funcsArray.push(executeFuncOnResetReturn);
                 break;
 
             default:

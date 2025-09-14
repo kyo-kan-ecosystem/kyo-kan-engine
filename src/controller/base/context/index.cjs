@@ -10,8 +10,14 @@
  * @property {function(Object): Function} back - 前の状態に戻る
  */
 
+const { Bords } = require("./bords/bords.cjs");
+const { Repositries } = require("./repositries");
 const { States } = require("./state/states.cjs");
 const { Workflows } = require("./workflows.cjs");
+
+
+
+
 
 
 
@@ -26,69 +32,93 @@ const { Workflows } = require("./workflows.cjs");
 
 /**
  * @typedef {{
- *      states:typeof States
- *      workflows:typeof Workflows
- *       
- * }} classes
+ *      bords:typeof Bords,
+ *      repositries:typeof Repositries,
+ *      states: typeof States,
+ *      workflows: typeof Workflows,  
+ * }} Classes
  */
+/**
+ * @type {Classes}
+ */
+const DEFUALT_CLASSES = {
+    bords: Bords,
+    repositries: Repositries,
+    states: States,
+    workflows: Workflows
 
-/
 
+}
+/**
+ * @typedef {{repositries:any, bords:any, repositries:any, workflows:any}} ContextInit
+ */
 
 
 class Context {
     /**
-     * @param {BasicData? | false} [initData={}] 
-     * @param {RepositryClasses?} repositryClasses 
+     * @param {ContextInit} [initData={}] 
+     * @param {Classes} classes 
      */
-    constructor() {
+    constructor(initData = {}, classes = DEFUALT_CLASSES) {
+        this.innerSession = ''
 
-        this.repositries = repositries
-        this.states = this.states
-
-
-    }
-    /**
-     * 
-     * @returns {{workflows:any, executors:any}}
-     */
-    getPluginMap() {
-
-        return { workflows: this.plugins.workflows.getSerializeDatas(), executors: this.plugins.executors.getSerializeDatas }
-    }
-    getWorkflowConfigure() {
-        return { workflows: this.workflows.getSerializeDatas(), worknodes: this.worknodes.getSerializeDatas() }
-    }
-    setCalleId(calleId) {
-        this.workflows.calleId = calleId
-
-    }
-
-    setState(state) {
-
-    }
-    clone() {
         /**
-         * @typedef {keyof BasicFunctionContext} _keys
-         * 
+         * @type {Repositries}
          */
-        const cloneKey = 'workflows';
-        const ret = {}
-        for (const key in this) {
-            if (cloneKey == key) {
-                const element = this[key]
-                ret[key] = element.clone()
+        this.repositries = new classes.repositries(initData.repositries)
+        /**
+         * @type {Bords}
+         */
+        this.bords = new classes.bords(initData.bords)
+        /**
+         * @type {States}
+         */
+        this.states = new classes.states(initData.states)
+        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, initData.workflows || {})
+        /**
+         * @type {Workflows}
+         */
+        this.workflows = new classes.workflows(workflowsInit)
 
-            }
-            else {
-                ret[key] = this[key]
-            }
+
+    }
+    goSub() {
+        this.states.pushBranch({})
+        this.bords.pushBranch({})
+        this.workflows.goSub()
+
+    }
+    endSub() {
+        this.bords.popBranch()
+        this.states.popBranch()
+
+    }
+    reset() {
+        this.bords.update({})
+
+    }
+    split(splitCount) {
+        const bords_array = this.bords.splitTree(splitCount)
+        const states_array = this.states.splitTree(splitCount)
+        let index = 0;
+        const results = [];
+        while (index < splitCount) {
+            const bords = bords_array[index]
+            const states = states_array[index]
+            const result = Object.assign({}, this)
+            result.bords = bords
+            result.states = states
+            results.push(result)
 
         }
-        return ret
+        return results;
+
+
 
     }
-
+    initRoot(rootFlow = '', psuedoCalleId = '') {
+        // wip
+    }
 
 
 

@@ -2,39 +2,39 @@ const { Stack } = require("../../../../util/stack.cjs");
 
 
 /**
- * @typedef {{elemnts:any, linkToState:any, linkedCount:any, id:any}} StateInit
+ * @typedef {{items:any, linkBranch:any, linkedCount:any, id:any}} StateData
  */
 
 
 class StateBranch extends Stack {
     /**
      * 
-     * @param {StateInit} args 
+     * @param {StateData} stateInit 
      */
-    constructor(args) {
-        super(args.elemnts)
-        this._setLinkPath(args)
+    constructor(stateInit = {}) {
+        super(stateInit.items)
+        this._setLinkBranch(stateInit)
 
 
 
     }
 
     /**
-    *@param {StateInit} args 
+    *@param {StateData} args 
     */
     _setId(args) {
         this.id = args.id
 
     }
     /**
-     *@param {StateInit} args 
+     *@param {StateData} args 
      */
-    _setLinkPath(args) {
-        this.linkPath = args.linkPath || null
+    _setLinkBranch(args) {
+        this.linkBranch = args.linkPath || null
 
     }
     /**
-     *@param {StateInit} args 
+     *@param {StateData} args 
     */
     _setLinkedCount(args) {
 
@@ -48,8 +48,12 @@ class StateBranch extends Stack {
     subtractLinkedCount(minusNumber = 1) {
         this.linkedCount -= minusNumber
     }
+    /**
+     * 
+     * @returns {StateData}
+     */
     getSerializedData() {
-        return { id: this.id, linkedCount: this.linkedCount, elemnts: this._elements, linkPath: this.linkPath }
+        return { id: this.id, linkedCount: this.linkedCount, items: this._items, linkBranch: this.linkBranch }
     }
 }
 

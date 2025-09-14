@@ -65,13 +65,13 @@ const DEFAULT_REPOSITRY_CLASSES = {
  *          classes?:ContextRepositryClasses
  * }} ContextRepositryArgs
  */
-class ContextRepositries {
+class Repositries {
     /**
      * 
      * @param {ContextRepositryArgs} args 
      */
     constructor(args) {
-        const { configures = {}, plugins = null, classes = DEFAULT_REPOSITRY_CLASSES } = args
+        const { configures = {}, plugins = null, classes = DEFAULT_REPOSITRY_CLASSES } = args || {}
 
 
         /**
@@ -103,4 +103,4 @@ class ContextRepositries {
     }
 }
 
-module.exports = { ContextRepositries }
+module.exports = { Repositries }
