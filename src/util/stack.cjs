@@ -152,6 +152,11 @@ class StackTree {
     get(position) {
         return this._branches[this._id].get(position)
     }
+    getBranchLength() {
+        return this._branches[this._id].length;
+
+    }
+
 
     /**
      * 
@@ -189,12 +194,12 @@ class StackTree {
         this._count = datas.length
     }
     getSerializedData() {
-        const paths = {};
+        const branches = {};
         for (const [key, value] of Object.entries(this._branches)) {
-            paths[key] = value.getSerializedData();
+            branches[key] = value.getSerializedData();
 
         }
-        return { paths, count: this._count }
+        return { branches: branches, count: this._count }
     }
     setBranchs(branches) {
         this._branches = branches
@@ -204,10 +209,10 @@ class StackTree {
     removeBranch(id) {
         delete this._branches[id]
     }
-    pushBranch(data) {
+    push(data) {
         this._branches[this.id].push(data)
     }
-    popBranch() {
+    pop() {
         return this._branches[this.id].pop()
     }
 

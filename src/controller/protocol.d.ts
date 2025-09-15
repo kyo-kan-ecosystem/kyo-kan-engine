@@ -17,12 +17,17 @@ export type WorkflowState = {
 
 
 }
+export type BordState = {
+    init: any
+}
 
 
 export type StateType = {
+    bordstat
     workflow: WorkflowState,
     executor: ExecutorState
 }
+export type PartialSateType = Partial<StateType>
 
 
 

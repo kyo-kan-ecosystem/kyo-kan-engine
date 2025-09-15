@@ -1,9 +1,21 @@
 const { StackTree } = require("../../../../util/stack.cjs");
 /**
- * @typedef {{workflow:any, subWorkflow:any}} ContextBordFocus
- * @typedef {{global?:any,items?:ContextBordFocus[]}} BordInit
+ * @typedef {any} ContextBordFocus
+ * @typedef {{global?:any,items?:Object<any, ContextBordFocus[]>}} BordInit
  */
 class Bords extends StackTree {
+    /**
+     * @private
+     * @type {boolean}
+     */
+    _isBordUpdate
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    _isGlobalUpdate
+
     /**
      * @param {BordInit?} bordInit 
      */
@@ -12,10 +24,12 @@ class Bords extends StackTree {
          * @type {bordInit}
          */
         const _bordInit = bordInit || {}
-        super(bordInit.items)
+        super(_bordInit.items);
+        this._isBordUpdate = false;
+        this._isGlobalUpdate = false;
 
         this._global = Object.assign({}, _bordInit.global || {})
-        this._subWorkflow = Object.assign({}, _bordInit.global || {})
+        this._subWorkflow = Object.assign({}, _bordInit.subWorkflow || {})
 
     }
 
@@ -24,18 +38,41 @@ class Bords extends StackTree {
     }
     updateGlobal(data) {
         this._global = data
+        this._isGlobalUpdate = true;
+
+
 
     }
-    subWorkflow() {
-        return this._subWorkflow
+    checkIsUpdate() {
+        return { 'global': this._isGlobalUpdate, 'bord': this._isBordUpdate }
     }
-    pushBranch(data) {
+    update(data) {
+        super.update(data)
+        this._isBordUpdate = true;
+
+    }
+    setSubWorkFlow(data) {
+        this._subWorkflow = data;
+    }
+
+    getSubWorkflow() {
+        return this._subWorkflow;
+    }
+    push(data) {
         this._subWorkflow = {}
-        super.pushBranch()
+        super.push(data)
     }
-    popBranch() {
-        this._subWorkflow = super.popBranch()
+    pop() {
+        this._subWorkflow = super.pop()
         return this._subWorkflow
+    }
+    /**
+     * @returns {BordInit}
+     */
+    getSerializedData() {
+        const items = super.getSerializedData()
+        return { 'global': this._global, items }
+
     }
 
 

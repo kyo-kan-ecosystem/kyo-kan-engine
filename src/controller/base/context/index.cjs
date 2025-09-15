@@ -50,10 +50,12 @@ const DEFUALT_CLASSES = {
 
 }
 /**
- * @typedef {{repositries:any, bords:any, repositries:any, workflows:any}} ContextInit
+ * @typedef {{repositries:any, bords:any, repositries:any, workflows:any, functions?:any}} ContextInit
  */
 
-
+/**
+ * @template Functions
+ */
 class Context {
     /**
      * @param {ContextInit} [initData={}] 
@@ -61,6 +63,11 @@ class Context {
      */
     constructor(initData = {}, classes = DEFUALT_CLASSES) {
         this.innerSession = ''
+
+        /**
+         * @type {Functions}
+         */
+        this.functions = initData.functions || {}
 
         /**
          * @type {Repositries}
@@ -83,18 +90,22 @@ class Context {
 
     }
     goSub() {
-        this.states.pushBranch({})
-        this.bords.pushBranch({})
+
+        this.bords.push({})
+        this.states.push({})
+
+
         this.workflows.goSub()
 
     }
     endSub() {
-        this.bords.popBranch()
-        this.states.popBranch()
+        this.bords.pop()
+        this.states.pop()
 
     }
     reset() {
-        this.bords.update({})
+        this.bords.update()
+
 
     }
     split(splitCount) {

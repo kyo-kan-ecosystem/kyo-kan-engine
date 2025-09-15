@@ -31,7 +31,13 @@ class Workflows {
          * @type {StateType}
          */
         const state = this.states.get()
-        const configure = this.repositries.configures.workflows.get(state.workflow.name, state.executor.executorId)
+        /**
+         * @type { import("../../../workflow/protocol").WorkflowPluginCofigure}
+         */
+
+        const configure = this.repositries.configures.workflows.get(state.workflow.id)
+        return this.repositries.plugins.workflows.get(configure.plugin)
+
 
     }
     /**
