@@ -11,6 +11,7 @@
  */
 
 const { Bords } = require("./bords/bords.cjs");
+const { Histories } = require("./histories.cjs");
 const { Repositries } = require("./repositries");
 const { States } = require("./state/states.cjs");
 const { Workflows } = require("./workflows.cjs");
@@ -32,7 +33,8 @@ const { Workflows } = require("./workflows.cjs");
  *      bords:typeof Bords,
  *      repositries:typeof Repositries,
  *      states: typeof States,
- *      workflows: typeof Workflows,  
+ *      workflows: typeof Workflows,
+ *      histories: typeof Histories  
  * }} Classes
  */
 /**
@@ -42,12 +44,19 @@ const DEFUALT_CLASSES = {
     bords: Bords,
     repositries: Repositries,
     states: States,
-    workflows: Workflows
+    workflows: Workflows,
+    histories: Histories
 
 
 }
 /**
- * @typedef {{repositries:any, bords:any, repositries:any, workflows:any, functions?:any}} ContextInit
+ * @typedef {{
+ *   repositries:any, 
+ *   bords:any, 
+ *   repositries:any, 
+ *   workflows:any,
+ *   histories:any, 
+ *   functions?:any}} ContextInit
  */
 
 /**
@@ -84,18 +93,28 @@ class Context {
          */
         this.workflows = new classes.workflows(workflowsInit)
 
+        /**
+         * @type {Histories}
+         */
+        this.histories = new classes.histories(initData.histories)
+
 
     }
     /**
      * 
-     * @param {*} state 
+     * @param {*} state
+     * @param {*} request  
      */
-    forward(state) {
+    forward(state, request) {
         /**
          * @type {BranchState}
          */
-        const branch = { state: this.states.}
-        const _state = Object
+        const branch = { state: this.states.getBranchId(), bord: this.bords.getBranchId() }
+        const _state = Object.assign({ branch }, state);
+        this.states.update(state)
+        this.histories.request
+
+
 
 
     }

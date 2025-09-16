@@ -134,7 +134,7 @@ class StackTree {
     getNode() {
         return this._branches[this._id]
     }
-    getId() {
+    getBranchId() {
         return this._id
     }
     _setId(id) {

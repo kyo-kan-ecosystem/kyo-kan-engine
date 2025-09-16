@@ -1,8 +1,6 @@
 import { Stack } from "../../../../util/stack.cjs";
 
-class BordBranch extends Stack {
-    getSerializedData() {
-        return { items: this._items }
-    }
-}
+class BordBranch extends Stack { }
+
+
 module.exports = { BordBranch }

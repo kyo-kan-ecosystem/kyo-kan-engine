@@ -51,3 +51,5 @@ class Histories {
 
     }
 }
+
+module.exports = { Histories }
