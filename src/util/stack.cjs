@@ -134,6 +134,9 @@ class StackTree {
     getNode() {
         return this._branches[this._id]
     }
+    getId() {
+        return this._id
+    }
     _setId(id) {
         const _id = id || 0;
         this._id = _id;
@@ -165,12 +168,17 @@ class StackTree {
     _initBranches(initData) {
 
         this.topId = 0;
+
         if (init === false) {
+            this._count = -1
             return
 
         }
         if (!init) {
             this._branches[this.topId] = new this._stackClass({ id: this.topId })
+            this._count = 1
+            this._id = this.topId
+            return
 
         }
         else {
@@ -184,14 +192,14 @@ class StackTree {
     }
     /**
      * 
-     * @param {any[]} datas 
+     * @param {{branches: branches, count:int}} datas 
      */
     setSerializedData(datas) {
-        for (const [key, value] of Object.entries(datas || [])) {
+        for (const [key, value] of Object.entries(datas.branches || [])) {
             this._branches[key] = new this._stackClass(value);
 
         }
-        this._count = datas.length
+        this._count = datas.count
     }
     getSerializedData() {
         const branches = {};

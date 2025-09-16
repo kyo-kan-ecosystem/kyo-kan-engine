@@ -71,6 +71,7 @@ async function executeWorkflow(request, firstFunc, context) {
         responses = responses.concat(response_units);
         context.states.update(state);
 
+
         // stateのmodeによって分岐
         switch (state.mode) {
             case 'wait':

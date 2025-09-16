@@ -20,14 +20,11 @@ const { Workflows } = require("./workflows.cjs");
 
 
 
-
 /**
- * @typedef {Object} Context
- * @property {States} states - 状態管理オブジェクト
- * @property {Workflows} workflows - ワークフロー管理オブジェクト
- * @property {function(): void} goSub - サブルーチンに移行する関数
- * @property {function(): boolean} endSub - サブルーチンを終了する関数
- * @property {function(): void} reset - リセット関数
+ * @typedef {{branch?:{
+ *      bord:any,
+ *      state:any
+ * }}} BranchState
  */
 
 /**
@@ -86,6 +83,19 @@ class Context {
          * @type {Workflows}
          */
         this.workflows = new classes.workflows(workflowsInit)
+
+
+    }
+    /**
+     * 
+     * @param {*} state 
+     */
+    forward(state) {
+        /**
+         * @type {BranchState}
+         */
+        const branch = { state: this.states.}
+        const _state = Object
 
 
     }
