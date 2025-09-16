@@ -55,6 +55,7 @@ const { Workflows } = require("./context/workflows.cjs");
 async function executeWorkflow(request, firstFunc, context) {
     /** @type {Array<ExecuteFunction>} */
     const funcsArray = [firstFunc];
+    let _request = request
 
     /** @type {Array} */
     let responses = [];
@@ -64,7 +65,7 @@ async function executeWorkflow(request, firstFunc, context) {
         const currentFunc = funcsArray.pop();
 
         // 関数を非同期実行
-        const { state, response_units } = await currentFunc(request, context);
+        const { state, response_units } = await currentFunc(_request, context);
 
         // response_unitsとresponsesを結合
         responses = responses.concat(response_units);
@@ -101,14 +102,14 @@ async function executeWorkflow(request, firstFunc, context) {
                 break;
 
             case 'back':
-
+                _request = context.back()
                 const backWorkflow = context.workflows.getCurrentWorkflow();
                 const backExecuteFunc = backWorkflow.back(context);
                 funcsArray.push(backExecuteFunc);
                 break;
 
             case 'rewind':
-                context.reset();
+                _request = context.reset();
                 const resetWorkflow = context.workflows.getCurrentWorkflow();
                 const resetExecuteFunc = resetWorkflow.resetBack(context);
                 funcsArray.push(resetExecuteFunc);
