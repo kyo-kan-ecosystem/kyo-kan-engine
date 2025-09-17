@@ -3,232 +3,390 @@ const deepmerge = require("deepmerge")
 
 
 /**
- * @template StackItem
+ * A stack data structure that follows the LIFO (Last-In, First-Out) principle.
+ * Intended for use in state history management and similar applications.
+ * @template {Object} StackItem
  */
 class Stack {
     /**
-     * 
-     * @param {StackItem[]} items 
-     * 
+     * @param {StackItem[]?} [items] - Initial items to populate the stack with.
      */
     constructor(items) {
         /**
          * @type {StackItem[]}
          */
-        this._items = (items || []).copyWithin()
-
-
+        this._items = this._cloneItems(items || [])
     }
+    /**
+     * Returns the number of elements in the stack.
+     * @type {number}
+     */
+    get length() {
+        return this._items.length
+    }
+
+    /**
+     * Determines if the stack is empty.
+     * @returns {boolean} `true` if the stack is empty, otherwise `false`.
+     */
     isEmpty() {
         return this._items.length == 0
     }
+
     /**
-     * 
-     * @returns {false | any}
+     * Retrieves an element from the stack at a specified position from the top.
+     * @param {number} [digg=0] - The offset from the top of the stack (0 is the top).
+     * @returns {StackItem | null} The element at the specified position, or null if it does not exist.
      */
-    get(position = 0) {
-        const _position = this._items.length - 1 - position
+    get(digg = 0) {
+        if (this.isEmpty() === true) {
+            throw new Error("Stack is empty")
+        }
+        const _position = this._items.length - 1 - digg
         if (_position < 0) {
-            return false
+            throw new Error(`Stack depth is ${this._items.length - 1}, but digg is ${digg}`)
         }
         return this._items[_position]
     }
+
+    /**
+     * Removes the top element from the stack and returns it.
+     * @returns {StackItem} The removed element.
+     * @throws {Error} Thrown if the stack is empty.
+     */
     pop() {
-        if (this._items.length == 0) {
-            return false
+        if (this.isEmpty() === true) {
+            throw new Error("Stack is empty")
         }
-        this._items.pop()
-        return this.get()
+
+        return this._items.pop();
     }
+
+    /**
+     * Adds a new element to the top of the stack.
+     * @param {StackItem} item - The element to add.
+     */
     push(item) {
         this._items.push(item)
 
     }
     /**
-     * 
-     * @param {Partial<StackItem>} upData 
-     * @param {true?} isFullOverWrite 
+     * Updates the top element of the stack.
+     * @param {Partial<StackItem>} upData - The data to update the top item with.
+     * @param {boolean} [isFullOverWrite] - If true, the item is completely replaced; otherwise, it's merged.
      */
     update(upData, isFullOverWrite) {
+        if (this.isEmpty()) {
+            throw new Error("Stack is empty");
+
+
+        }
         if (isFullOverWrite === true) {
             this._items[this._items.length - 1] = upData
         }
         else {
             const item = this._items[this._items.length - 1]
             this._items[this._items.length - 1] = deepmerge(item, upData)
+
         }
 
     }
-    getSerializedData() {
-        return this._items
 
+    /**
+     * Returns a deep-copied array of all elements in the stack.
+     * @returns {StackItem[]} A deep-copied array of elements.
+     */
+    getSerializedData() {
+        return this._cloneItems(this._items);
     }
 
+    /**
+     * @private
+     * @param {StackItem[]} items
+     * @returns {StackItem[]}
+     */
+    _cloneItems(items) {
+        return items.map(function (value) {
+            if (typeof value === "object") {
+                if (value === null || value instanceof Date) {
+                    return value
+                }
+                return deepmerge({}, value)
+            }
+            return value
 
+        })
 
-
+    }
 }
 
 
 /**
+ * A Facade for managing a stack structure with multiple branches.
+ * Each branch is managed as an independent `Stack` instance.
+ * @typedef {{ branches: {[k in any]: any}, count: number, linkedCounts:{[k in number]:number}, linkMap:{[k in number]:number} }} SeriaraizedStackTree
  * @template {Stack} StackClass
  * 
  */
 class StackTree {
     /**
+     * @type {{n:number}}
+     */
+    _countRef
+
+    /**
+     * @type {{[x in any]: StackClass}}
      * 
-     * @param {Object | null} initData 
-     * @param {StackClass} stackClass 
+     */
+    _branches
+
+    /**
+     * @type {typeof StackClass}
+     */
+    _stackClass
+
+    /**
+     * @type {number}
+     */
+    _branchId
+
+    /**
+     * @type {number}
+     */
+    topId
+
+    /**
+     * @type {{[k in number]:number}}
+     */
+    _linkedCounts
+    /**
+     * @type {{[k in number]:number}}
+    */
+    _linkMap
+
+
+    /**
+     * Creates an instance of StackTree.
+     * @param {SeriaraizedStackTree | null | false} [initData=null] - Initial data to restore the tree state.
+     * @param {typeof Stack} [stackClass=Stack] - The stack class to be used internally.
      */
     constructor(initData = null, stackClass = Stack) {
 
-        /**
-         * @type {typeof StackClass}
-         */
+        this._countRef = { n: 0 };
         this._stackClass = stackClass;
-        /**
-         * @type {{[x in any]: StackClass}}
-         */
         this._branches = {}
-        this._initBranches(initData);
-        this._count = 1
-        this._id = 1
+        this._linkMap = {}
+        this._linkedCounts = {}
 
+        this.topId = 0;
+        this._branchId = this.topId
+
+        if (initData === false) {
+            return
+
+        }
+        if (!initData) {
+            this._branches[this.topId] = new this._stackClass();
+            this._countRef.n = 1;
+            return
+
+        }
+
+        this.setSerializedData(initData);
     }
+
+    /**
+     * Determines if the current branch is empty.
+     * @returns {boolean}
+     */
     isEnd() {
-        return this._branches[this._id].isEmpty()
+        return this._branches[this._branchId].isEmpty()
     }
+
+    /**
+     * Checks if the given ID matches the top-level branch ID.
+     * @param {number} id 
+     * @returns {boolean}
+     */
     isTop(id) {
-        return this.topId == id || this._id
+        return this.topId === id;
     }
-    switchId(id) {
+
+    /**
+     * Forks a new branch from the current branch.
+     * @param {number?} id 
+     * @returns {StackTree}
+     */
+    fork(id) {
         /**
          * @type {typeof this}
          */
         const responseObj = new this.constructor(false, this._stackClass)
-        responseObj.setBranchs(this._branches)
-        responseObj._count = this._count
-        responseObj._setId(id)
+        responseObj.setReference(this._branches, this._countRef, this._linkMap, this._linkedCounts)
+        /**
+         * @type {number}
+         */
+        let _id;
+
+        if (typeof id === "number") {
+            _id = id
+        }
+        else {
+            _id = this._countRef.n
+            this._countRef.n++
+            this._linkMap[_id] = this._branchId
+            this._linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
+        }
+        responseObj.setBranchId(_id)
         return responseObj;
 
     }
-    splitTree(splitCount) {
-        let count = 0
 
-        const results = []
-        const linkPath = this._id
-        const init = { linkPath }
-        while (count < splitCount) {
-            const id = this._count
-            this._count += 1
-            count += 1
-            this._branches[id] = new this._stackClass(init)
-            results.push(this.switchId(id))
+    /**
+     * Returns the `Stack` instance of the currently active branch.
+     * @returns {StackClass}
+     */
+    getStack() {
+        return this._branches[this._branchId]
+    }
 
+    /**
+     * Returns the ID of the currently active branch.
+     * @returns {number}
+     */
+    getBranchId() {
+        return this._branchId
+    }
+
+    /**
+     * Gets the parent branch ID for a given branch ID.
+     * @param {number} id The ID of the child branch.
+     * @returns {number | undefined} The ID of the parent branch, or undefined if it's a top-level branch or doesn't exist.
+     */
+    getParentBranchId(id) {
+        return this._linkMap[id];
+    }
+
+    /**
+     * Gets the number of branches forked from a given branch ID.
+     * @param {number} id - The ID of the parent branch.
+     * @returns {number} The number of direct child branches.
+     */
+    getLinkedCount(id) {
+        return this._linkedCounts[id] || 0;
+    }
+
+    setBranchId(id) {
+
+        this._branchId = id;
+        if (!this._branches[id]) {
+            // Create an empty stack for the new branch
+            this._branches[id] = new this._stackClass();
         }
 
-        return results
-
 
     }
-    getNode() {
-        return this._branches[this._id]
-    }
-    getBranchId() {
-        return this._id
-    }
-    _setId(id) {
-        const _id = id || 0;
-        this._id = _id;
 
-    }
     /**
-     * 
-     * @param {*} state
+     * Updates the top element of the current branch.
+     * @param {*} stackData
      * @param {true?} isFullOverWrite  
      */
-    update(state, isFullOverWrite) {
+    update(stackData, isFullOverWrite) {
 
-        this._branches[this._id].update(state, isFullOverWrite)
-
+        this._branches[this._branchId].update(stackData, isFullOverWrite)
     }
-    get(position) {
-        return this._branches[this._id].get(position)
-    }
-    getBranchLength() {
-        return this._branches[this._id].length;
-
-    }
-
 
     /**
-     * 
-     * @param {any} initData 
+     * Gets an element from the current branch.
+     * @param {number} reversePosition - The offset from the top of the stack.
+     * @returns {any | null}
      */
-    _initBranches(initData) {
+    get(reversePosition) {
+        return this._branches[this._branchId].get(reversePosition)
+    }
 
-        this.topId = 0;
-
-        if (init === false) {
-            this._count = -1
-            return
-
-        }
-        if (!init) {
-            this._branches[this.topId] = new this._stackClass({ id: this.topId })
-            this._count = 1
-            this._id = this.topId
-            return
-
-        }
-        else {
-            this.setSerializedData(initData)
-
-
-        }
-
-
+    /**
+     * Returns the depth (number of elements) of the current branch.
+     * @returns {number}
+     */
+    getBranchDepth() {
+        return this._branches[this._branchId].length;
 
     }
+
+
     /**
-     * 
-     * @param {{branches: branches, count:int}} datas 
+     * Restores the state of the `StackTree` from serialized data.
+     * @param {SeriaraizedStackTree} datas - The serialized data.
      */
     setSerializedData(datas) {
         for (const [key, value] of Object.entries(datas.branches || [])) {
             this._branches[key] = new this._stackClass(value);
 
         }
-        this._count = datas.count
+        this._countRef.n = datas.count
+        this._linkMap = Object.assign({}, datas.linkMap || {})
+        this._linkedCounts = Object.assign({}, datas.linkedCounts || {})
     }
+
+    /**
+     * Returns the current state of the `StackTree` as a serializable object.
+     * @returns {SeriaraizedStackTree}
+     */
     getSerializedData() {
         const branches = {};
         for (const [key, value] of Object.entries(this._branches)) {
             branches[key] = value.getSerializedData();
 
         }
-        return { branches: branches, count: this._count }
+        return { branches: branches, count: this._countRef.n, linkedCounts: Object.assign({}, this._linkedCounts), linkMap: Object.assign({}, this._linkMap) }
     }
-    setBranchs(branches) {
+
+    /**
+     * Shares branch data and a counter with another `StackTree` instance.
+     * Primarily used internally by the `fork` method.
+     * @param {{[x in any]: StackClass}} branches
+     * @param {{n: number}} countRef
+     * @param {{[k in any]:number}} linkMap 
+     * @param {{[k in any]:number}} linkedCounts 
+     */
+    setReference(branches, countRef, linkMap, linkedCounts) {
         this._branches = branches
-
-
+        this._countRef = countRef
+        this._linkMap = linkMap
+        this._linkedCounts = linkedCounts
     }
+
+    /**
+     * Removes the branch with the specified ID.
+     * @param {number} id
+     */
     removeBranch(id) {
         delete this._branches[id]
+        if (this._linkMap[id] in this._linkedCounts) {
+            this._linkedCounts[this._linkMap[id]]--
+        }
+
+        delete this._linkMap[id]
+
     }
+
+    /**
+     * Pushes data onto the current branch.
+     * @param {*} data
+     */
     push(data) {
-        this._branches[this.id].push(data)
+        this._branches[this._branchId].push(data)
     }
+
+    /**
+     * Pops data from the current branch.
+     * @returns {any}
+     */
     pop() {
-        return this._branches[this.id].pop()
+        return this._branches[this._branchId].pop()
     }
-
-
-
-
-
-
 }
 
 

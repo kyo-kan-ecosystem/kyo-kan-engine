@@ -1,5 +1,5 @@
-const { MapedHistory } = require("../maped_history.cjs");
+const { MapedHistoryDeepEqual } = require("../maped_history.cjs");
 
-class BordGlobalHistory extends MapedHistory { }
+class BordGlobalHistory extends MapedHistoryDeepEqual { }
 
 module.exports = { BordGlobalHistory }    
