@@ -35,10 +35,10 @@ const { Workflows } = require("./workflows.cjs");
  *      states: typeof States,
  *      workflows: typeof Workflows,
  *      histories: typeof Histories  
- * }} Classes
+ * }} ContextClasses
  */
 /**
- * @type {Classes}
+ * @type {ContextClasses}
  */
 const DEFUALT_CLASSES = {
     bords: Bords,
@@ -59,19 +59,21 @@ const DEFUALT_CLASSES = {
  *   functions?:any}} ContextInit
  */
 
-/**
- * @template Functions
- */
+
 class Context {
     /**
+     * @type {States}
+     */
+    states
+    /**
      * @param {ContextInit} [initData={}] 
-     * @param {Classes} classes 
+     * @param {ContextClasses} classes 
      */
     constructor(initData = {}, classes = DEFUALT_CLASSES) {
         this.innerSession = ''
 
         /**
-         * @type {Functions}
+         * @type {{[k in string]:Function}}
          */
         this.functions = initData.functions || {}
 
@@ -83,9 +85,8 @@ class Context {
          * @type {Bords}
          */
         this.bords = new classes.bords(initData.bords)
-        /**
-         * @type {States}
-         */
+
+
         this.states = new classes.states(initData.states)
         const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, initData.workflows || {})
         /**
@@ -111,8 +112,8 @@ class Context {
          */
         const branch = { state: this.states.getBranchId(), bord: this.bords.getBranchId() }
         const _state = Object.assign({ branch }, state);
-        this.states.update(state)
-        this.histories.request
+        this.states.update(_state)
+        this.histories.request.forward(request, this.states.getBranchDepth())
 
 
 

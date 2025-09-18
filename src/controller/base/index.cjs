@@ -1,7 +1,23 @@
 
-/**
- * @typedef 
- */
+const { Context } = require("./context/index.cjs")
+
+
+class ContextBuilder {
+
+    /**
+     * @type {typeof C}
+     */
+    _contextClass
+
+    /**
+     * @returns {Context}
+     */
+    build() {
+        return this.context
+    }
+
+}
+
 
 class Controller {
     /**
