@@ -1,3 +1,4 @@
+const { EngineConfigureRepositry } = require("../../../engine/repositry/configure.cjs");
 const { ExecutorPluginRepositry } = require("../../../executor/repositry/plugin.cjs");
 const { ExecutorWorknodeRepositry } = require("../../../executor/repositry/worknode.cjs");
 
@@ -9,8 +10,9 @@ const { WorkflowRepositry } = require("../../../workflow/repositry/workflow.cjs"
 
 /**
  * @typedef {{
- *       workflows?: WorkflowRepositry,
- *       worknodes?: ExecutorWorknodeRepositry  
+ *       workflows?: any,
+ *       worknodes?: any,
+ *       engine?: any
  * }} ContextRepositryConfigures
  */
 
@@ -27,6 +29,7 @@ const { WorkflowRepositry } = require("../../../workflow/repositry/workflow.cjs"
  *      configures:{
  *          workflows: typeof WorkflowRepositry,
  *          worknodes: typeof ExecutorWorknodeRepositry,
+ *          engine: typeof EngineConfigureRepositry
  *      },     
  *      plugins: {
  *           workflows: typeof WorkflowPluginRepositry,
@@ -49,6 +52,7 @@ const DEFAULT_REPOSITRY_CLASSES = {
     configures: {
         workflows: WorkflowRepositry,
         worknodes: ExecutorWorknodeRepositry,
+        engine: EngineConfigureRepositry
     },
 
     plugins: {

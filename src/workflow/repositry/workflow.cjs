@@ -1,20 +1,18 @@
 const { Repositry } = require("../../repositry/base.cjs")
 const { create_id } = require("../../util/create_id.cjs")
-/**
- * @typedef {{calleId:any, datas:any}} WorkflowSerializeData
- */
+
 class WorkflowRepositry extends Repositry {
 
 
-    set(name, data, calleId) {
+    set(worflowName, data, calleId) {
 
-        const id = create_id(calleId, name)
+        const id = create_id(calleId, worflowName)
         super.set(id, data)
-        return { name, calleId }
+        return { worflowName, calleId }
 
     }
-    getId(name, calleId) {
-        return create_id(calleId, name)
+    get(worflowName, calleId) {
+        return super.get(create_id(calleId, worflowName))
     }
 
 
