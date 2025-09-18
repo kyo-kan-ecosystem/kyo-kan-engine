@@ -9,8 +9,8 @@ const { WorkflowRepositry } = require("../../../workflow/repositry/workflow.cjs"
 
 /**
  * @typedef {{
- *       workflows?: any,
- *       worknodes?: any  
+ *       workflows?: WorkflowRepositry,
+ *       worknodes?: ExecutorWorknodeRepositry  
  * }} ContextRepositryConfigures
  */
 
@@ -67,6 +67,15 @@ const DEFAULT_REPOSITRY_CLASSES = {
  */
 class Repositries {
     /**
+     * @type {ContextRepositryConfigures}
+     */
+    configures
+    /**
+     * @type {ContextRepositryPlugins}
+     */
+    plugins
+
+    /**
      * 
      * @param {ContextRepositryArgs} args 
      */
@@ -74,21 +83,12 @@ class Repositries {
         const { configures = {}, plugins = null, classes = DEFAULT_REPOSITRY_CLASSES } = args || {}
 
 
-        /**
-         * @type {{workflows:WorkflowRepositry,worknodes:ExecutorWorknodeRepositry}}
-         * 
-        */
+
         this.configures = {}
 
         this.configures.workflows = new classes.configures.workflows(configures.workflows || {})
         this.configures.worknodes = new classes.configures.worknodes(configures.worknodes || {})
-        /**
-         * @type {{
-         *  workflows: WorkflowPluginRepositry,
-         *  executors: ExecutorPluginRepositry
-         * 
-         * }}
-         */
+
         this.plugins = {}
         if (plugins) {
             this.plugins = plugins
@@ -100,6 +100,17 @@ class Repositries {
             this.plugins.executors = new classes.plugins.executors({})
         }
 
+    }
+    getPluginRepositry() {
+        return this.plugins
+    }
+    getConfiguresAsSerializeDatas() {
+        const result = {}
+        for (const [key, value] of Object.entries(this.configures)) {
+            result[key] = value.getSerializeDatas()
+
+        }
+        return result
     }
 }
 
