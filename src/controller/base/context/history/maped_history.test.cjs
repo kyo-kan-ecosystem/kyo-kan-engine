@@ -24,12 +24,16 @@ describe('MapedHistory', () => {
             const initData = {
                 logs: { '0': { log: { a: 1 }, count: 1 } },
                 branchLogs: { '0': [{ id: 0, depth: 0 }] },
-                countRef: { n: 1 }
+                countRef: { n: 1 },
+                linkMap: { '1': 0 },
+                linkedCounts: { '0': 1 }
             };
             const h = new MapedHistory(initData);
             expect(h._logs).to.deep.equal(initData.logs);
             expect(h._branchLogs).to.deep.equal(initData.branchLogs);
             expect(h._countRef).to.deep.equal(initData.countRef);
+            expect(h._linkMap).to.deep.equal(initData.linkMap);
+            expect(h._linkedCounts).to.deep.equal(initData.linkedCounts);
         });
     });
 
@@ -206,28 +210,86 @@ describe('MapedHistory', () => {
     });
 
     describe('getSerializedData', () => {
-        it('should return a deep copy of the data', () => {
+        it('should return a deep copy of the data including branch links', () => {
             history.forward({ a: { b: 1 } }, 0, 0);
+            const forked = history.fork(); // creates branch 1 from 0
             const serialized = history.getSerializedData();
 
             // Ensure they are not the same reference
             expect(serialized.logs).to.not.equal(history._logs);
             expect(serialized.branchLogs).to.not.equal(history._branchLogs);
             expect(serialized.countRef).to.not.equal(history._countRef);
+            expect(serialized.linkMap).to.not.equal(history._linkMap);
+            expect(serialized.linkedCounts).to.not.equal(history._linkedCounts);
 
             // Ensure values are the same
             expect(serialized.logs).to.deep.equal(history._logs);
             expect(serialized.branchLogs).to.deep.equal(history._branchLogs);
             expect(serialized.countRef).to.deep.equal(history._countRef);
+            expect(serialized.linkMap).to.deep.equal(history._linkMap);
+            expect(serialized.linkedCounts).to.deep.equal(history._linkedCounts);
 
             // Modify the copy and check if the original is unchanged
             serialized.logs[0].log.a.b = 99;
             serialized.branchLogs[0][0].id = 99;
             serialized.countRef.n = 99;
+            serialized.linkMap[forked._branchId] = 99;
+            serialized.linkedCounts[0] = 99;
 
             expect(history._logs[0].log.a.b).to.equal(1);
             expect(history._branchLogs[0][0].id).to.equal(0);
-            expect(history._countRef.n).to.equal(1);
+            expect(history._countRef.n).to.equal(2); // 1 for log, 1 for branch
+            expect(history._linkMap[forked._branchId]).to.equal(0);
+            expect(history._linkedCounts[0]).to.equal(1);
+        });
+    });
+
+    describe('Branching (fork, remove, counts)', () => {
+        beforeEach(() => {
+            history.setBranchId(0);
+            history.forward('data 0', 0);
+        });
+
+        it('fork() should create a new branch linked to the parent', () => {
+            const parentBranchId = history._branchId;
+            expect(history.getLinkedCount(parentBranchId)).to.equal(0);
+
+            const forkedHistory = history.fork(); // Fork without ID
+            const newBranchId = forkedHistory._branchId;
+
+            expect(newBranchId).to.not.equal(parentBranchId);
+            expect(history.getParentBranchId(newBranchId)).to.equal(parentBranchId);
+            expect(history.getLinkedCount(parentBranchId)).to.equal(1);
+        });
+
+        it('removeBranch() should delete a branch and update parent link count', () => {
+            const parentBranchId = history._branchId;
+            const forkedHistory = history.fork();
+            const forkedBranchId = forkedHistory._branchId;
+
+            expect(history.getLinkedCount(parentBranchId)).to.equal(1);
+            expect(history._branchLogs[forkedBranchId]).to.exist;
+            expect(history._linkMap[forkedBranchId]).to.exist;
+
+            history.removeBranch(forkedBranchId);
+
+            expect(history.getLinkedCount(parentBranchId)).to.equal(0);
+            expect(history._branchLogs[forkedBranchId]).to.not.exist;
+            expect(history._linkMap[forkedBranchId]).to.not.exist;
+        });
+
+        it('getLinkedCount() should return 0 for branches with no children or non-existent branches', () => {
+            expect(history.getLinkedCount(0)).to.equal(0); // No children yet
+            const forked = history.fork();
+            expect(history.getLinkedCount(0)).to.equal(1);
+            expect(history.getLinkedCount(forked._branchId)).to.equal(0); // Forked branch has no children
+            expect(history.getLinkedCount(999)).to.equal(0); // Non-existent branch
+        });
+
+        it('getParentBranchId() should return the parent ID', () => {
+            const forked = history.fork();
+            expect(history.getParentBranchId(forked._branchId)).to.equal(0);
+            expect(history.getParentBranchId(0)).to.be.undefined; // Root branch
         });
     });
 });
@@ -240,6 +302,30 @@ describe('MapedHistoryDeepEqual', () => {
 
     beforeEach(() => {
         history = new MapedHistoryDeepEqual();
+    });
+
+    it('addNewLog should return the new log ID', () => {
+        const data = { message: 'test' };
+        const id = history.addNewLog(data, 0, 0);
+        expect(id).to.equal(0);
+        expect(history.getBranchHeadId(0)).to.equal(0);
+    });
+
+    it('should correctly clone Date objects to prevent mutation', () => {
+        const date = new Date();
+        history.addNewLog({ time: date }, 0, 0);
+
+        const head = history.getBranchHead(0);
+        expect(head.log.time).to.be.an.instanceof(Date);
+        expect(head.log.time.getTime()).to.equal(date.getTime());
+
+        // Mutate original date
+        date.setFullYear(1999);
+
+        // The log in history should not be affected
+        const newHead = history.getBranchHead(0);
+        expect(newHead.log.time.getFullYear()).to.not.equal(1999);
+        expect(newHead.log.time.getTime()).to.not.equal(date.getTime());
     });
 
     describe('forward with _checkEqual override', () => {
