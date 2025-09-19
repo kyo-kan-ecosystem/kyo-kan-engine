@@ -18,12 +18,14 @@
   },
   "scripts": {
     "test_single": "mocha",
-    "test": "mocha ./**/*.test.{js, cjs, mjs}"
+    "test": "mocha ./**/*.test.{js, cjs, mjs}",
+    "generate_type_definition": "tsc"
   },
   "devDependencies": {
     "chai": "^6.0.1",
     "mocha": "^11.7.2",
-    "sinon": "^21.0.0"
+    "sinon": "^21.0.0",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "deepmerge": "^4.3.1",

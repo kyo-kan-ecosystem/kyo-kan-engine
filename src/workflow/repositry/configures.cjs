@@ -14,6 +14,14 @@ class WorkflowConfiguresRepositry extends Repositry {
     get(worflowName, calleId) {
         return super.get(create_id(calleId, worflowName))
     }
+    getId(worflowName, calleId) {
+        return create_id(calleId, worflowName)
+    }
+
+    getById(id) {
+        return super.get(id)
+
+    }
 
 
 }

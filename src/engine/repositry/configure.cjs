@@ -1,16 +1,19 @@
 const { Repositry } = require("../../repositry/base.cjs")
 
 /**
- * @typedef {{rootWorkSpace:{plugin:string, id:string}}} EngineConfigure
+ * @typedef {{root:{workflow:{plugin:string, id:string}}}} EngineConfigure
  */
 
 /**
  * @type {EngineConfigure}
  */
 const DEFAULT_ENGINE_CONFIGURE = {
-    rootWorkSpace: {
-        plugin: 'step',
-        id: ''
+    root: {
+        workflow: {
+            plugin: 'step',
+            id: ''
+        }
+
     }
 }
 

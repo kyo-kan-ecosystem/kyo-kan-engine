@@ -78,7 +78,7 @@ const DEFAULT_REPOSITRY_CLASSES = {
  */
 class Repositries {
     /**
-     * @type {ContextRepositryConfigureInits}
+     * @type {ContextRepositryConfigures}
      */
     configures
     /**

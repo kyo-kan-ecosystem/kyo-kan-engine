@@ -1,5 +1,9 @@
 
 
+/**
+ * @typedef
+ */
+
 
 /**
  * @typedef {import("../protocol").ApplyResponse<number>} ApplyResponse
