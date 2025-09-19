@@ -34,8 +34,8 @@ const { WorkflowConfiguresRepositry } = require("../../../workflow/repositry/con
 /**
  * @typedef {{
  *      configures:{
- *          workflows: typeof WorkflowReositry,
- *          executors: typeof ExecutorPluginRepositry,
+ *          workflows: typeof WorkflowConfiguresRepositry,
+ *          executors: typeof ExecutorConfigureRepositry,
  *          engine: typeof EngineConfigureRepositry
  *      },     
  *      plugins: {
@@ -57,8 +57,8 @@ const { WorkflowConfiguresRepositry } = require("../../../workflow/repositry/con
  */
 const DEFAULT_REPOSITRY_CLASSES = {
     configures: {
-        workflows: WorkflowRepositry,
-        executors: ExecutorWorknodeRepositry,
+        workflows: WorkflowConfiguresRepositry,
+        executors: ExecutorPluginRepositry,
         engine: EngineConfigureRepositry
     },
 
