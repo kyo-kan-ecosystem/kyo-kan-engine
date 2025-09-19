@@ -1,5 +1,5 @@
 const { Repositry } = require("../../repositry/base.cjs")
-class ExecutorWorknodeRepositry extends Repositry {
+class ExecutorConfigureRepositry extends Repositry {
     /**
      * 
      * @param {import("./protocol").WorkNodeRepositryParams} params 
@@ -24,4 +24,4 @@ class ExecutorWorknodeRepositry extends Repositry {
 
 }
 
-module.exports = { ExecutorWorknodeRepositry }
+module.exports = { ExecutorConfigureRepositry }

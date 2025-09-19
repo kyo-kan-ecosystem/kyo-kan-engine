@@ -1,9 +1,9 @@
 const { EngineConfigureRepositry } = require("../../../engine/repositry/configure.cjs");
 const { ExecutorPluginRepositry } = require("../../../executor/repositry/plugin.cjs");
-const { ExecutorWorknodeRepositry } = require("../../../executor/repositry/worknode.cjs");
+const { ExecutorConfigureRepositry } = require("../../../executor/repositry/configure.cjs");
 
-const { WorkflowPluginRepositry } = require("../../../workflow/repositry/plugin.cjs");
-const { WorkflowRepositry } = require("../../../workflow/repositry/workflow.cjs");
+const { WorkflowPluginRepositry } = require("../../../workflow/repositry/plugins.cjs");
+const { WorkflowConfiguresRepositry } = require("../../../workflow/repositry/configures.cjs");
 
 
 
@@ -11,8 +11,15 @@ const { WorkflowRepositry } = require("../../../workflow/repositry/workflow.cjs"
 /**
  * @typedef {{
  *       workflows?: any,
- *       worknodes?: any,
+ *       executors?: any,
  *       engine?: any
+ * }} ContextRepositryConfigureInits
+ */
+/**
+ * @typedef {{
+ *       workflows: WorkflowConfiguresRepositry,
+ *       execteNodes: ExecutorConfigureRepositry
+ *       engine: EngineConfigureRepositry
  * }} ContextRepositryConfigures
  */
 
@@ -27,8 +34,8 @@ const { WorkflowRepositry } = require("../../../workflow/repositry/workflow.cjs"
 /**
  * @typedef {{
  *      configures:{
- *          workflows: typeof WorkflowRepositry,
- *          worknodes: typeof ExecutorWorknodeRepositry,
+ *          workflows: typeof WorkflowReositry,
+ *          executors: typeof ExecutorPluginRepositry,
  *          engine: typeof EngineConfigureRepositry
  *      },     
  *      plugins: {
@@ -51,7 +58,7 @@ const { WorkflowRepositry } = require("../../../workflow/repositry/workflow.cjs"
 const DEFAULT_REPOSITRY_CLASSES = {
     configures: {
         workflows: WorkflowRepositry,
-        worknodes: ExecutorWorknodeRepositry,
+        executors: ExecutorWorknodeRepositry,
         engine: EngineConfigureRepositry
     },
 
@@ -64,20 +71,21 @@ const DEFAULT_REPOSITRY_CLASSES = {
 }
 /**
  * @typedef {{
- *          configures?:ContextRepositryConfigures, 
+ *          configures?:ContextRepositryConfigureInits, 
  *          plugins?:ContextRepositryPlugins,
  *          classes?:ContextRepositryClasses
  * }} ContextRepositryArgs
  */
 class Repositries {
     /**
-     * @type {ContextRepositryConfigures}
+     * @type {ContextRepositryConfigureInits}
      */
     configures
     /**
      * @type {ContextRepositryPlugins}
      */
     plugins
+
 
     /**
      * 
@@ -91,7 +99,7 @@ class Repositries {
         this.configures = {}
 
         this.configures.workflows = new classes.configures.workflows(configures.workflows || {})
-        this.configures.worknodes = new classes.configures.worknodes(configures.worknodes || {})
+        this.configures.exectenodes = new classes.configures.executors(configures.exectenodes || {})
 
         this.plugins = {}
         if (plugins) {

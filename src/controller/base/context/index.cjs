@@ -65,6 +65,16 @@ class Context {
      * @type {States}
      */
     states
+
+    /**
+     * @type {Repositries}
+     */
+    repositries
+
+    /**
+     * @type {Bords}
+     */
+    bords
     /**
      * @param {ContextInit} [initData={}] 
      * @param {ContextClasses} classes 
@@ -77,13 +87,9 @@ class Context {
          */
         this.functions = initData.functions || {}
 
-        /**
-         * @type {Repositries}
-         */
+
         this.repositries = new classes.repositries(initData.repositries)
-        /**
-         * @type {Bords}
-         */
+
         this.bords = new classes.bords(initData.bords)
 
 

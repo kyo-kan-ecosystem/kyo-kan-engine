@@ -1,7 +1,7 @@
 const { Repositry } = require("../../repositry/base.cjs")
 const { create_id } = require("../../util/create_id.cjs")
 
-class WorkflowRepositry extends Repositry {
+class WorkflowConfiguresRepositry extends Repositry {
 
 
     set(worflowName, data, calleId) {
@@ -18,4 +18,4 @@ class WorkflowRepositry extends Repositry {
 
 }
 
-module.exports = { WorkflowRepositry }
+module.exports = { WorkflowConfiguresRepositry }

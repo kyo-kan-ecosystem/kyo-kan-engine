@@ -2,22 +2,69 @@
 const { Context } = require("./context/index.cjs")
 
 
+/**
+ * @typedef {import("./context/index.cjs").ContextInit} ContextInit
+ */
 class ContextBuilder {
 
     /**
-     * @type {typeof C}
+     * @type {typeof Context}
      */
     _contextClass
 
     /**
+     * 
+     * @param {typeof Context?} contextClass 
+     */
+    constructor(contextClass) {
+        this._contextClass = contextClass || Context
+    }
+    /**
+     * @param {ContextInit} args 
      * @returns {Context}
      */
-    build() {
-        return this.context
+    _buildContext(contextInit) {
+        return new this._contextClass(contextInit)
     }
 
 }
+class Registrater extends ContextBuilder {
+    /**
+     * @type {Context}
+     */
+    context
+    /**
+     * 
+     * @param {ContextInit?} contextInit 
+     * @param {typeof Context?} contextClass 
+     */
+    constructor(contextInit, contextClass) {
+        super(contextClass)
+        this.context = this._buildContext(contextInit)
 
+
+    }
+    registerExecutorPlugin(pluginName, plugin) {
+        this.context.repositries.plugins.executors.set(pluginName, plugin)
+    }
+    registerWorkflowPlugin(pluginName, plugin) {
+        this.context.repositries.plugins.workflows.set(pluginName, plugin)
+    }
+    /**
+     * 
+     * @param {import("../../engine/repositry/configure.cjs").EngineConfigure} values 
+     */
+    setEngineConfigue(values) {
+        this.context.repositries.configures.engine.update(values)
+
+    }
+    parseConfigures(configures) {
+        const rootWorkflow = this.context.repositries.configures.engine
+    }
+
+
+
+}
 
 class Controller {
     /**
