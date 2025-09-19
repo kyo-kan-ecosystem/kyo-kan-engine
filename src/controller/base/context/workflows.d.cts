@@ -1,5 +1,5 @@
 export type States = import("./state/states.cjs").States;
-export type Repositries = import("./repositries").Repositries;
+export type Repositries = any;
 export type StateType = import("../../protocol.d.ts").StateType;
 export type Workflow = import("../../../workflow/plugin/interface.cjs").Workflow;
 export type WorkflowsInit = {

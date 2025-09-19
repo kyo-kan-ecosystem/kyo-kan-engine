@@ -19,7 +19,7 @@
   "scripts": {
     "test_single": "mocha",
     "test": "mocha ./**/*.test.{js, cjs, mjs}",
-    "generate_type_definition": "tsc"
+    "run_tsc": "tsc"
   },
   "devDependencies": {
     "chai": "^6.0.1",
@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "deepmerge": "^4.3.1",
-    "fast-deep-equal": "^3.1.3"
+    "fast-deep-equal": "^3.1.3",
+    "glob": "^11.0.3"
   }
 }

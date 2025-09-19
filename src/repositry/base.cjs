@@ -1,7 +1,5 @@
 const { create_id } = require("../util/create_id.cjs")
-/**
- * @template IDType
- */
+
 class Repositry {
     constructor(datas = {}) {
         this._datas = Object.assign({}, datas)
@@ -9,14 +7,14 @@ class Repositry {
     }
     /**
      * 
-     * @param {IDType} id 
+     * @param {any} id 
      * @param {*} data 
      */
     set(id, data) {
         this._datas[id] = data
     }/**
      * 
-     * @param {IDType} id 
+     * @param {any} id 
      * @param {*} data 
      */
 
