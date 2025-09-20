@@ -2,7 +2,7 @@
  * @typedef {import("../protocol").executeMode} executeMode
 */
 
-const { Workflows } = require("./context/workflows.cjs");
+
 
 
 /**

@@ -125,8 +125,12 @@ class Stack {
  * A Facade for managing a stack structure with multiple branches.
  * Each branch is managed as an independent `Stack` instance.
  * @typedef {{ branches: {[k in any]: any}, count: number, linkedCounts:{[k in number]:number}, linkMap:{[k in number]:number} }} SeriaraizedStackTree
- * @template {Stack} StackClass
  * 
+ * 
+ *
+ */
+/**
+ * @template {Stack} StackClass
  */
 class StackTree {
     /**
@@ -141,7 +145,7 @@ class StackTree {
     _branches
 
     /**
-     * @type {typeof StackClass}
+     * @type {any}
      */
     _stackClass
 

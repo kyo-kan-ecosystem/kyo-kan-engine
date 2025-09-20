@@ -1,3 +1,4 @@
+export type executeMode = import("../protocol").executeMode;
 export type State = import("../protocol").State;
 export type ExecutionResult = {
     /**
@@ -57,7 +58,9 @@ export type Context = {
     reset: () => void;
 };
 export type ExecuteFunction = (arg0: any, arg1: Context) => Promise<ExecutionResult>;
-export type executeMode = import("../protocol").executeMode;
+/**
+ * @typedef {import("../protocol").executeMode} executeMode
+*/
 /**
  *
  * @typedef {import("../protocol").State} State
@@ -103,4 +106,3 @@ export function executeWorkflow(request: any, firstFunc: ExecuteFunction, contex
     state: State;
     responses: any[];
 }>;
-import { Workflows } from "./context/workflows.cjs";

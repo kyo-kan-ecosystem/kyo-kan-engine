@@ -17,7 +17,7 @@ const { spawn } = require('node:child_process');
 async function deleteCtsFiles() {
     try {
         console.log('start cleaning .cts files...')
-        const files = await glob('**/*.cts', { absolute: true });
+        const files = await glob('**/*.d.cts', { absolute: true });
 
         if (files.length === 0) {
             console.log('no .cts files found.');
@@ -28,8 +28,19 @@ async function deleteCtsFiles() {
 
         const deletePromises = files.map(async (file) => {
             try {
-                await fs.unlink(file);
-                console.log(`removed: ${path.basename(file)} (${file})`);
+                const baseScript = file.replace(/d\.cts$/, 'cjs')
+                const baseScriptStat = await fs.stat(baseScript)
+                const fileStat = await fs.stat(file)
+                if (baseScriptStat.mtimeMs > fileStat.mtimeMs) {
+                    await fs.unlink(file);
+                    console.log(`removed: ${file}`);
+                }
+                else {
+                    console.log(`not removed: ${file}`);
+                }
+
+
+
             } catch (err) {
                 console.error(`failed to remove: ${file}`, err);
             }
@@ -71,6 +82,7 @@ async function runTsc() {
 async function main() {
     try {
         await deleteCtsFiles();
+
         await runTsc();
         console.log('build process finished successfully.');
     } catch (error) {

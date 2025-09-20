@@ -59,6 +59,9 @@ class Registrater extends ContextBuilder {
 
     }
     parseConfigures(configures) {
+        /**
+         * @type 
+         */
         const rootWorkflow = this.context.repositries.configures.engine
     }
 
@@ -101,3 +104,5 @@ class Controller {
 
     }
 }
+
+module.exports = { Registrater, Controller, ContextBuilder }

@@ -90,6 +90,7 @@ export class Context {
     initRoot(rootFlow?: string, psuedoCalleId?: string): void;
 }
 import { Bords } from "./bords/bords.cjs";
+import { Repositries } from "./repositries.cjs";
 import { States } from "./state/states.cjs";
 import { Workflows } from "./workflows.cjs";
 import { Histories } from "./histories.cjs";
