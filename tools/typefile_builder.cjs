@@ -1,3 +1,14 @@
+// This script is a workaround for issues related to TypeScript declaration files (.cts) and VSCode.
+//
+// Problem:
+// - VSCode warns if a corresponding declaration file is missing.
+// - If a declaration file exists, "Go to Implementations" in VSCode jumps to the declaration file, not the source implementation.
+// - `tsc` cannot overwrite existing declaration files.
+//
+// Solution:
+// This script automates the process by first deleting all existing .cts files and then running `tsc`
+// to regenerate them. This ensures a clean build and proper editor navigation.
+
 const { glob } = require('glob');
 const fs = require('node:fs/promises');
 const path = require('node:path');

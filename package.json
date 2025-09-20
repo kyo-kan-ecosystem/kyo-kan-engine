@@ -17,9 +17,10 @@
     }
   },
   "scripts": {
-    "test_single": "mocha",
+    "test:single": "mocha",
     "test": "mocha ./**/*.test.{js, cjs, mjs}",
-    "run_tsc": "tsc"
+    "run_tsc": "tsc",
+    "build_typefile": "node ./tools/typefile_builder.cjs"
   },
   "devDependencies": {
     "chai": "^6.0.1",
