@@ -18,7 +18,7 @@ class ContextBuilder {
         this._contextClass = contextClass || Context
     }
     /**
-     * @param {ContextInit} args 
+     * @param {ContextInit} contextInit 
      * @returns {Context}
      */
     _buildContext(contextInit) {

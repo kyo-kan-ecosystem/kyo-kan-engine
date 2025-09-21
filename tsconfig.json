@@ -6,6 +6,7 @@
         "allowJs": true,
         "declaration": true,
         "emitDeclarationOnly": true,
-        "incremental": true
+        "incremental": true,
+        "checkJs": true
     },
 }

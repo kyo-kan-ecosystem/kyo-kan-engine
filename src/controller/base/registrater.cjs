@@ -1,25 +1,25 @@
 
+
 const { ContextBuilder } = require("./context_builder.cjs")
 
 /**
  * @typedef {import("./context/index.cjs").ContextInit} ContextInit
  */
-/**
- * @typedef {import("./context/index.cjs").Context} Context
- */
+
 /**
  * @typedef {import("../../workflow/plugin/base_class.cjs").BaseWorkflow} WorkFlowPluginType
  */
 
 class Registrater extends ContextBuilder {
     /**
-     * @type {Context}
+     * @type {import("./context/index.cjs").Context}
      */
     context
     /**
      * 
      * @param {ContextInit?} contextInit 
-     * @param {typeof Context?} contextClass 
+     *
+     * @param {typeof import("./context/index.cjs").Context?} contextClass   ts-ignore
      */
     constructor(contextInit, contextClass) {
         super(contextClass)
@@ -38,9 +38,13 @@ class Registrater extends ContextBuilder {
      * @param {import("../../engine/repositry/configure.cjs").EngineConfigure} values 
      */
     setEngineConfigue(values) {
-        this.context.repositries.configures.engine.update(values)
+        this.context.repositries.configures.engine.set(values)
 
     }
+    /**
+     * 
+     * @param {any} configure 
+     */
     parseConfigure(configure) {
         /**
          * @type {import("../../engine/repositry/configure.cjs").EngineConfigure}
@@ -68,7 +72,7 @@ class Registrater extends ContextBuilder {
 
             const item = executorQueue.shift()
             /**
-             * @type {WorkflowPluginConfigure}
+             * @type {import("../../workflow/protocol").WorkflowPluginConfigure}
              */
             const workflowConfigure = this.context.repositries.configures.workflows.get(item.workflow)
             /**

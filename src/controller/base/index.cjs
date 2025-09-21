@@ -14,8 +14,8 @@ class Controller {
     /**
      * 
      * @param {{executer?:any, workflow:any}} repositryData 
-     * @param {type Repositry} workflowRepositryClass 
-     * @param {type Repositry} pluginRepositryClass 
+     * @param {typeof Repositry} workflowRepositryClass 
+     * @param {typeof Repositry} pluginRepositryClass 
      
      */
     constructor(repositryData, workflowRepositryClass = Repositry, executerRepositryClass = Repositry) {
