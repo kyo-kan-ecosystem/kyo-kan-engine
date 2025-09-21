@@ -18,7 +18,7 @@ const { WorkflowConfiguresRepositry } = require("../../../workflow/repositry/con
 /**
  * @typedef {{
  *       workflows: WorkflowConfiguresRepositry,
- *       execteNodes: ExecutorConfigureRepositry
+ *       executors: ExecutorConfigureRepositry
  *       engine: EngineConfigureRepositry
  * }} ContextRepositryConfigures
  */

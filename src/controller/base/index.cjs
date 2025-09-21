@@ -76,8 +76,8 @@ class Registrater extends ContextBuilder {
         const rootConfigure = rootWorkFlowPlugin.getConfigureParams(configure)
         this.context.repositries.configures.workflows.set(engineConfigure.root.workflow.id, rootConfigure.params)
         const executorQueue = []
-        for (const executor of rootConfigure.executors || []) {
-            const item = { workflow: engineConfigure.root.workflow.id, executor, calleId: null }
+        for (const executorConfig of rootConfigure.executors || []) {
+            const item = { workflow: engineConfigure.root.workflow.id, executorConfig }
             executorQueue.push(item)
         }
 
@@ -89,24 +89,24 @@ class Registrater extends ContextBuilder {
             /**
              * @type {WorkflowPluginConfigure}
              */
-            const workflowPluginConfigure = this.context.repositries.configures.workflows.get(item.workflow)
+            const workflowConfigure = this.context.repositries.configures.workflows.get(item.workflow)
             /**
              * @type {WorkFlowPluginType}
              */
-            const workflowPlugin = this.context.repositries.plugins.workflows.get(workflowPluginConfigure.plugin)
-            const executorId = this.context.repositries.configures.executors.add(item.executor)
-            workflowPlugin.addExecutor(workflowConfiguer, executorId)
+            const workflowPlugin = this.context.repositries.plugins.workflows.get(workflowConfigure.plugin)
+            const executorId = this.context.repositries.configures.executors.add(item.executorConfig)
+            workflowPlugin.addExecutor(workflowConfigure, executorId)
             for (const [name, configure] of Object.entries(item.executor.workflows || {})) {
                 /**
                  * @type {WorkFlowPluginType}
                  */
                 const subWorkflowPlugin = this.context.repositries.plugins.workflows.get(configure.plugin)
-                const subWorkflowConfigure = subWorkflowPlugin.getConfigureParams(configure.params)
-                const subwWorkflowId = this.context.repositries.configures.workflows.set(subWorkflowConfigure.params)
+                const subWorkflowConfigure = subWorkflowPlugin.getConfigureParams(configure.params, executorId)
+                const subwWorkflowId = this.context.repositries.configures.workflows.add(executorId, name, subWorkflowConfigure.params)
 
 
                 for (const executor of subWorkflowConfigure.executors || []) {
-                    const item = { workflow: , executor, calleId: null }
+                    const item = { workflow: subwWorkflowId, executor }
                     executorQueue.push(item)
                 }
 

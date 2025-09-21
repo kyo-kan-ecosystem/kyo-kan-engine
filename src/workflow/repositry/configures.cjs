@@ -5,21 +5,24 @@ class WorkflowConfiguresRepositry extends Repositry {
 
     /**
      * 
-     * @param {{calleId:any, name:any}} idParams 
+     * @param {*} calleId
+     * @param {*} name  
      * @param {*} data 
      * 
      * @returns 
      */
-    set(idParams, data,) {
+    add(calleId, name, data,) {
 
-        const id = create_id(idParams.calleId, idParams.name)
+        const id = create_id(calleId, name)
         super.set(id, data)
+        return id
+
 
 
     }
 
-    getId(worflowName, calleId) {
-        return create_id(calleId, worflowName)
+    getId(name, calleId) {
+        return create_id(calleId, name)
     }
 
 
