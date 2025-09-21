@@ -5,7 +5,10 @@ export type WorkflowPluginConfigure<ParamsType = any> = {
 }
 
 
+export type SubworkflowDefinition {
+    plugin: string,
 
+}
 
 
 

@@ -27,6 +27,7 @@ export type StateType = {
     workflow: WorkflowState,
     executor: ExecutorState
 }
+
 export type PartialSateType = Partial<StateType>
 
 
@@ -44,3 +45,4 @@ export type ExecutionResult = {
 
 
 }
+export Sub
