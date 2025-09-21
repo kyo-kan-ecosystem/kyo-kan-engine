@@ -9,6 +9,7 @@
 // This script automates the process by first deleting all existing .cts files and then running `tsc`
 // to regenerate them. This ensures a clean build and proper editor navigation.
 
+// todo: npm publish作業の一部にする
 const { glob } = require('glob');
 const fs = require('node:fs/promises');
 const path = require('node:path');
