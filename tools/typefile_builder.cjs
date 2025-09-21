@@ -28,6 +28,7 @@ async function deleteCtsFiles() {
 
         const deletePromises = files.map(async (file) => {
             try {
+
                 const baseScript = file.replace(/d\.cts$/, 'cjs')
                 const baseScriptStat = await fs.stat(baseScript)
                 const fileStat = await fs.stat(file)
@@ -82,6 +83,7 @@ async function runTsc() {
 async function main() {
     try {
         await deleteCtsFiles();
+
 
         await runTsc();
         console.log('build process finished successfully.');

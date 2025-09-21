@@ -1,34 +1,12 @@
-import { Repositry } from "../repositry/base.cjs"
 
-
-
-export type UnitConfigure<UnitConfigureDataType = any> = {
-    data: UnitConfigureDataType,
-    id: any
+export type WorkflowPluginConfigure<ParamsType = any> = {
+    params: ParamsType,
     plugin: any
-
-
-}
-export type UnitConfigures<UnitConfigureDataType = any> = UnitConfigure<UnitConfigureDataType>[]
-
-export type WorkflowPluginCofigure<WorkflowCofigureDataType = any> = {
-    data: WorkflowCofigureDataType
-    plugin: any
-
 }
 
 
-export type ApplyResponse<UnitConfigureDataType = any> = {
-    name: string,
-    calleId: string
-    configures: UnitConfigures<UnitConfigureDataType>
 
 
-}
-
-export type WorkflowContext = {
-    workflows: Repositry
-}
 
 
 

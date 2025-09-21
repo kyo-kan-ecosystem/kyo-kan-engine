@@ -5,8 +5,8 @@ class ExecutorConfigureRepositry extends Repositry {
      * @param {import("./protocol").WorkNodeRepositryParams} params 
      */
     constructor(params = {}) {
-        const length = params.length | 0
-        const _datas = params.datas | {}
+        const length = params.length || 0
+        const _datas = params.datas || {}
         super(_datas)
         /**
          * @type {number}

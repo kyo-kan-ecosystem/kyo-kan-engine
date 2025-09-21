@@ -1,7 +1,13 @@
 
+
 const { Context } = require("./context/index.cjs")
+/**
+ * @typedef {import("../../workflow/plugin/base_class.cjs").BaseWorkflow} WorkFlowPluginType
+ */
 
-
+/**
+ * @typedef {import("../../workflow/protocol.d.ts").WorkflowPluginConfigure} WorkflowPluginConfigure
+ */
 /**
  * @typedef {import("./context/index.cjs").ContextInit} ContextInit
  */
@@ -58,11 +64,65 @@ class Registrater extends ContextBuilder {
         this.context.repositries.configures.engine.update(values)
 
     }
-    parseConfigures(configures) {
+    parseConfigure(configure) {
         /**
-         * @type 
+         * @type {import("../../engine/repositry/configure.cjs").EngineConfigure}
          */
-        const rootWorkflow = this.context.repositries.configures.engine
+        const engineConfigure = this.context.repositries.configures.engine.get()
+        /**
+         * @type {WorkFlowPluginType}
+         */
+        const rootWorkFlowPlugin = this.context.repositries.plugins.workflows.get(engineConfigure.root.workflow.plugin)
+        const rootConfigure = rootWorkFlowPlugin.getConfigureParams(configure)
+        this.context.repositries.configures.workflows.set(engineConfigure.root.workflow.id, rootConfigure.params)
+        const executorQueue = []
+        for (const executor of rootConfigure.executors || []) {
+            const item = { workflow: engineConfigure.root.workflow.id, executor, calleId: null }
+            executorQueue.push(item)
+        }
+
+
+
+        while (executorQueue.length > 0) {
+
+            const item = executorQueue.shift()
+            /**
+             * @type {WorkflowPluginConfigure}
+             */
+            const workflowPluginConfigure = this.context.repositries.configures.workflows.get(item.workflow)
+            /**
+             * @type {WorkFlowPluginType}
+             */
+            const workflowPlugin = this.context.repositries.plugins.workflows.get(workflowPluginConfigure.plugin)
+            const executorId = this.context.repositries.configures.executors.add(item.executor)
+            workflowPlugin.addExecutor(workflowConfiguer, executorId)
+            for (const [name, configure] of Object.entries(item.executor.workflows || {})) {
+                /**
+                 * @type {WorkFlowPluginType}
+                 */
+                const subWorkflowPlugin = this.context.repositries.plugins.workflows.get(configure.plugin)
+                const subWorkflowConfigure = subWorkflowPlugin.getConfigureParams(configure.params)
+                const subwWorkflowId = this.context.repositries.configures.workflows.set(subWorkflowConfigure.params)
+
+
+                for (const executor of subWorkflowConfigure.executors || []) {
+                    const item = { workflow: , executor, calleId: null }
+                    executorQueue.push(item)
+                }
+
+
+            }
+
+
+
+
+
+
+        }
+
+
+
+
     }
 
 

@@ -6,7 +6,7 @@
  * */
 /**
  * @typedef {import("../../protocol.d.ts").StateType} StateType
- * @typedef {import("../../../workflow/plugin/interface.cjs").Workflow} Workflow
+ * @typedef {import("../../../workflow/plugin/base_class.cjs").Workflow} Workflow
  * @typedef {{states:States,repositries:Repositries}} WorkflowsInit
  * @typedef {import("../../protocol.d.ts").WorkflowState} WorkflowState
  */
@@ -32,7 +32,7 @@ class Workflows {
          */
         const state = this.states.get()
         /**
-         * @type { import("../../../workflow/protocol").WorkflowPluginCofigure}
+         * @type { import("../../../workflow/protocol").WorkflowPluginConfigure}
          */
 
         const configure = this.repositries.configures.workflows.get(state.workflow.id)

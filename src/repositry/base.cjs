@@ -11,6 +11,11 @@ class Repositry {
      * @param {*} data 
      */
     set(id, data) {
+        if (typeof id === 'undefined') {
+            return this._datas
+
+
+        }
         this._datas[id] = data
     }/**
      * 
