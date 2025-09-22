@@ -37,6 +37,7 @@ describe('Registrater', () => {
         contextBuilderStub = sinon.stub(ContextBuilder.prototype, '_buildContext').returns(mockContext);
 
         // Instantiate Registrater. The constructor will use the stubbed method.
+        // @ts-ignore
         registrater = new Registrater({}, null);
     });
 

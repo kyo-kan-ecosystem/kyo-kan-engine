@@ -97,7 +97,7 @@ class Registrater extends ContextBuilder {
 
 
                 for (const executor of subWorkflowConfigure.executors || []) {
-                    const item = { workflow: subwWorkflowId, executor }
+                    const item = { workflow: subwWorkflowId, executorConfig: executor }
                     executorQueue.push(item)
                 }
 

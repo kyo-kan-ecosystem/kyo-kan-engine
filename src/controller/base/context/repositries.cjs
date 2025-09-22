@@ -58,7 +58,7 @@ const { WorkflowConfiguresRepositry } = require("../../../workflow/repositry/con
 const DEFAULT_REPOSITRY_CLASSES = {
     configures: {
         workflows: WorkflowConfiguresRepositry,
-        executors: ExecutorPluginRepositry,
+        executors: ExecutorConfigureRepositry,
         engine: EngineConfigureRepositry
     },
 
@@ -96,20 +96,25 @@ class Repositries {
 
 
 
-        this.configures = {}
+        this.configures = {
 
-        this.configures.workflows = new classes.configures.workflows(configures.workflows || {})
-        this.configures.exectenodes = new classes.configures.executors(configures.exectenodes || {})
+            workflows: new classes.configures.workflows(configures.workflows || {}),
+            executors: new classes.configures.executors(configures.executors || {}),
+            engine: new classes.configures.engine(configures.engine || {})
+        }
 
-        this.plugins = {}
+
         if (plugins) {
             this.plugins = plugins
 
 
         }
         else {
-            this.plugins.workflows = new classes.plugins.workflows({})
-            this.plugins.executors = new classes.plugins.executors({})
+            this.plugins = {
+                workflows: new classes.plugins.workflows({}),
+                executors: new classes.plugins.executors({})
+            }
+
         }
 
     }

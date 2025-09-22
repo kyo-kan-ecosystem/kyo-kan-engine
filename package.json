@@ -23,6 +23,7 @@
     "build_typefile": "node ./tools/typefile_builder.cjs"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.10",
     "chai": "^6.0.1",
     "mocha": "^11.7.2",
     "sinon": "^21.0.0",
