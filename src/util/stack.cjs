@@ -296,7 +296,7 @@ class StackTree {
      * @param {*} stackData
      * @param {true?} isFullOverWrite  
      */
-    update(stackData, isFullOverWrite) {
+    update(stackData, isFullOverWrite = null) {
 
         this._branches[this._branchId].update(stackData, isFullOverWrite)
     }

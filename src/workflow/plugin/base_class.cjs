@@ -1,3 +1,4 @@
+const { Context } = require("../../controller/protocol")
 
 
 
@@ -48,6 +49,15 @@ class BaseWorkflow {
      * @param {*} context 
      */
     enterWorkflow(context) { }
+    /**
+     * 
+     * @param {import("../../controller/protocol").Context} context 
+     * @param {*} plugin 
+     * @param {*} calleFunction 
+     */
+    _callHook(context, plugin, calleFunction) {
+
+    }
 
 }
 

@@ -50,13 +50,13 @@ const DEFUALT_CLASSES = {
 
 }
 /**
- * @typedef {{
+ * @typedef {Partial<{
+ *   states:any,
  *   repositries:any, 
  *   bords:any, 
- *   repositries:any, 
  *   workflows:any,
  *   histories:any, 
- *   functions?:any}} ContextInit
+ *   functions?:any}>} ContextInit
  */
 
 
@@ -76,7 +76,7 @@ class Context {
      */
     bords
     /**
-     * @param {ContextInit} [initData={}] 
+     * @param {ContextInit?} [initData] 
      * @param {ContextClasses} classes 
      */
     constructor(initData = {}, classes = DEFUALT_CLASSES) {
@@ -113,10 +113,11 @@ class Context {
      * @param {*} request  
      */
     forward(state, request) {
-        /**
-         * @type {BranchState}
-         */
+
         const branch = { state: this.states.getBranchId(), bord: this.bords.getBranchId() }
+        /**
+        * @type {BranchState}
+        */
         const _state = Object.assign({ branch }, state);
         this.states.update(_state)
         this.histories.request.forward(request, this.states.getBranchDepth())
@@ -129,9 +130,10 @@ class Context {
 
         this.bords.push({})
         this.states.push({})
+        this.histories.
 
 
-        this.workflows.goSub()
+            this.workflows.goSub()
 
     }
     endSub() {

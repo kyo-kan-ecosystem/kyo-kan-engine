@@ -1,7 +1,7 @@
 const { RequestHistory } = require('./history/request.cjs');
 const { StateHistory } = require('./history/state.cjs');
-const { BordGlobalHistory } = require('./history/bord/global.cjs');
-const { BordWorkflowHistory } = require('./history/bord/bord.cjs');
+const { BordGlobalHistory } = require('./history/bords/global.cjs');
+const { BordWorkflowHistory } = require('./history/bords/bord.cjs');
 
 /**
  * @typedef {import('./state/states.cjs').States} States 

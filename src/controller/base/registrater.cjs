@@ -27,9 +27,19 @@ class Registrater extends ContextBuilder {
 
 
     }
+    /**
+     * 
+     * @param {*} pluginName 
+     * @param {*} plugin 
+     */
     registerExecutorPlugin(pluginName, plugin) {
         this.context.repositries.plugins.executors.set(pluginName, plugin)
     }
+    /**
+     * 
+     * @param {*} pluginName 
+     * @param {*} plugin 
+     */
     registerWorkflowPlugin(pluginName, plugin) {
         this.context.repositries.plugins.workflows.set(pluginName, plugin)
     }
@@ -114,6 +124,12 @@ class Registrater extends ContextBuilder {
 
 
 
+    }
+    getPluginRepositry() {
+        return this.context.repositries.getPluginRepositry()
+    }
+    getConfiguresAsSerializeDatas() {
+        return this.context.repositries.getConfiguresAsSerializeDatas()
     }
 
 
