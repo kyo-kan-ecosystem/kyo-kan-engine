@@ -1,41 +1,105 @@
 const { StackTree } = require("../../../../util/stack.cjs");
 /**
  * @typedef {any} ContextBordFocus
- * @typedef {{global?:any,items?:Object<any, ContextBordFocus[]>}} BordInit
+ * 
  */
-class Bords extends StackTree {
+class Bords {
     /**
-     * @private
-     * @type {boolean}
+     * @type {StackTree}
      */
-    _isBordUpdate
+    _tree
 
     /**
-     * @private
-     * @type {boolean}
+     * @type {typeof StackTree}
      */
-    _isGlobalUpdate
+    _treeClass
+
+
 
     /**
-     * @param {BordInit?} bordInit 
+     * @param {any} initData
+     * @param {typeof StackTree} treeClass
      */
-    constructor(bordInit) {
-        /**
-         * @type {bordInit}
-         */
-        const _bordInit = bordInit || {}
-        super(_bordInit.items);
-        this._isBordUpdate = false;
-        this._isGlobalUpdate = false;
+    constructor(initData, treeClass = StackTree) {
+        this._treeClass = treeClass
+        if (initData instanceof treeClass) {
+            this._tree = initData
 
-        this._global = Object.assign({}, _bordInit.global || {})
-        this._subWorkflow = Object.assign({}, _bordInit.subWorkflow || {})
+        }
+        else {
+            this._tree = new this._treeClass(initData)
+
+        }
+
+
 
     }
+    /**
+     * 
+     * @param {*} id 
+     */
+    setBranchId(id) {
+        return this._tree.setBranchId(id)
+    }
+    getBranchId() {
+        return this._tree.getBranchId()
+    }
+    /**
+     * 
+     * @param {*} workflow
+     */
+    push(workflow) {
+        const item = { workflow }
+        return this._tree.push(item)
+
+
+    }
+    getWorkflowBord() {
+        /**
+         * @type {{workflow:any}}
+         */
+        const item = this._tree.get()
+        return item.workflow
+
+
+    }
+    getBranchDepth() {
+        return this._tree.getBranchDepth()
+    }
+    getSubworkflowBord() {
+        /**
+         * @type {{subworkflow?:any}}
+         */
+        const item = this._tree.get()
+        return item.subworkflow
+    }
+    pop() {
+        /**
+         * @type {{workflow:any}}
+         */
+        const item = this._tree.pop()
+        /**
+         * @type {{subworkflow?:any}}
+         */
+        const nowItem = this._tree.get()
+        nowItem.subworkflow = item
+        this._tree.update(nowItem)
+        return item
+
+
+
+
+    }
+
+
+
 
     global() {
         return this._global
     }
+    /**
+     * @param {any} data 
+     */
     updateGlobal(data) {
         this._global = data
         this._isGlobalUpdate = true;
@@ -46,34 +110,30 @@ class Bords extends StackTree {
     checkIsUpdate() {
         return { 'global': this._isGlobalUpdate, 'bord': this._isBordUpdate }
     }
+    /**
+     * 
+     * @param {*} data 
+     */
+
     update(data) {
+        const baseData = super.get()
         super.update(data)
         this._isBordUpdate = true;
 
     }
+    /**
+     * 
+     * @param {*} data 
+     */
     setSubWorkFlow(data) {
-        this._subWorkflow = data;
+        this._subworkflow = data;
     }
 
     getSubWorkflow() {
-        return this._subWorkflow;
+        return this._subworkflow;
     }
-    push(data) {
-        this._subWorkflow = {}
-        super.push(data)
-    }
-    pop() {
-        this._subWorkflow = super.pop()
-        return this._subWorkflow
-    }
-    /**
-     * @returns {BordInit}
-     */
-    getSerializedData() {
-        const items = super.getSerializedData()
-        return { 'global': this._global, items }
 
-    }
+
 
 
 

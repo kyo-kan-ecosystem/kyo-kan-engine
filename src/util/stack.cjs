@@ -5,15 +5,15 @@ const deepmerge = require("deepmerge")
 /**
  * A stack data structure that follows the LIFO (Last-In, First-Out) principle.
  * Intended for use in state history management and similar applications.
- * @template {Object} StackItem
+ * 
  */
 class Stack {
     /**
-     * @param {StackItem[]?} [items] - Initial items to populate the stack with.
+     * @param {any[]?} [items] - Initial items to populate the stack with.
      */
     constructor(items) {
         /**
-         * @type {StackItem[]}
+         * @type {any[]}
          */
         this._items = this._cloneItems(items || [])
     }
@@ -36,7 +36,7 @@ class Stack {
     /**
      * Retrieves an element from the stack at a specified position from the top.
      * @param {number} [digg=0] - The offset from the top of the stack (0 is the top).
-     * @returns {StackItem | null} The element at the specified position, or null if it does not exist.
+     * @returns {any | null} The element at the specified position, or null if it does not exist.
      */
     get(digg = 0) {
         if (this.isEmpty() === true) {
@@ -51,7 +51,7 @@ class Stack {
 
     /**
      * Removes the top element from the stack and returns it.
-     * @returns {StackItem} The removed element.
+     * @returns {any} The removed element.
      * @throws {Error} Thrown if the stack is empty.
      */
     pop() {
@@ -64,7 +64,7 @@ class Stack {
 
     /**
      * Adds a new element to the top of the stack.
-     * @param {StackItem} item - The element to add.
+     * @param {any} item - The element to add.
      */
     push(item) {
         this._items.push(item)
@@ -72,7 +72,7 @@ class Stack {
     }
     /**
      * Updates the top element of the stack.
-     * @param {Partial<StackItem>} upData - The data to update the top item with.
+     * @param {Partial<any>} upData - The data to update the top item with.
      * @param {boolean} [isFullOverWrite] - If true, the item is completely replaced; otherwise, it's merged.
      */
     update(upData, isFullOverWrite) {
@@ -82,6 +82,7 @@ class Stack {
 
         }
         if (isFullOverWrite === true) {
+
             this._items[this._items.length - 1] = upData
         }
         else {
@@ -94,7 +95,7 @@ class Stack {
 
     /**
      * Returns a deep-copied array of all elements in the stack.
-     * @returns {StackItem[]} A deep-copied array of elements.
+     * @returns {any[]} A deep-copied array of elements.
      */
     getSerializedData() {
         return this._cloneItems(this._items);
@@ -102,8 +103,8 @@ class Stack {
 
     /**
      * @private
-     * @param {StackItem[]} items
-     * @returns {StackItem[]}
+     * @param {any[]} items
+     * @returns {any[]}
      */
     _cloneItems(items) {
         return items.map(function (value) {
@@ -225,6 +226,7 @@ class StackTree {
         /**
          * @type {typeof this}
          */
+        // @ts-ignore
         const responseObj = new this.constructor(false, this._stackClass)
         responseObj.setReference(this._branches, this._countRef, this._linkMap, this._linkedCounts)
         /**
@@ -303,11 +305,11 @@ class StackTree {
 
     /**
      * Gets an element from the current branch.
-     * @param {number} reversePosition - The offset from the top of the stack.
+     * @param {number} digg - The offset from the top of the stack.
      * @returns {any | null}
      */
-    get(reversePosition) {
-        return this._branches[this._branchId].get(reversePosition)
+    get(digg = 0) {
+        return this._branches[this._branchId].get(digg)
     }
 
     /**

@@ -1,23 +1,15 @@
 const { RequestHistory } = require('./history/request.cjs');
 const { StateHistory } = require('./history/state.cjs');
 const { BordGlobalHistory } = require('./history/bords/global.cjs');
-const { BordWorkflowHistory } = require('./history/bords/bord.cjs');
+const { BordHistory } = require('./history/bords/bord.cjs');
+const { BordSubWorkflowHistory } = require('./history/bords/sub_workflow.cjs');
 
 /**
  * @typedef {import('./state/states.cjs').States} States 
  * @typedef {import("./bords/bords.cjs").Bords} Bords 
  */
 class Histories {
-    /**
-     * @private
-     * @type {States}
-     */
-    _states
-    /**
-     * @private
-     * @type {Bords}
-     */
-    _bords
+
 
     /**
      * @type {StateHistory}
@@ -31,7 +23,7 @@ class Histories {
     request
 
     /**
-     * @type {{global:BordGlobalHistory, bord:BordWorkflowHistory}}
+     * @type {{global:BordGlobalHistory, bord:BordHistory, subworkflow:BordSubWorkflowHistory}}
      */
     bords
 

@@ -325,7 +325,9 @@ class MapedHistory {
         /**
          * @type {typeof this}
          */
+        // @ts-ignore
         const result = new this.constructor(initData)
+
         let _branchId = branchId;
         if (!branchId && branchId !== 0) {
             _branchId = this._countRef.n;
