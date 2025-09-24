@@ -73,7 +73,7 @@ class Stack {
     /**
      * Updates the top element of the stack.
      * @param {Partial<any>} upData - The data to update the top item with.
-     * @param {boolean} [isFullOverWrite] - If true, the item is completely replaced; otherwise, it's merged.
+     * @param {true?} [isFullOverWrite] - If true, the item is completely replaced; otherwise, it's merged.
      */
     update(upData, isFullOverWrite) {
         if (this.isEmpty()) {

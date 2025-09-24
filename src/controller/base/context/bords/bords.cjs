@@ -125,12 +125,13 @@ class Bords {
 
     /**
      * 
-     * @param {*} data 
+     * @param {*} data
+     * @param {*} [isFullOverWrite]  
      */
 
-    update(data) {
+    update(data, isFullOverWrite) {
 
-        this._tree.update
+        this._tree.update(data, isFullOverWrite)
 
 
     }
