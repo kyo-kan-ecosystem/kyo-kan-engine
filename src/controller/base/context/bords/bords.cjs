@@ -109,7 +109,7 @@ class Bords {
 
 
 
-    global() {
+    getGlobal() {
         return this._global
     }
     /**
@@ -117,7 +117,7 @@ class Bords {
      */
     updateGlobal(data) {
         this._global = data
-        this._isGlobalUpdate = true;
+
 
 
 
@@ -144,6 +144,25 @@ class Bords {
 
     getSubWorkflow() {
         return this._subworkflow;
+    }
+    /**
+     * 
+     * @param {number?} [id] 
+     */
+    fork(id) {
+        const forkTree = this._tree.fork(id)
+
+        /**
+         * @type {typeof this}
+         */
+        // @ts-ignore
+        const forked = new this.constructor(forkTree)
+        forked.updateGlobal(this.getGlobal())
+        forked.setSubWorkFlow(this.getSubWorkflow())
+        return forked
+
+
+
     }
 
 
