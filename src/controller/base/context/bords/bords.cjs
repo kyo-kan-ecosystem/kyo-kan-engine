@@ -78,6 +78,21 @@ class Bords {
 
 
     }
+    /**
+     * 
+     * @param {*} data
+     * @param {true?} [isFullOverWrite=null]  
+     */
+    updateWorkflowBord(data, isFullOverWrite = null) {
+        /**
+         * @type {{workflow:any}}
+         */
+        const item = this._tree.get() || {}
+        item.workflow = data
+        this._tree.update(item, isFullOverWrite)
+
+
+    }
     getBranchDepth() {
         return this._tree.getBranchDepth()
     }
