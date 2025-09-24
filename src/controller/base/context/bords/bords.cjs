@@ -1,4 +1,8 @@
 const { StackTree } = require("../../../../util/stack.cjs");
+const { BordsBranch } = require("./bords_branch.cjs");
+
+
+
 /**
  * @typedef {any} ContextBordFocus
  * 
@@ -14,20 +18,31 @@ class Bords {
      */
     _treeClass
 
+    /**
+     * @type {typeof BordsBranch}
+     */
+    _branchClass
 
+    /**
+     * @type {any}
+     */
+    _global
 
     /**
      * @param {any} initData
-     * @param {typeof StackTree} treeClass
+     * @param {typeof StackTree} [treeClass=StackTree]
+     * @param {typeof BordsBranch} [branchClass=BordsBranch] 
+     * 
      */
-    constructor(initData, treeClass = StackTree) {
+    constructor(initData, treeClass = StackTree, branchClass = BordsBranch) {
         this._treeClass = treeClass
+        this._branchClass = branchClass
         if (initData instanceof treeClass) {
             this._tree = initData
 
         }
         else {
-            this._tree = new this._treeClass(initData)
+            this._tree = new this._treeClass(initData, branchClass)
 
         }
 
@@ -107,18 +122,16 @@ class Bords {
 
 
     }
-    checkIsUpdate() {
-        return { 'global': this._isGlobalUpdate, 'bord': this._isBordUpdate }
-    }
+
     /**
      * 
      * @param {*} data 
      */
 
     update(data) {
-        const baseData = super.get()
-        super.update(data)
-        this._isBordUpdate = true;
+
+        this._tree.update
+
 
     }
     /**

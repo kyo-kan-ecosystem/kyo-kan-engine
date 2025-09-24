@@ -148,7 +148,7 @@ class StackTree {
     /**
      * @type {any}
      */
-    _stackClass
+    _branchClass
 
     /**
      * @type {number}
@@ -173,12 +173,12 @@ class StackTree {
     /**
      * Creates an instance of StackTree.
      * @param {SeriaraizedStackTree | null | false} [initData=null] - Initial data to restore the tree state.
-     * @param {typeof Stack} [stackClass=Stack] - The stack class to be used internally.
+     * @param {typeof Stack} [branchClass=Stack] - The stack class to be used internally.
      */
-    constructor(initData = null, stackClass = Stack) {
+    constructor(initData = null, branchClass = Stack) {
 
         this._countRef = { n: 0 };
-        this._stackClass = stackClass;
+        this._branchClass = branchClass;
         this._branches = {}
         this._linkMap = {}
         this._linkedCounts = {}
@@ -191,7 +191,7 @@ class StackTree {
 
         }
         if (!initData) {
-            this._branches[this.topId] = new this._stackClass();
+            this._branches[this.topId] = new this._branchClass();
             this._countRef.n = 1;
             return
 
@@ -227,7 +227,7 @@ class StackTree {
          * @type {typeof this}
          */
         // @ts-ignore
-        const responseObj = new this.constructor(false, this._stackClass)
+        const responseObj = new this.constructor(false, this._branchClass)
         responseObj.setReference(this._branches, this._countRef, this._linkMap, this._linkedCounts)
         /**
          * @type {number}
@@ -287,7 +287,7 @@ class StackTree {
         this._branchId = id;
         if (!this._branches[id]) {
             // Create an empty stack for the new branch
-            this._branches[id] = new this._stackClass();
+            this._branches[id] = new this._branchClass();
         }
 
 
@@ -328,7 +328,7 @@ class StackTree {
      */
     setSerializedData(datas) {
         for (const [key, value] of Object.entries(datas.branches || [])) {
-            this._branches[key] = new this._stackClass(value);
+            this._branches[key] = new this._branchClass(value);
 
         }
         this._countRef.n = datas.count

@@ -1,6 +1,7 @@
 {
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "void/word4typscript.ts"
     ],
     "compilerOptions": {
         "lib": [
