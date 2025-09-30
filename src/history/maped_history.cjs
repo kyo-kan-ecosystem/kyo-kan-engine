@@ -292,6 +292,14 @@ class MapedHistory {
 
         return { removedLogItem, logExist };
     }
+    isEmpty() {
+        const branchLogItems = this._branchLogs[this._branchId];
+        if (typeof branchLogItems === 'undefined') {
+            throw new Error(`branchId ${this._branchId} is not found`);
+
+        }
+        return this._branchLogs[this._branchId].length == 0
+    }
     /**
      * Returns a serializable, deep copy of the entire history state.
      * This is useful for persisting the history or transferring it.
@@ -386,6 +394,14 @@ class MapedHistory {
         const _branchId = branchId || this._branchId
         return this._linkMap[_branchId]
     }
+    /**
+     * 
+     * get branch id
+     */
+    getBranchId() {
+        return this._branchId
+    }
+
 
 }
 /**

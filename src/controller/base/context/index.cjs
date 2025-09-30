@@ -13,7 +13,7 @@
 const { Bords } = require("./bords/bords.cjs");
 const { Histories } = require("./histories.cjs");
 const { Repositries } = require("./repositries.cjs");
-const { States } = require("./state/states.cjs");
+const { States } = require("./states/states.cjs");
 const { Workflows } = require("./workflows.cjs");
 
 

@@ -69,7 +69,7 @@ class Bords {
 
 
     }
-    getWorkflowBord() {
+    getCurrentWorkflow() {
         /**
          * @type {{workflow:any}}
          */
@@ -83,12 +83,12 @@ class Bords {
      * @param {*} data
      * @param {true?} [isFullOverWrite=null]  
      */
-    updateWorkflowBord(data, isFullOverWrite = null) {
+    updateCurrentWorkflow(data, isFullOverWrite = null) {
         /**
-         * @type {{workflow:any}}
+         * @type {{current:any}}
          */
         const item = this._tree.get() || {}
-        item.workflow = data
+        item.current = data
         this._tree.update(item, isFullOverWrite)
 
 
