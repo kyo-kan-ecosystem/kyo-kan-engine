@@ -131,10 +131,10 @@ class Histories {
             return false
         }
         const targetDepth = this._statesTree.getBranchDepth() - 1
-        if (targetDepth < 0) {
+        if (targetDepth < 0 || this.state.isEmpty() === false) {
             return false
         }
-        while (this.state.getBranchHead().depth > targetDepth) {
+        while (this.state.getBranchHead().depth > targetDepth && this.state.isEmpty() === false) {
             this.state.back()
             this.request.back()
             this.response.back()
