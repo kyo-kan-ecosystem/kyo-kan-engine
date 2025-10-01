@@ -10,16 +10,26 @@ const { ContextBuilder } = require("./context_builder.cjs")
 
 
 
-class Controller extends ContextBuilder {
+class Controller {
     /**
      * 
      * @param {*} request 
-     * @param {*} context 
+     * @param {import("./context/index.cjs").Context} context 
      */
     exec(request, context) {
 
 
     }
+    /**
+     * 
+     * @param {*} funcname 
+     * @param {import()} context 
+     */
+    _execWorkflow(funcname, context) {
+
+    }
+
+
 }
 
 module.exports = { Controller }

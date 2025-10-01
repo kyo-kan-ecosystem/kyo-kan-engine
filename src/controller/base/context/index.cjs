@@ -56,7 +56,7 @@ const DEFUALT_CLASSES = {
  *   bords:any, 
  *   workflows:any,
  *   histories:any, 
- *   functions?:any}>} ContextInit
+ *   functions:any}> | false} ContextInit
  */
 
 
@@ -76,25 +76,39 @@ class Context {
      */
     bords
     /**
+     * @type {Workflows}
+     */
+    workflows
+
+    /**
+     * @type {Histories}
+     */
+    histories
+
+
+    /**
      * @param {ContextInit?} [initData] 
      * @param {ContextClasses} classes 
      */
-    constructor(initData = {}, classes = DEFUALT_CLASSES) {
-        this.innerSession = ''
+    constructor(initData, classes = DEFUALT_CLASSES) {
+        if (initData === false) {
+            return
+        }
+        const _initData = initData || {}
 
         /**
          * @type {{[k in string]:Function}}
          */
-        this.functions = initData.functions || {}
+        this.functions = _initData.functions || {}
 
 
-        this.repositries = new classes.repositries(initData.repositries)
+        this.repositries = new classes.repositries(_initData.repositries)
 
-        this.bords = new classes.bords(initData.bords)
+        this.bords = new classes.bords(_initData.bords)
 
 
-        this.states = new classes.states(initData.states)
-        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, initData.workflows || {})
+        this.states = new classes.states(_initData.states)
+        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, _initData.workflows || {})
         /**
          * @type {Workflows}
          */
@@ -103,7 +117,7 @@ class Context {
         /**
          * @type {Histories}
          */
-        this.histories = new classes.histories(initData.histories)
+        this.histories = new classes.histories({ states: this.states, bords: this.bords }, initData.histories)
 
 
     }

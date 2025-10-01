@@ -1,34 +1,32 @@
+const { Repositries } = require("./repositries.cjs")
 
-/**
- * @typedef {import("./state/states.cjs").States} States
- * @typedef {import("./repositries").Repositries} Repositries
- * 
- * */
-/**
- * @typedef {import("../../protocol.d.ts").StateType} StateType
- * @typedef {import("../../../workflow/plugin/base_class.cjs").Workflow} Workflow
- * @typedef {{states:States,repositries:Repositries}} WorkflowsInit
- * @typedef {import("../../protocol.d.ts").WorkflowState} WorkflowState
- */
+
+
 class Workflows {
     /**
+     * @type {import('./states/states.cjs').States}
+     */
+    states
+
+    /**
+     * @type {import("./repositries.cjs").Repositries}
+     */
+
+    repositries
+    /**
      * 
-     * @param {WorkflowsInit} initData 
+     * @param {{states:import("./states/states.cjs").States, repositries:import("./repositries.cjs").Repositries}} initData 
      */
     constructor(initData) {
-        /**
-         * @type {States}
-         */
-        this.states = initData.states
-        /**
-         * @type {Repositries}
-         */
         this.repositries = initData.repositries
+        this.states = initData.states
+
+
 
     }
     getCurrentWorkflow() {
         /**
-         * @type {StateType}
+         * @type {import("../../protocol").StateType}
          */
         const state = this.states.get()
         /**
@@ -40,19 +38,16 @@ class Workflows {
 
 
     }
-    /**
-     * @returns {Workflow}
-     */
+
     goSub() {
         /**
-         * @type {StateType}
+         * @type {import("../../protocol").StateType}
         */
         const superState = this.states.get(1)
-        /**
-         * @type {WorkflowState}
-         */
-        const subWorkflowState = Object.assign({}, superState.workflow.subwWorkflow)
-        subWorkflowState.id = this.repositries.configures.workflows.getId(subWorkflowState.name, superState.executor.executorId)
+        const id = this.repositries.configures.workflows.getId(superState.workflow.subwWorkflow.name, superState.executor.executorId)
+
+        const subWorkflowState = Object.assign({ id }, superState.workflow.subwWorkflow)
+
 
 
         /**
