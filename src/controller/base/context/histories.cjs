@@ -135,21 +135,10 @@ class Histories {
             return false
         }
         while (this.state.getBranchHead().depth > targetDepth && this.state.isEmpty() === false) {
-            this.state.back()
-            this.request.back()
-            this.response.back()
-            this.bords.global.back()
-            this.bords.currentWorkflow.back()
-            this.bords.subWorkflow.back()
-
+            this._backOneStep()
 
         }
-        this._statesTree.pop()
-        this._bordsTree.pop()
-        this._bordsTree.updateGlobal(this.bords.global.getBranchHead().log)
-        this._bordsTree.updateCurrentWorkflow(this.bords.currentWorkflow.getBranchHead().log, true)
-        this._bordsTree.setSubWorkFlow(this.bords.subWorkflow.getBranchHead().log)
-        this._statesTree.update(this.state.getBranchHead().log)
+        this._applyHistoryToTrees
         /**
          * @type {{log:{mode:import('../../protocol').executeMode}, depth:number}}
          */
@@ -161,75 +150,84 @@ class Histories {
         return this.back()
 
     }
+
+
+    _backOneStep() {
+        this.state.back();
+        this.request.back();
+        this.response.back();
+        this.bords.global.back();
+        this.bords.currentWorkflow.back();
+        this.bords.subWorkflow.back();
+    }
+
+    _applyHistoryToTrees() {
+        const headState = this.state.getBranchHead();
+        if (headState.depth < this._statesTree.getBranchDepth()) {
+            this._statesTree.pop();
+        }
+        this._statesTree.update(headState.log);
+        const headGlobal = this.bords.global.getBranchHead()
+        const headCurrentWorkflow = this.bords.currentWorkflow.getBranchHead()
+        const headSubWorkflow = this.bords.subWorkflow.getBranchHead()
+        if (headCurrentWorkflow.depth < this._bordsTree.getBranchDepth()) {
+            this._bordsTree.pop()
+        }
+        this._bordsTree.updateGlobal(headGlobal.log)
+        this._bordsTree.updateCurrentWorkflow(headCurrentWorkflow.log, true)
+        this._bordsTree.setSubWorkFlow(headSubWorkflow.log)
+    }
+
     back() {
         if (this.state.isEmpty()) {
-            return false
+            return false;
         }
 
         while (this.state.isEmpty() === false) {
-            this.state.back()
-            this.request.back()
-            this.response.back()
-            this.bords.global.back()
-            this.bords.currentWorkflow.back()
-            this.bords.subWorkflow.back()
+            this._backOneStep();
+            this._applyHistoryToTrees();
 
-            /**
-             * @type {{log:{mode:import('../../protocol').executeMode}, depth:number}}
-             */
-            const headState = this.state.getBranchHead()
-            if (headState.depth < this._statesTree.getBranchDepth()) {
-                this._statesTree.pop()
-
-            }
-            this._statesTree.update(headState.log)
-            const headGlobal = this.bords.global.getBranchHead()
-            const headCurrentWorkflow = this.bords.currentWorkflow.getBranchHead()
-            const headSubWorkflow = this.bords.subWorkflow.getBranchHead()
-            if (headCurrentWorkflow.depth < this._bordsTree.getBranchDepth()) {
-                this._bordsTree.pop()
-            }
-            this._bordsTree.updateGlobal(headGlobal.log)
-            this._bordsTree.updateCurrentWorkflow(headCurrentWorkflow.log, true)
-            this._bordsTree.setSubWorkFlow(headSubWorkflow.log)
+            const headState = this.state.getBranchHead();
             if (headState.log.mode === 'wait') {
-                return { request: this.request.getBranchHead().log, response: this.response.getBranchHead().log }
+                return { request: this.request.getBranchHead().log, response: this.response.getBranchHead().log };
             }
-
-
-
-
-
-
         }
-        return false
-
+        return false;
     }
+
+
     /**
      * 
      * @param {import('./protocol').StackTrees} stackTrees 
-     * @param {*} id 
+     * @param {{state?:any, request?:any, response?:any, bords?:{global?:any, currentWorkflow?:any,subWorkflow?:any}}?} ids 
      */
-    fork(stackTrees, id) {
+    fork(stackTrees, ids) {
+
+        const _ids = ids || {}
+
         /**
          * @type {Histories}
          */
         // @ts-ignore
         const newHistories = new this.constructor(stackTrees, false)
         /**
-         * @type {{state:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
+         * @type {{state:any, request:any, response:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
          */
         const histories = {
-            state: this.state.fork(id),
+            state: this.state.fork(_ids.state),
+            request: this.request.fork(_ids.request),
+            response: this.response.fork(_ids.response),
             bords: {
-                global: this.bords.global.fork(id),
-                currentWorkflow: this.bords.currentWorkflow.fork(id),
-                subWorkflow: this.bords.subWorkflow.fork(id)
+                global: this.bords.global.fork(_ids.bords?.global),
+                currentWorkflow: this.bords.currentWorkflow.fork(_ids.bords?.currentWorkflow),
+                subWorkflow: this.bords.subWorkflow.fork(_ids.bords?.subWorkflow)
             }
         }
 
         const historyIds = {
             state: this.state.getBranchId(),
+            request: this.request.getBranchId(),
+            response: this.response.getBranchId(),
             bords: {
                 global: this.bords.global.getBranchId(),
                 currentWorkflow: this.bords.currentWorkflow.getBranchId(),
@@ -238,15 +236,17 @@ class Histories {
         }
 
         newHistories.setHistories(histories)
-        return { newHistories, ids: historyIds }
+        return { histories: newHistories, historyIds }
 
     }
     /**
      * 
-     * @param {{state:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} histories 
+     * @param {{state:any, request:any, response:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} histories 
      */
     setHistories(histories) {
         this.state = histories.state
+        this.request = histories.request
+        this.response = histories.response
         this.bords.global = histories.bords.global
         this.bords.currentWorkflow = histories.bords.currentWorkflow
         this.bords.subWorkflow = histories.bords.subWorkflow
