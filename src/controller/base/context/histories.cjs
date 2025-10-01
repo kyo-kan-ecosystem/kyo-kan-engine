@@ -126,7 +126,7 @@ class Histories {
      * 
      * @returns {{request:any, response:any} | false}
      */
-    rewindBack() {
+    rewindWorkflow() {
         if (this.state.isEmpty()) {
             return false
         }

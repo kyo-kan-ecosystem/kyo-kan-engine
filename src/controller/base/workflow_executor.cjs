@@ -109,7 +109,7 @@ async function executeWorkflow(request, firstFunc, context) {
                 funcsArray.push(backExecuteFunc);
                 break;
 
-            case 'rewind':
+            case 'rewindWorokflow':
                 _request = context.reset();
                 const resetWorkflow = context.workflows.getCurrentWorkflow();
                 const resetExecuteFunc = resetWorkflow.resetBack(context);
