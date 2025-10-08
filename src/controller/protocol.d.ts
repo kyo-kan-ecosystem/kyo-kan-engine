@@ -23,7 +23,7 @@ export type BordState = {
 
 
 export type StateType = {
-    bord?: BordState,
+    subBordInit?: BordState,
     workflow?: WorkflowState,
     executor?: ExecutorState
 }

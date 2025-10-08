@@ -1,28 +1,30 @@
-const { StackTree } = require("../../../../util/stack.cjs");
+const { BordsTree } = require("./bords_tree.cjs")
 
 const { BordsBranch } = require("./bords_branch.cjs");
 
-
-
 /**
- * @typedef {any} ContextBordFocus
- * 
+ * @typedef {{tree:typeof BordsTree, branch:typeof BordsBranch}} TreeClasses
  */
+/**
+ * @type {TreeClasses}
+ */
+const DEFUALT_CLASSES = {
+    tree: BordsTree,
+    branch: BordsBranch
+}
+
 class Bords {
     /**
-     * @type {StackTree}
+     * @type {BordsTree}
      */
     _tree
-
     /**
-     * @type {typeof StackTree}
+     * @type {TreeClasses}
      */
-    _treeClass
+    _treeClasses
 
-    /**
-     * @type {typeof BordsBranch}
-     */
-    _branchClass
+
+
 
     /**
      * @type {any}
@@ -30,20 +32,26 @@ class Bords {
     _global
 
     /**
+     * @type {{state:import("../states/states.cjs").States}}
+     */
+    _mutableTree
+    /**
      * @param {any} initData
-     * @param {typeof StackTree} [treeClass=StackTree]
-     * @param {typeof BordsBranch} [branchClass=BordsBranch] 
+     * @param {{state:import("../states/states.cjs").States}} mutableTree
+     * @param {TreeClasses?} treeClasses 
+     
      * 
      */
-    constructor(initData, treeClass = StackTree, branchClass = BordsBranch) {
-        this._treeClass = treeClass
-        this._branchClass = branchClass
-        if (initData instanceof treeClass) {
+    constructor(initData, mutableTree, treeClasses = null) {
+        this._treeClasses = treeClasses || DEFUALT_CLASSES
+
+        this._mutableTree = mutableTree
+        if (initData instanceof this._treeClasses.tree) {
             this._tree = initData
 
         }
         else {
-            this._tree = new this._treeClass(initData, branchClass)
+            this._tree = new this._treeClasses.tree(initData, this._treeClasses.branch)
 
         }
 
@@ -65,7 +73,15 @@ class Bords {
      * @param {*} workflow
      */
     push(workflow) {
-        const item = { workflow }
+        let _workflow = workflow
+        if (typeof workflow === 'undefined' || workflow == null) {
+            /**
+             * @type {import("../../../protocol").StateType}
+             */
+            const superState = this._mutableTree.state.get(1) || {}
+            _workflow = superState.subBordInit
+        }
+        const item = { workflow: _workflow }
         return this._tree.push(item)
 
 
@@ -165,17 +181,19 @@ class Bords {
         return this._subworkflow;
     }
     /**
-     * 
+     * @param {{state:any}} mutableTreeIds
      * @param {number?} [id] 
      */
-    fork(id) {
+    fork(mutableTreeIds, id) {
         const forkTree = this._tree.fork(id)
+        const mutableTree = { state: this._mutableTree.state.fork(mutableTreeIds.state) }
+
 
         /**
          * @type {typeof this}
          */
         // @ts-ignore
-        const forked = new this.constructor(forkTree)
+        const forked = new this.constructor(forkTree, mutableTree, this._treeClass, this._branchClass)
         forked.updateGlobal(this.getGlobal())
         forked.setSubWorkFlow(this.getSubWorkflow())
         return forked

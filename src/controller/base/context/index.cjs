@@ -144,12 +144,9 @@ class Context {
 
 
         this.states.push({})
-        /**
-         * @type {import("../../protocol").StateType}
-         */
-        const superState = this.states.get(1) || {}
 
-        this.bords.push(superState.bord)
+
+        this.bords.push()
 
 
         this.workflows.goSub()
