@@ -143,7 +143,7 @@ class Context {
     goSub() {
 
 
-        this.states.push({})
+        this.states.push()
 
 
         this.bords.push()
