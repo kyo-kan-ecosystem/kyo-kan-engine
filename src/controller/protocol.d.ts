@@ -8,11 +8,11 @@ export type ExecutorState = {
 }
 export type WorkflowState = {
     id: any,
-    subwWorkflow: {
+    subwWorkflow?: {
         name: any
-        data: any
+        data?: any
     },
-    data: any
+    data?: any
 
 
 
@@ -23,9 +23,9 @@ export type BordState = {
 
 
 export type StateType = {
-    bordstat
-    workflow: WorkflowState,
-    executor: ExecutorState
+    bord?: BordState,
+    workflow?: WorkflowState,
+    executor?: ExecutorState
 }
 
 export type PartialSateType = Partial<StateType>
@@ -37,7 +37,7 @@ export type executeMode = 'wait' | 'go' | 'goSub' | 'end' | 'back' | 'rewindWoro
 export type State = {
     mode: executeMode
 
-}
+} | StateType
 
 export type ExecutionResult = {
     state: State;

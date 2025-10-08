@@ -142,12 +142,17 @@ class Context {
     }
     goSub() {
 
-        this.bords.push({})
+
         this.states.push({})
-        this.histories.
+        /**
+         * @type {import("../../protocol").StateType}
+         */
+        const superState = this.states.get(1) || {}
+
+        this.bords.push(superState.bord)
 
 
-            this.workflows.goSub()
+        this.workflows.goSub()
 
     }
     endSub() {

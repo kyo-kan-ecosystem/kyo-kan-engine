@@ -74,15 +74,17 @@ class Histories {
      */
     _bordsTree
 
+
     /**
      * 
-     * @param {import('./protocol').StackTrees} stackTrees 
+     * @param {import('./protocol').StackTrees} stackTrees     * 
      * @param {HistoryInit | false | null} historyInit
      * @param {HistoryClasses?} historyClasses  
      */
-    constructor(stackTrees, historyInit = null, historyClasses = null) {
+    constructor(stackTrees, mutableTrees, historyInit = null, historyClasses = null) {
         this._statesTree = stackTrees.states;
         this._bordsTree = stackTrees.bords;
+
         if (historyInit === false) {
             return
 
@@ -111,7 +113,7 @@ class Histories {
      * @param {*} request 
      * @param {*} response 
      */
-    record(request, response) {
+    forword(request, response) {
         this.request.forward(request, this._statesTree.getBranchDepth())
         this.response.forward(response, this._statesTree.getBranchDepth())
         this.state.forward(this._statesTree.getStack().get(), this._statesTree.getBranchDepth())
@@ -164,18 +166,32 @@ class Histories {
     _applyHistoryToTrees() {
         const headState = this.state.getBranchHead();
         if (headState.depth < this._statesTree.getBranchDepth()) {
-            this._statesTree.pop();
+            this._statesTree.pop()
         }
-        this._statesTree.update(headState.log);
+
+        if (headState.depth > this._statesTree.getBranchDepth()) {
+            this._statesTree.push(headState.log)
+        }
+        else {
+            this._statesTree.update(headState.log)
+        }
+
         const headGlobal = this.bords.global.getBranchHead()
         const headCurrentWorkflow = this.bords.currentWorkflow.getBranchHead()
         const headSubWorkflow = this.bords.subWorkflow.getBranchHead()
         if (headCurrentWorkflow.depth < this._bordsTree.getBranchDepth()) {
             this._bordsTree.pop()
         }
-        this._bordsTree.updateGlobal(headGlobal.log)
-        this._bordsTree.updateCurrentWorkflow(headCurrentWorkflow.log, true)
-        this._bordsTree.setSubWorkFlow(headSubWorkflow.log)
+        if (headCurrentWorkflow.depth > this._bordsTree.getBranchDepth()) {
+            this._bordsTree.push(headCurrentWorkflow.log)
+        }
+        else {
+            this._bordsTree.updateGlobal(headGlobal.log)
+            this._bordsTree.updateCurrentWorkflow(headCurrentWorkflow.log, true)
+            this._bordsTree.setSubWorkFlow(headSubWorkflow.log)
+        }
+
+
     }
 
     back() {
@@ -224,19 +240,9 @@ class Histories {
             }
         }
 
-        const historyIds = {
-            state: this.state.getBranchId(),
-            request: this.request.getBranchId(),
-            response: this.response.getBranchId(),
-            bords: {
-                global: this.bords.global.getBranchId(),
-                currentWorkflow: this.bords.currentWorkflow.getBranchId(),
-                subWorkflow: this.bords.subWorkflow.getBranchId()
-            }
-        }
 
         newHistories.setHistories(histories)
-        return { histories: newHistories, historyIds }
+        return newHistories
 
     }
     /**
@@ -251,6 +257,19 @@ class Histories {
         this.bords.currentWorkflow = histories.bords.currentWorkflow
         this.bords.subWorkflow = histories.bords.subWorkflow
 
+    }
+    getBranchId() {
+        const historyIds = {
+            state: this.state.getBranchId(),
+            request: this.request.getBranchId(),
+            response: this.response.getBranchId(),
+            bords: {
+                global: this.bords.global.getBranchId(),
+                currentWorkflow: this.bords.currentWorkflow.getBranchId(),
+                subWorkflow: this.bords.subWorkflow.getBranchId()
+            }
+        }
+        return historyIds
     }
 
 }

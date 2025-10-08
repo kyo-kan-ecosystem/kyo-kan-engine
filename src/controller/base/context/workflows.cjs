@@ -46,17 +46,20 @@ class Workflows {
         const superState = this.states.get(1)
         const id = this.repositries.configures.workflows.getId(superState.workflow.subwWorkflow.name, superState.executor.executorId)
 
-        const subWorkflowState = Object.assign({ id }, superState.workflow.subwWorkflow)
+        const currentWorkflowState = Object.assign({ id }, superState.workflow.subwWorkflow)
 
 
 
         /**
-         * @type {Partial<StateType>}
+         * @type {import("../../protocol").StateType}
          */
-        const updateState = { workflow: subWorkflowState }
+        const updateState = { workflow: currentWorkflowState }
         this.states.update(updateState)
 
 
+
+    }
+    endSub() {
 
     }
 
