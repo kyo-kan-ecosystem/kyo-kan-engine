@@ -73,19 +73,21 @@ class Bords {
      * @param {*} workflow
      */
     push(workflow) {
-        let _workflow = workflow
-        if (typeof workflow === 'undefined' || workflow == null) {
-            /**
-             * @type {import("../../../protocol").StateType}
-             */
-            const superState = this._mutableTree.state.get(1) || {}
-            _workflow = superState.subBordInit
-        }
-        const item = { workflow: _workflow }
+        const item = { workflow }
         return this._tree.push(item)
 
 
     }
+    goSub() {
+        /**
+         * @type {import("../../../protocol").StateType}
+        */
+        const superState = this._mutableTree.state.get(1) || {}
+        const workflow = superState.subBordInit || {}
+        this.push(workflow)
+
+    }
+
 
 
     getCurrentWorkflow() {
