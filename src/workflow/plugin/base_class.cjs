@@ -1,63 +1,30 @@
-const { Context } = require("../../controller/protocol")
+
+
 
 
 
 class BaseWorkflow {
     /**
-     * @param {*} calleId
-     * @param {*} configure  
-     * @returns {{executors?:any, params:any}}  
-     */
-    getConfigureParams(configure, calleId) {
-        return { params: configure }
-    }
-    /**
-     * @param {*} configure 
-     * @param {*} executor - executor configure id 
-     */
-    addExecutor(configure, executor) {
-
-    }
-    /**
-     * 
-     * @param {*} context 
-     */
-    getExecuteFunction(context) { }
-    /**
-     * 
-     * @param {*} context 
-     */
-    returnFromSubworkflow(context) { }
-    /**
-     * 
-     * @param {*} context 
-     */
-    back(context) { }
-    /**
-     * 
-     * @param {*} context 
-     */
-    rewind(context) { }
-    /**
-     * 
-     * @param {*} context 
-     */
-    rewindReturn(context) { }
-
-    /**
-     * 
-     * @param {*} context 
-     */
-    enterWorkflow(context) { }
-    /**
-     * 
+     * @abstract
      * @param {import("../../controller/protocol").Context} context 
-     * @param {*} plugin 
-     * @param {*} calleFunction 
+     * @param {*} request
+     * @param {*} configure
+     * @returns {{state:any, response:any[]}} 
      */
-    _callHook(context, plugin, calleFunction) {
-
+    go(context, request, configure) {
+        return { state: null, response: [] }
     }
+
+    /**
+     * @abstract
+     * @param {import("../../controller/protocol").Context} context 
+     * @param {*} request
+     * @returns {{state:any, response:any[]}}
+    */
+    returnFromSubworkflow(context, request) {
+        return { state: null, response: [] }
+    }
+
 
 }
 

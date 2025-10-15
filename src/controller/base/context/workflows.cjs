@@ -1,3 +1,4 @@
+
 const { Repositries } = require("./repositries.cjs")
 
 
@@ -34,10 +35,26 @@ class Workflows {
          */
 
         const configure = this.repositries.configures.workflows.get(state.workflow.id)
-        return this.repositries.plugins.workflows.get(configure.plugin)
+        /**
+         * @type {import("../../../workflow/protocol").Plugin}
+         */
+        const plugin = this.repositries.plugins.workflows.get(configure.plugin)
+        return { plugin, configure }
 
 
     }
+    /**
+     * 
+     * @param {*} context 
+     * @param {*} request 
+     */
+    go(context, request) {
+
+        const { plugin, configure } = this.getCurrentWorkflow()
+        return plugin.go(context, request, configure)
+
+    }
+
 
     goSub() {
         /**
@@ -59,8 +76,15 @@ class Workflows {
 
 
     }
-    endSub() {
-
+    /**
+     * 
+     * @param {*} context
+     * @param {*} request 
+     * @returns {{state:any, response:any[]}} 
+     */
+    returnFromSubworkflow(context, request) {
+        const { plugin, configure } = this.getCurrentWorkflow()
+        return plugin.go(context, request, configure)
     }
 
 

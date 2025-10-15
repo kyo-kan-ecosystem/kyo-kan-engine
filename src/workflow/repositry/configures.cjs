@@ -21,6 +21,10 @@ class WorkflowConfiguresRepositry extends Repositry {
 
     }
 
+    /**
+     * @param {any} name
+     * @param {any} calleId
+     */
     getId(name, calleId) {
         return create_id(calleId, name)
     }
