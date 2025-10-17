@@ -11,8 +11,8 @@ class Repositry {
      * @param {*} data 
      */
     set(id, data) {
-        if (typeof id === 'undefined') {
-            return this._datas
+        if (typeof id === 'undefined' || id === null) {
+            throw new Error(`Invalid id ${id}`)
 
 
         }
