@@ -84,7 +84,7 @@ class Workflows {
      */
     returnFromSubworkflow(context, request) {
         const { plugin, configure } = this.getCurrentWorkflow()
-        return plugin.go(context, request, configure)
+        return plugin.returnFromSubworkflow(context, request, configure)
     }
 
 

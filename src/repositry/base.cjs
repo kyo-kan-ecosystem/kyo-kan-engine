@@ -17,12 +17,12 @@ class Repositry {
 
         }
         this._datas[id] = data
-    }/**
+    }
+    /**
      * 
      * @param {any} id 
-     * @param {*} data 
+     * 
      */
-
     get(id) {
         return this._datas[id]
     }

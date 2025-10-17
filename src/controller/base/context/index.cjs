@@ -104,6 +104,7 @@ class Context {
 
         this.repositries = new classes.repositries(_initData.repositries)
 
+        // @ts-ignore
         this.bords = new classes.bords(_initData.bords)
 
 
@@ -152,7 +153,8 @@ class Context {
         this.workflows.goSub()
 
     }
-    endSub() {
+    returnFromSubworkflow(request) {
+
         this.bords.pop()
         this.states.pop()
 

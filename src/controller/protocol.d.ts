@@ -1,3 +1,4 @@
+import { WorkflowState } from "../workflow/protocol";
 
 
 export { Context } from "./base/context/index.cjs";
@@ -5,17 +6,6 @@ export { Context } from "./base/context/index.cjs";
 
 export type ExecutorState = {
     executorId: any
-}
-export type WorkflowState = {
-    id: any,
-    subwWorkflow?: {
-        name: any
-        data?: any
-    },
-    data?: any
-
-
-
 }
 export type BordState = {
     init: any
@@ -45,4 +35,4 @@ export type ExecutionResult = {
 
 
 }
-export Sub
+
