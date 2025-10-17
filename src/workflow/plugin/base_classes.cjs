@@ -3,7 +3,7 @@
 
 
 
-class BaseWorkflow {
+class AbstarctWorkflow {
     /**
      * @abstract
      * @param {import("../../controller/protocol").Context} context 
@@ -28,4 +28,4 @@ class BaseWorkflow {
 
 }
 
-module.exports = { BaseWorkflow }
+module.exports = { AbstractWorkflow: AbstarctWorkflow }

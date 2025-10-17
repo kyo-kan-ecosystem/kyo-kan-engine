@@ -1,5 +1,5 @@
 
-export type { BaseWorkflow as Plugin } from "./plugin/base_class.cjs"
+export type { AbstractWorkflow as Plugin } from "./plugin/base_classes.cjs"
 
 export type WorkflowPluginConfigure<ParamsType = any> = {
     params: ParamsType,
