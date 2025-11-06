@@ -3,7 +3,7 @@
 
 
 
-class AbstarctWorkflow {
+class AbstractWorkflow {
     /**
      * @abstract
      * @param {import("../../controller/protocol").Context} context 
@@ -45,11 +45,28 @@ class AbstarctWorkflow {
         return ''
 
     }
+    /**
+     * @abstract
+     * @param {any} configure
+     * @returns {import("../protocol").WorkflowConfigureParseResult}
+     */
+    getConfigureParams(configure) {
+        return {}
+    }
+    /**
+     * @abstract
+     * @param {*} configure 
+     * @param {*} executorId 
+     */
+    addExecutor(configure, executorId) {
+
+    }
+
 
 
 }
 
-class ProtocolWorkflow extends AbstarctWorkflow {
+class ProtocolWorkflow extends AbstractWorkflow {
     /**
      *
      * @param {import("../../controller/protocol").Context} context
@@ -72,4 +89,4 @@ class ProtocolWorkflow extends AbstarctWorkflow {
 
 
 
-module.exports = { AbstarctWorkflow }
+module.exports = { AbstractWorkflow, ProtocolWorkflow }

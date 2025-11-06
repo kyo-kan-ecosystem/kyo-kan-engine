@@ -64,8 +64,9 @@ class Registrater extends ContextBuilder {
          * @type {WorkFlowPluginType}
          */
         const rootWorkFlowPlugin = this.context.repositries.plugins.workflows.get(engineConfigure.root.workflow.plugin)
+        const rootWorkFlowPluginId = engineConfigure.root.workflow.id
         const rootConfigure = rootWorkFlowPlugin.getConfigureParams(configure)
-        this.context.repositries.configures.workflows.set(engineConfigure.root.workflow.id, rootConfigure.params)
+        this.context.repositries.configures.workflows.set(rootWorkFlowPluginId, rootConfigure)
         /**
          * @type {{workflow:string, executorConfig:import("../../../protocol/plugin.protocol").PluginConfigure}[]}
          */

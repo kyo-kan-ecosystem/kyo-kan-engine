@@ -12,12 +12,17 @@ export type WorkflowState = {
 
 };
 
-export type { AbstarctWorkflow as Plugin } from "./plugin/base_classes.cjs"
+export type { AbstractWorkflow as Plugin } from "./plugin/base_classes.cjs"
+export type WorkflowConfigureParseResult<ParamsType = any> = {
+    params?: ParamsType,
+    executor?: any
+}
 
-export type WorkflowPluginConfigure<ParamsType = any> = {
-    params: ParamsType,
+export type WorkflowPluginConfigure<ParamsType = any> = WorkflowConfigureParseResult<ParamsType> & {
     plugin: any
 }
+
+
 
 
 export type SubworkflowDefinition {
