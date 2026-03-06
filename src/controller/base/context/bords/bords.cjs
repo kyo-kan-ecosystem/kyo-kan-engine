@@ -1,90 +1,33 @@
-const { BordsTree } = require("./bords_tree.cjs")
-
-const { BordsBranch } = require("./bords_branch.cjs");
-
-/**
- * @typedef {{tree:typeof BordsTree, branch:typeof BordsBranch}} TreeClasses
- */
-/**
- * @type {TreeClasses}
- */
-const DEFUALT_CLASSES = {
-    tree: BordsTree,
-    branch: BordsBranch
-}
-
-class Bords {
-    /**
-     * @type {BordsTree}
-     */
-    _tree
-    /**
-     * @type {TreeClasses}
-     */
-    _treeClasses
+const { StackTree } = require("../../../../util/stack.cjs")
+const { BordsBranch } = require("./bords_branch.cjs")
 
 
 
+
+
+
+class Bords extends StackTree {
 
     /**
      * @type {any}
      */
     _global
 
-    /**
-     * @type {{state:import("../states/states.cjs").States}}
-     */
-    _mutableTree
-    /**
-     * @param {any} initData
-     * @param {{state:import("../states/states.cjs").States}} mutableTree
-     * @param {TreeClasses?} treeClasses 
-     
-     * 
-     */
-    constructor(initData, mutableTree, treeClasses = null) {
-        this._treeClasses = treeClasses || DEFUALT_CLASSES
-
-        this._mutableTree = mutableTree
-        if (initData instanceof this._treeClasses.tree) {
-            this._tree = initData
-
-        }
-        else {
-            this._tree = new this._treeClasses.tree(initData, this._treeClasses.branch)
-
-        }
-
-
-
+    constructor(initData = null, branchClass = BordsBranch) {
+        super(initData, branchClass)
+        this._global = {}
     }
-    /**
-     * 
-     * @param {*} id 
-     */
-    setBranchId(id) {
-        return this._tree.setBranchId(id)
-    }
-    getBranchId() {
-        return this._tree.getBranchId()
-    }
+
+
+
     /**
      * 
      * @param {*} workflow
      */
     push(workflow) {
         const item = { workflow }
-        return this._tree.push(item)
+        return super.push(item)
 
-
-    }
-    goSub() {
-        /**
-         * @type {import("../../../protocol").StateType}
-        */
-        const superState = this._mutableTree.state.get(1) || {}
-        const workflow = superState.subBordInit || {}
-        this.push(workflow)
 
     }
 
@@ -94,7 +37,7 @@ class Bords {
         /**
          * @type {{workflow:any}}
          */
-        const item = this._tree.get()
+        const item = this.get()
         return item.workflow
 
 
@@ -104,37 +47,35 @@ class Bords {
      * @param {*} data
      * @param {true?} [isFullOverWrite=null]  
      */
-    updateCurrentWorkflow(data, isFullOverWrite = null) {
+    updateCurrentWorkflowBord(data, isFullOverWrite = null) {
         /**
          * @type {{current:any}}
          */
-        const item = this._tree.get() || {}
+        const item = this.get() || {}
         item.current = data
-        this._tree.update(item, isFullOverWrite)
+        this.update(item, isFullOverWrite)
 
 
     }
-    getBranchDepth() {
-        return this._tree.getBranchDepth()
-    }
+
     getSubworkflowBord() {
         /**
          * @type {{subworkflow?:any}}
          */
-        const item = this._tree.get()
+        const item = this.get()
         return item.subworkflow
     }
     pop() {
         /**
          * @type {{workflow:any}}
          */
-        const item = this._tree.pop()
+        const item = super.pop()
         /**
          * @type {{subworkflow?:any}}
          */
-        const nowItem = this._tree.get()
+        const nowItem = this.get()
         nowItem.subworkflow = item
-        this._tree.update(nowItem)
+        this.update(nowItem, true)
         return item
 
 
@@ -159,50 +100,19 @@ class Bords {
 
     }
 
+
     /**
      * 
-     * @param {*} data
-     * @param {*} [isFullOverWrite]  
+     * @param {*} subworkflow 
      */
-
-    update(data, isFullOverWrite) {
-
-        this._tree.update(data, isFullOverWrite)
-
-
-    }
-    /**
-     * 
-     * @param {*} data 
-     */
-    setSubWorkFlow(data) {
-        this._subworkflow = data;
+    setSubWorkFlow(subworkflow) {
+        this.update({ subworkflow })
     }
 
     getSubWorkflow() {
-        return this._subworkflow;
+        return this.get()?.subworkflow;
     }
-    /**
-     * @param {{state:any}} mutableTreeIds
-     * @param {number?} [id] 
-     */
-    fork(mutableTreeIds, id) {
-        const forkTree = this._tree.fork(id)
-        const mutableTree = { state: this._mutableTree.state.fork(mutableTreeIds.state) }
 
-
-        /**
-         * @type {typeof this}
-         */
-        // @ts-ignore
-        const forked = new this.constructor(forkTree, mutableTree, this._treeClass, this._branchClass)
-        forked.updateGlobal(this.getGlobal())
-        forked.setSubWorkFlow(this.getSubWorkflow())
-        return forked
-
-
-
-    }
 
 
 

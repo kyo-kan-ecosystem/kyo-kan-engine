@@ -164,9 +164,10 @@ class Context {
 
 
     }
-    split(splitCount) {
-        const bords_array = this.bords.splitTree(splitCount)
-        const states_array = this.states.splitTree(splitCount)
+
+    fork(id) {
+        const bords_array = this.bords.fork(splitCount)
+        const states_array = this.states.fork(splitCount)
         let index = 0;
         const results = [];
         while (index < splitCount) {

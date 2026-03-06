@@ -81,7 +81,7 @@ class Histories {
      * @param {HistoryInit | false | null} historyInit
      * @param {HistoryClasses?} historyClasses  
      */
-    constructor(stackTrees, mutableTrees, historyInit = null, historyClasses = null) {
+    constructor(stackTrees, historyInit = null, historyClasses = null) {
         this._statesTree = stackTrees.states;
         this._bordsTree = stackTrees.bords;
 
@@ -187,7 +187,7 @@ class Histories {
         }
         else {
             this._bordsTree.updateGlobal(headGlobal.log)
-            this._bordsTree.updateCurrentWorkflow(headCurrentWorkflow.log, true)
+            this._bordsTree.updateCurrentWorkflowBord(headCurrentWorkflow.log, true)
             this._bordsTree.setSubWorkFlow(headSubWorkflow.log)
         }
 

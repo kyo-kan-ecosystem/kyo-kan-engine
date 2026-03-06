@@ -19,7 +19,7 @@ class Registrater extends ContextBuilder {
      * 
      * @param {ContextInit?} contextInit 
      *
-     * @param {typeof import("./context/index.cjs").Context?} contextClass   ts-ignore
+     * @param {typeof import("./context/index.cjs").Context?} contextClass  
      */
     constructor(contextInit, contextClass) {
         super(contextClass)
@@ -71,7 +71,7 @@ class Registrater extends ContextBuilder {
          * @type {{workflow:string, executorConfig:import("../../../protocol/plugin.protocol").PluginConfigure}[]}
          */
         const executorQueue = []
-        for (const executorConfig of rootConfigure.executors || []) {
+        for (const executorConfig of rootConfigure.executor || []) {
 
             const item = { workflow: engineConfigure.root.workflow.id, executorConfig }
             executorQueue.push(item)
@@ -107,7 +107,7 @@ class Registrater extends ContextBuilder {
                 const subwWorkflowId = this.context.repositries.configures.workflows.add(executorId, name, subWorkflowConfigure.params)
 
 
-                for (const executor of subWorkflowConfigure.executors || []) {
+                for (const executor of subWorkflowConfigure.executor || []) {
                     const item = { workflow: subwWorkflowId, executorConfig: executor }
                     executorQueue.push(item)
                 }
