@@ -37,7 +37,7 @@ const DEFAULT_HISTORY_CLASSES = {
  * @typedef {import('./states/states.cjs').States} States 
  * @typedef {import("./bords/bords.cjs").Bords} Bords 
  */
-// @ts-ignore
+
 class Histories {
 
 
@@ -213,19 +213,22 @@ class Histories {
 
 
     /**
-     * 
-     * @param {import('./protocol').StackTrees} stackTrees 
      * @param {{state?:any, request?:any, response?:any, bords?:{global?:any, currentWorkflow?:any,subWorkflow?:any}}?} ids 
+     * @param {import('./protocol').StackTrees?} stackTrees 
+     * 
      */
-    fork(stackTrees, ids) {
+    fork(ids = null, stackTrees = null) {
 
         const _ids = ids || {}
-
+        /**
+         * @type {import('./protocol').StackTrees}
+         */
+        const _stackTrees = stackTrees || { bords: this._bordsTree, states: this._statesTree }
         /**
          * @type {Histories}
          */
         // @ts-ignore
-        const newHistories = new this.constructor(stackTrees, false)
+        const newHistories = new this.constructor(_stackTrees, false)
         /**
          * @type {{state:any, request:any, response:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
          */

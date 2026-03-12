@@ -1,3 +1,4 @@
+const deepmerge = require("deepmerge")
 const { StackTree } = require("../../../../util/stack.cjs")
 const { BordsBranch } = require("./bords_branch.cjs")
 
@@ -90,10 +91,19 @@ class Bords extends StackTree {
         return this._global
     }
     /**
-     * @param {any} data 
+     * @param {any} data
+     * @param {true?} [isFullOverWrite=null] 
      */
-    updateGlobal(data) {
-        this._global = data
+    updateGlobal(data, isFullOverWrite = null) {
+        if (isFullOverWrite === true) {
+            this._global = data
+
+        }
+        else {
+            deepmerge(this._global, data)
+        }
+
+
 
 
 
