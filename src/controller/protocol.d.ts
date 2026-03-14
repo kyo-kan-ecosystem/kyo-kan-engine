@@ -1,3 +1,4 @@
+import { exec } from "child_process";
 import { WorkflowState } from "../workflow/protocol";
 
 
@@ -24,10 +25,10 @@ export type PartialSateType = Partial<StateType>
 
 
 export type executeMode = 'wait' | 'go' | 'goSub' | 'end' | 'back' | 'rewindWorokflow' | 'rewindReturn';
+
 export type State = {
     mode: executeMode
-
-} | StateType
+} & StateType
 
 export type ExecutionResult = {
     state: State;

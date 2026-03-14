@@ -59,9 +59,19 @@ class AbstractWorkflow {
      * @param {*} configure 
      * @param {*} executorId 
      */
-    addExecutor(configure, executorId) {
+    addExecutor(configure, executorId, executorConfig) {
 
     }
+    /**
+     * @abstract
+     * @param {*} context 
+     * @param {*} configure
+     * @returns {*} 
+     */
+    getExecuteFunction(context, configure) {
+
+    }
+
 
 
 

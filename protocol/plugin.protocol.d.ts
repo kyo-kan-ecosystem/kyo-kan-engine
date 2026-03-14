@@ -9,3 +9,8 @@ export type PluginConfigure = {
     plugin: any
     subworkflows: { [k in any]: any }
 }
+
+export type AbstractPlugin = {
+    [k in string]: (request: any, context) => any
+
+}

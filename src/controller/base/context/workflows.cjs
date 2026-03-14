@@ -25,6 +25,7 @@ class Workflows {
 
 
     }
+
     getCurrentWorkflow() {
         /**
          * @type {import("../../protocol").StateType}
@@ -38,8 +39,8 @@ class Workflows {
         /**
          * @type {import("../../../workflow/protocol").Plugin}
          */
-        const plugin = this.repositries.plugins.workflows.get(configure.plugin)
-        return { plugin, configure }
+        const workflow = this.repositries.plugins.workflows.get(configure.plugin)
+        return { workflow, configure }
 
 
     }

@@ -32,29 +32,50 @@
  * 
  */
 
-/**
- * @typedef {Object} Context
- * @property {States} states - 状態管理オブジェクト
- * @property {Workflows} workflows - ワークフロー管理オブジェクト
- * @property {function(): void} goSub - サブルーチンに移行する関数
- * @property {function(): boolean} endSub - サブルーチンを終了する関数
- * @property {function(): void} reset - リセット関数
- */
+
 
 /**
- * @typedef {function(*, Context): Promise<ExecutionResult>} ExecuteFunction
+ * @typedef {function(*, import('./context/index.cjs').Context): Promise<ExecutionResult>} ExecuteFunction
  */
+
+class Cursor {
+    constructor() {
+        this.stack = [];
+        this.index = -1;
+        this.length = 0;
+
+    }
+    push(executeFunc, configure) {
+        this.stack.push([executeFunc, configure]);
+        this.index++;
+        this.length++;
+
+    }
+    step() {
+        this.index++;
+        return this.index < this.length;
+    }
+    get() {
+        return this.stack[this.index];
+    }
+
+
+
+
+}
 
 /**
  * ワークフローを実行する関数
  * @param {*} request - リクエストオブジェクト
- * @param {ExecuteFunction} firstFunc - 最初に実行する関数
- * @param {Context} context - コンテキストオブジェクト
+ * @param {import('./context/index.cjs').Context} context - コンテキストオブジェクト
  * @returns {Promise<{state: State, responses: Array}>} 実行結果
  */
-async function executeWorkflow(request, firstFunc, context) {
-    /** @type {Array<ExecuteFunction>} */
-    const funcsArray = [firstFunc];
+async function executeWorkflow(request, context) {
+
+    const { workflow: firstWorkflow, configure: firstConfigure } = context.workflows.getCurrentWorkflow();
+    const firstFunc = firstWorkflow.getExecuteFunction(context);
+    /** @type {Array<[ExecuteFunction, *]>} */
+    const funcsArray = [[firstFunc, firstConfigure]];
     let _request = request
 
     /** @type {Array} */
@@ -79,8 +100,8 @@ async function executeWorkflow(request, firstFunc, context) {
                 return { state, responses };
 
             case 'go':
-                const goWorkflow = context.workflows.getCurrentWorkflow();
-                const goExecuteFunc = goWorkflow.getExecuteFunction(context);
+                const { plugin, configure } = context.workflows.getCurrentWorkflow();
+                const goExecuteFunc = plugin.getExecuteFunction(configure, context);
                 funcsArray.push(goExecuteFunc);
                 break;
 

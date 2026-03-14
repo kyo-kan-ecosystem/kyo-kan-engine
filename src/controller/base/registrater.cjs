@@ -91,7 +91,7 @@ class Registrater extends ContextBuilder {
              */
             const workflowPlugin = this.context.repositries.plugins.workflows.get(workflowConfigure.plugin)
             const executorId = this.context.repositries.configures.executors.add(item.executorConfig)
-            workflowPlugin.addExecutor(workflowConfigure, executorId)
+            workflowPlugin.addExecutor(workflowConfigure, executorId, item.executorConfig)
             /**
              * @type {import("../../../protocol/plugin.protocol.classes.cjs").PluginBaseClass}
              */
