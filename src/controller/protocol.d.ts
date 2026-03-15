@@ -6,7 +6,8 @@ export { Context } from "./base/context/index.cjs";
 
 
 export type ExecutorState = {
-    executorId: any
+    executorId: any,
+    callback?: string
 }
 export type BordState = {
     init: any

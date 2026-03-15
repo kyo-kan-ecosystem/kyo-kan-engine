@@ -10,45 +10,43 @@ class AbstractDispatcher {
     /**
      * 
      * @param {*} context 
-     * @param {*} state 
-     * @param {*} repsponse
-     * @returns {Promise<any> | Array<Promise<any>> | false} 
+     *
      */
-    execute(context, state, repsponse) {
+    execute(request, context) {
 
     }
 
 
-    wait(context, state, repsponse) {
+    wait(request, context, state, response = null) {
 
     }
 
 
-    go(context, state, repsponse) {
+    go(request, context, state, repsponse) {
 
     }
 
-    goSub(context, state, repsponse) {
+    goSub(request, context, state, repsponse) {
 
     }
-    end(context, state, repsponse) {
+    end(request, context, state, repsponse) {
 
     }
-    back(context, state, repsponse) {
+    back(request, context, state, repsponse) {
 
     }
-    reset(context, state, repsponse) {
-
-    }
-
-
-    rewindWorkflow(context, state, repsponse) {
+    reset(request, context, state, repsponse) {
 
     }
 
 
+    rewindWorkflow(request, context, state, repsponse) {
 
-    rewindReturn(context, state) {
+    }
+
+
+
+    rewindReturn(request, context, state, response) {
 
     }
 

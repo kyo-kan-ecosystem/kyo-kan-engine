@@ -7,11 +7,11 @@ class AbstractWorkflow {
     /**
      * @abstract
      * @param {import("../../controller/protocol").Context} context 
-     * @param {*} request
+    
      * @param {*} configure
      * @returns {{state:any, response:any[]}} 
      */
-    go(context, request, configure) {
+    go(context, configure) {
         return { state: null, response: [] }
     }
 

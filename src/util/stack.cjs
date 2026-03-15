@@ -119,6 +119,7 @@ class Stack {
         })
 
     }
+
 }
 
 
@@ -131,7 +132,8 @@ class Stack {
  *
  */
 /**
- * @template {Stack} StackClass
+ * @template {Stack} BranchClass
+ * @template {any} DataType
  */
 class StackTree {
     /**
@@ -140,7 +142,7 @@ class StackTree {
     _countRef
 
     /**
-     * @type {{[x in any]: StackClass}}
+     * @type {{[x in any]: BranchClass}}
      * 
      */
     _branches
@@ -173,7 +175,7 @@ class StackTree {
     /**
      * Creates an instance of StackTree.
      * @param {SeriaraizedStackTree | null | false} [initData=null] - Initial data to restore the tree state.
-     * @param {typeof Stack} [branchClass=Stack] - The stack class to be used internally.
+     * @param {any} [branchClass=Stack] - The stack class to be used internally.
      */
     constructor(initData = null, branchClass = Stack) {
 
@@ -250,7 +252,7 @@ class StackTree {
 
     /**
      * Returns the `Stack` instance of the currently active branch.
-     * @returns {StackClass}
+     * @returns {BranchClass}
      */
     getStack() {
         return this._branches[this._branchId]
@@ -306,7 +308,7 @@ class StackTree {
     /**
      * Gets an element from the current branch.
      * @param {number} digg - The offset from the top of the stack.
-     * @returns {any | null}
+     * @returns {DataType | null}
      */
     get(digg = 0) {
         return this._branches[this._branchId].get(digg)
@@ -352,7 +354,7 @@ class StackTree {
     /**
      * Shares branch data and a counter with another `StackTree` instance.
      * Primarily used internally by the `fork` method.
-     * @param {{[x in any]: StackClass}} branches
+     * @param {{[x in any]: BranchClass}} branches
      * @param {{n: number}} countRef
      * @param {{[k in any]:number}} linkMap 
      * @param {{[k in any]:number}} linkedCounts 
@@ -393,6 +395,8 @@ class StackTree {
     pop() {
         return this._branches[this._branchId].pop()
     }
+
+
 }
 
 

@@ -55,7 +55,7 @@ describe('MapedHistory', () => {
 
             expect(id).to.equal(0);
             // @ts-ignore
-            expect(history._countRef.n).to.equal(1);
+            expect(history._countRef.history).to.equal(1);
             // @ts-ignore
             expect(history._logs[0]).to.deep.equal({ log: data, count: 1 });
             // @ts-ignore
@@ -76,7 +76,7 @@ describe('MapedHistory', () => {
             history.addNonUpdateLog(id, 1, 0);
 
             // @ts-ignore
-            expect(history._countRef.n).to.equal(1); // Should not increment
+            expect(history._countRef.history).to.equal(1); // Should not increment
             // @ts-ignore
             expect(history._logs[0].count).to.equal(2);
             // @ts-ignore
@@ -219,7 +219,7 @@ describe('MapedHistory', () => {
 
             // Check both histories
             // @ts-ignore
-            expect(history._countRef.n).to.equal(2);
+            expect(history._countRef.history).to.equal(2);
             // @ts-ignore
             expect(history._logs[1]).to.deep.equal({ log: { data: 'forked' }, count: 1 });
             // @ts-ignore
@@ -287,7 +287,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(history._branchLogs[0][0].id).to.equal(0);
             // @ts-ignore
-            expect(history._countRef.n).to.equal(2); // 1 for log, 1 for branch
+            expect(history._countRef.history).to.equal(2); // 1 for log, 1 for branch
             // @ts-ignore
             expect(history._linkMap[forked._branchId]).to.equal(0);
             // @ts-ignore

@@ -1,7 +1,7 @@
 const { Repositry } = require("../../repositry/base.cjs")
 
 /**
- * @typedef {{root:{workflow:{plugin:string, id:string}}}} EngineConfigure
+ * @typedef {{root:{workflow:{plugin:string, id:string}},executor:{enterFunc:string}}} EngineConfigure
  */
 
 /**
@@ -14,6 +14,9 @@ const DEFAULT_ENGINE_CONFIGURE = {
             id: ''
         }
 
+    },
+    executor: {
+        enterFunc: 'enter'
     }
 }
 

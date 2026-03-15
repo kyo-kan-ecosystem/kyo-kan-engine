@@ -124,6 +124,7 @@ class Histories {
 
 
     }
+
     /**
      * 
      * @returns {{request:any, response:any} | false}

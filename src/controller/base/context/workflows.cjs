@@ -40,19 +40,20 @@ class Workflows {
          * @type {import("../../../workflow/protocol").Plugin}
          */
         const workflow = this.repositries.plugins.workflows.get(configure.plugin)
+
         return { workflow, configure }
 
 
     }
     /**
      * 
-     * @param {*} context 
-     * @param {*} request 
+  
+     * @param {*} context
      */
-    go(context, request) {
+    go(context) {
 
-        const { plugin, configure } = this.getCurrentWorkflow()
-        return plugin.go(context, request, configure)
+        const { workflow, configure } = this.getCurrentWorkflow()
+        return workflow.go(context, configure)
 
     }
 

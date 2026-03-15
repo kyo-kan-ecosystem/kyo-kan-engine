@@ -1,8 +1,6 @@
 const { Context } = require("./context/index.cjs")
 
-/**
- * @typedef {import("./context/index.cjs").ContextInit} ContextInit
- */
+
 class ContextBuilder {
 
     /**
@@ -18,11 +16,11 @@ class ContextBuilder {
         this._contextClass = contextClass || Context
     }
     /**
-     * @param {ContextInit} contextInit 
+     * @param {import("./context/protocol").ContextInit<any,any>} contextInit 
      * @returns {Context}
      */
     _buildContext(contextInit) {
-        return new this._contextClass(contextInit)
+        return new this._contextClass({ initData: contextInit })
     }
 
 }

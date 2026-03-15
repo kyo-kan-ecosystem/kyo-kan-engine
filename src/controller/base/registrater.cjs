@@ -2,9 +2,7 @@
 
 const { ContextBuilder } = require("./context_builder.cjs")
 
-/**
- * @typedef {import("./context/index.cjs").ContextInit} ContextInit
- */
+
 
 /**
  * @typedef {import("../../workflow/plugin/base_classes.cjs").AbstractWorkflow} WorkFlowPluginType
@@ -17,8 +15,7 @@ class Registrater extends ContextBuilder {
     context
     /**
      * 
-     * @param {ContextInit?} contextInit 
-     *
+     * @param {import("./context/protocol").ContextInit<any, any>?} contextInit      *
      * @param {typeof import("./context/index.cjs").Context?} contextClass  
      */
     constructor(contextInit, contextClass) {

@@ -7,7 +7,7 @@ const equal = require('fast-deep-equal');
  * @typedef {{id:any, depth:number}} BranchLogItem
  * @typedef {BranchLogItem[]} BranchLog
  * @typedef {{[key in any]:BranchLog}} BranchLogs
- * @typedef {{n:number}} CountRef
+ * @typedef {{history:number, branch:number}} CountRef
  * @typedef {{[k in any]:any}} LinkMap
  * @typedef {{[k in any]:number}} LinkedCounts
  * @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, linkMap?:LinkMap, linkedCounts?:LinkedCounts}} SerializedHistoryData
@@ -46,7 +46,7 @@ class MapedHistory {
      * A shared counter object to generate unique log IDs.
      * Shared across forked instances.
      * @protected
-     * @type {{n:number}}
+     * @type {CountRef}
      */
     _countRef
 
@@ -75,7 +75,7 @@ class MapedHistory {
         const _initData = initData || {}
         this._logs = _initData.logs || {}
         this._branchLogs = _initData.branchLogs || {}
-        this._countRef = _initData.countRef || { n: 0 }
+        this._countRef = _initData.countRef || { history: 0, branch: 0 }
         this._linkMap = _initData.linkMap || {}
         this._linkedCounts = _initData.linkedCounts || {}
         this._branchId = 0;
@@ -93,8 +93,8 @@ class MapedHistory {
      * @returns {number} The ID of the newly created log.
      */
     add(data) {
-        const newId = this._countRef.n;
-        this._countRef.n += 1;
+        const newId = this._countRef.history;
+        this._countRef.history += 1;
         /**
          * @type {Log}
          */
@@ -161,11 +161,11 @@ class MapedHistory {
      * If the new data is identical to the current head of the branch, it adds a non-updating reference.
      * Otherwise, it adds a new log entry.
      * @param {any} data - The data for the next state.
-     * @param {number} depth - The depth for the new history step.
-     * @param {any} branchId - The ID of the branch to move forward.
+     * @param {number?} depth - The depth for the new history step.
+     * @param {any?} branchId - The ID of the branch to move forward.
      * @returns {any} The ID of the log at the new head of the branch.
      */
-    forward(data, depth, branchId) {
+    forward(data, depth = null, branchId = null) {
         const headerLog = this.getBranchHead(branchId, false)
         if (headerLog === null) {
             return this.addNewLog(data, depth, branchId)
@@ -338,8 +338,8 @@ class MapedHistory {
 
         let _branchId = branchId;
         if (!branchId && branchId !== 0) {
-            _branchId = this._countRef.n;
-            this._countRef.n += 1;
+            _branchId = this._countRef.branch;
+            this._countRef.history += 1;
             this._linkMap[_branchId] = this._branchId
             this._linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
         }
