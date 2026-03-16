@@ -4,7 +4,7 @@ const { Context } = require("./context/index.cjs")
 
 const { ContextBuilder } = require("./context_builder.cjs")
 /**
- * @typedef {import("../../workflow/plugin/base_classes.cjs").AbstractWorkflow} WorkFlowPluginType
+ * @typedef {import("../../workflow/plugin/protocol.class.cjs").AbstractWorkflow} WorkFlowPluginType
  */
 
 

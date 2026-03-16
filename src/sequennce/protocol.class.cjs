@@ -4,15 +4,14 @@
 
 /**
  * @abstract
- * @type
- */
+ * */
 class AbstractDispatcher {
     /**
      * 
      * @param {*} context 
      *
      */
-    execute(request, context) {
+    enter(request, context) {
 
     }
 

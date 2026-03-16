@@ -1,4 +1,4 @@
-const { AbstractDispatcher } = require("../../protocol/dispatcher.cjs");
+const { AbstractDispatcher } = require("./protocol.class.cjs");
 
 
 
@@ -12,7 +12,7 @@ class DispatcherBase extends AbstractDispatcher {
    * 
    */
 
-    async execute(request, context) {
+    async enter(request, context) {
 
         const executePlugin = context.workflows.go(context)
         const state = context.states.get()
@@ -48,9 +48,16 @@ class DispatcherBase extends AbstractDispatcher {
      * @param {Array} repsponses 
      */
     async go(request, context, repsponses) {
-        const executePlugin = context.workflows.go(context)
-        if (!executePlugin) {
+        // TODO 並行実行に対応 
+        let executePlugins = context.workflows.go(context)
+        if (!executePlugins) {
             context.histories.state.addNewLog
+
+        }
+        if (Array.isArray(executePlugins) === false) {
+            executePlugins = [executePlugins]
+        }
+        for (const executePlugin of executePlugins) {
 
         }
         const state = context.states.get()

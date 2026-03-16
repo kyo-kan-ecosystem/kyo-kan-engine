@@ -5,7 +5,7 @@ const { ContextBuilder } = require("./context_builder.cjs")
 
 
 /**
- * @typedef {import("../../workflow/plugin/base_classes.cjs").AbstractWorkflow} WorkFlowPluginType
+ * @typedef {import("../../workflow/plugin/protocol.class.cjs").AbstractWorkflow} WorkFlowPluginType
  */
 
 class Registrater extends ContextBuilder {
@@ -90,7 +90,7 @@ class Registrater extends ContextBuilder {
             const executorId = this.context.repositries.configures.executors.add(item.executorConfig)
             workflowPlugin.addExecutor(workflowConfigure, executorId, item.executorConfig)
             /**
-             * @type {import("../../../protocol/plugin.protocol.classes.cjs").PluginBaseClass}
+             * @type {import("../../../protocol/executor/plugin.protocol.class.cjs/index.js").PluginBaseClass}
              */
             const plugin = this.context.repositries.plugins.executors.get(item.executorConfig.plugin)
 
