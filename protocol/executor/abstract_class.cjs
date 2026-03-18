@@ -2,10 +2,10 @@ class AbstractExecutorPlugin {
     /**
      * 
      * @returns {{
-     *   [k in string]: import("../plugin.protocol").SubworkflowDefinition;}}
+     *   [k in string]: import("./protocol").SubworkflowDefinition;}}
      *
      */
-    getSubworkflows() {
+    getSubworkflows(configure) {
         return {}
     }
 

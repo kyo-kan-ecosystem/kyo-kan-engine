@@ -1,4 +1,4 @@
-import { EngineConfigure } from "../src/engine/repositry/configure.cjs"
+import { EngineConfigure } from "../../src/engine/repositry/configure.cjs"
 
 
 export type WorkflowPluginFormat = {

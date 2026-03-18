@@ -65,12 +65,12 @@ class Registrater extends ContextBuilder {
         const rootConfigure = rootWorkFlowPlugin.getConfigureParams(configure)
         this.context.repositries.configures.workflows.set(rootWorkFlowPluginId, rootConfigure)
         /**
-         * @type {{workflow:string, executorConfig:import("../../../protocol/plugin.protocol").PluginConfigure}[]}
+         * @type {{workflow:string, executorConfig:import("../../../protocol/executor/protocol").ExecutorConfigure}[]}
          */
         const executorQueue = []
-        for (const executorConfig of rootConfigure.executor || []) {
+        for (const executorConfig of rootConfigure.executors || []) {
 
-            const item = { workflow: engineConfigure.root.workflow.id, executorConfig }
+            const item = { workflow: engineConfigure.root.workflow, executorConfig }
             executorQueue.push(item)
         }
 
@@ -90,7 +90,7 @@ class Registrater extends ContextBuilder {
             const executorId = this.context.repositries.configures.executors.add(item.executorConfig)
             workflowPlugin.addExecutor(workflowConfigure, executorId, item.executorConfig)
             /**
-             * @type {import("../../../protocol/executor/plugin.protocol.class.cjs/index.js").PluginBaseClass}
+             * @type {import("../../../protocol/executor/abstract_class.cjs").AbstractExecutorPlugin}
              */
             const plugin = this.context.repositries.plugins.executors.get(item.executorConfig.plugin)
 
@@ -104,7 +104,7 @@ class Registrater extends ContextBuilder {
                 const subwWorkflowId = this.context.repositries.configures.workflows.add(executorId, name, subWorkflowConfigure.params)
 
 
-                for (const executor of subWorkflowConfigure.executor || []) {
+                for (const executor of subWorkflowConfigure.executors || []) {
                     const item = { workflow: subwWorkflowId, executorConfig: executor }
                     executorQueue.push(item)
                 }

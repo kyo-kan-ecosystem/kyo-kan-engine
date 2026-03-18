@@ -4,13 +4,9 @@ export type SubworkflowDefinition = {
 
 
 }
-export type PluginConfigure = {
+export type ExecutorConfigure = {
     params: any,
     plugin: any
     subworkflows: { [k in any]: any }
 }
 
-export type AbstractPlugin = {
-    [k in string]: (request: any, context) => any
-
-}

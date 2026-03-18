@@ -15,7 +15,7 @@ export type WorkflowState = {
 export type { AbstractWorkflow as Plugin } from "./plugin/protocol.class.cjs"
 export type WorkflowConfigureParseResult<ParamsType = any> = {
     params?: ParamsType,
-    executor?: any
+    executors?: any
 }
 
 export type WorkflowPluginConfigure<ParamsType = any> = WorkflowConfigureParseResult<ParamsType> & {

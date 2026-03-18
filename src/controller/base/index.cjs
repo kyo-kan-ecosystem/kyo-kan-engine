@@ -23,7 +23,7 @@ class Controller {
     /**
      * 
      * @param {*} funcname 
-     * @param {import()} context 
+     * @param {*} context 
      */
     _execWorkflow(funcname, context) {
 
