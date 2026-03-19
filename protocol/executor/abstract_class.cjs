@@ -1,13 +1,22 @@
 class AbstractExecutorPlugin {
     /**
-     * 
+     * @param {import("./protocol").ExecutorConfigure} configure 
      * @returns {{
-     *   [k in string]: import("./protocol").SubworkflowDefinition;}}
+     *   [k in string]:any}}
      *
      */
     getSubworkflows(configure) {
-        return {}
+        return configure.subworkflows
     }
+    /**
+     * @param {import("./protocol").ExecutorConfigure} configure 
+     * 
+     *
+     */
+    getEnterFunction(configure) {
+        return configure.enterFunction
+    }
+
 
 }
 

@@ -1,12 +1,8 @@
-export type SubworkflowDefinition = {
-    plugin: string,
-    hooks?: any
 
-
-}
-export type ExecutorConfigure = {
-    params: any,
-    plugin: any
-    subworkflows: { [k in any]: any }
+export type ExecutorConfigure<ParamsType = any> = {
+    params: ParamsType,
+    plugin: string
+    subworkflows?: { [k in any]: any }
+    enterFunction?: string
 }
 
