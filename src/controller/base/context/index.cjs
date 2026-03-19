@@ -56,7 +56,7 @@ const DEFUALT_CLASSES = {
 
 /**
  *
- * @template ContextFunctionsType, ReporterType
+ * @template  ReporterType, ContextFunctionsType
  */
 class Context {
     /**
