@@ -7,9 +7,10 @@ export type ExecutorConfigure<ParamsType = any> = {
     subworkflows?: { [k in any]: any }
     enterFunction?: string
 }
-export type ExecutorFunctionResponse = {
+export type ExecutorFunctionResponse<WorkflowParamsType = any> = {
     mode: executeMode,
     workflow?: string,
+    workflowParams?: WorkflowParamsType,
     callback?: string,
 
 }
