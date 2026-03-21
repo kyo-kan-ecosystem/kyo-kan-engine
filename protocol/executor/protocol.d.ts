@@ -1,10 +1,11 @@
 import { executeMode } from "../../src/controller/protocol"
+import { WorkflowConfigureFormatBase } from "../../src/workflow/plugin/protocol"
 import { Context } from "../context/protocol"
 
 export type ExecutorConfigure<ParamsType = any> = {
     params: ParamsType,
     plugin: string
-    subworkflows?: { [k in any]: any }
+    subworkflows?: { [k in string]: WorkflowConfigureFormatBase }
     enterFunction?: string
 }
 export type ExecutorFunctionResponse<WorkflowParamsType = any> = {
