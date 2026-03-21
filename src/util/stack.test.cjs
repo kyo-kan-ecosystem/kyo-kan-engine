@@ -74,7 +74,7 @@ describe('Stack', () => {
 
     it('should return serialized data as a deep copy', () => {
         const stack = new Stack([{ id: 1 }]);
-        const data = stack.getSerializedData();
+        const data = stack.getSerializableData();
         expect(data).to.deep.equal([{ id: 1 }]);
         data[0].id = 99;
         expect(stack.get()).to.deep.equal({ id: 1 });
@@ -86,7 +86,7 @@ describe('StackTree', () => {
         const tree = new StackTree();
         expect(tree.getBranchId()).to.equal(0);
         expect(tree.isTop(0)).to.be.true;
-        expect(tree.isEnd()).to.be.true;
+        expect(tree.isEmptyNow()).to.be.true;
     });
 
     it('should handle constructor with initData=false', () => {
@@ -111,7 +111,7 @@ describe('StackTree', () => {
         tree.push({ branch: 0 });
         tree.setBranchId(1);
         expect(tree.getBranchId()).to.equal(1);
-        expect(tree.isEnd()).to.be.true; // New branch is empty
+        expect(tree.isEmptyNow()).to.be.true; // New branch is empty
         tree.push({ branch: 1 });
         expect(tree.get()).to.deep.equal({ branch: 1 });
 
@@ -126,7 +126,7 @@ describe('StackTree', () => {
         tree.setBranchId(1);
         tree.push({ id: 'b' });
 
-        const serializedData = tree.getSerializedData();
+        const serializedData = tree.getSerializableData();
         expect(serializedData.branches).to.have.property('0');
         expect(serializedData.branches).to.have.property('1');
         expect(serializedData.branches[0][0]).to.deep.equal({ id: 'a' });
@@ -211,16 +211,16 @@ describe('StackTree', () => {
 
         const fork1 = tree.fork(); // forks from 0, creates branch 1
         expect(tree.getLinkedCount(0)).to.equal(1);
-        expect(fork1.getParentBranchId(fork1.getBranchId())).to.equal(0);
+        expect(fork1.getSuperBranchId(fork1.getBranchId())).to.equal(0);
 
         const fork2 = tree.fork(); // forks from 0, creates branch 2
         expect(tree.getLinkedCount(0)).to.equal(2);
-        expect(fork2.getParentBranchId(fork2.getBranchId())).to.equal(0);
+        expect(fork2.getSuperBranchId(fork2.getBranchId())).to.equal(0);
 
         const fork3 = fork1.fork(); // forks from 1, creates branch 3
         expect(tree.getLinkedCount(0)).to.equal(2);
         expect(tree.getLinkedCount(1)).to.equal(1);
-        expect(fork3.getParentBranchId(fork3.getBranchId())).to.equal(1);
+        expect(fork3.getSuperBranchId(fork3.getBranchId())).to.equal(1);
 
         // Test removeBranch decrements the count
         tree.removeBranch(fork2.getBranchId()); // remove branch 2

@@ -97,7 +97,7 @@ class Stack {
      * Returns a deep-copied array of all elements in the stack.
      * @returns {any[]} A deep-copied array of elements.
      */
-    getSerializedData() {
+    getSerializableData() {
         return this._cloneItems(this._items);
     }
 
@@ -126,7 +126,7 @@ class Stack {
 /**
  * A Facade for managing a stack structure with multiple branches.
  * Each branch is managed as an independent `Stack` instance.
- * @typedef {{ branches: {[k in any]: any}, count: number, linkedCounts:{[k in number]:number}, linkMap:{[k in number]:number} }} SeriaraizedStackTree
+ * @typedef {{ branches: {[k in any]: any}, count: number, linkedCounts:{[k in number]:number}, linkMap:{[k in number]:number} }} SeriaraizableStackTree
  * 
  * 
  *
@@ -174,7 +174,7 @@ class StackTree {
 
     /**
      * Creates an instance of StackTree.
-     * @param {SeriaraizedStackTree | null | false} [initData=null] - Initial data to restore the tree state.
+     * @param {SeriaraizableStackTree | false | null} [initData=null] - Initial data to restore the tree state.
      * @param {any} [branchClass=Stack] - The stack class to be used internally.
      */
     constructor(initData = null, branchClass = Stack) {
@@ -199,14 +199,14 @@ class StackTree {
 
         }
 
-        this.setSerializedData(initData);
+        this.setSerializableData(initData);
     }
 
     /**
      * Determines if the current branch is empty.
      * @returns {boolean}
      */
-    isEnd() {
+    isEmptyNow() {
         return this._branches[this._branchId].isEmpty()
     }
 
@@ -230,7 +230,7 @@ class StackTree {
          */
         // @ts-ignore
         const responseObj = new this.constructor(false, this._branchClass)
-        responseObj.setReference(this._branches, this._countRef, this._linkMap, this._linkedCounts)
+        responseObj.setReference(this.getReference())
         /**
          * @type {number}
          */
@@ -268,11 +268,13 @@ class StackTree {
 
     /**
      * Gets the parent branch ID for a given branch ID.
-     * @param {number} id The ID of the child branch.
+     * @param {number?} id The ID of the child branch.
      * @returns {number | undefined} The ID of the parent branch, or undefined if it's a top-level branch or doesn't exist.
      */
-    getParentBranchId(id) {
-        return this._linkMap[id];
+    getSuperBranchId(id = null) {
+        const _id = id == null ? this._branchId : id
+        return this._linkMap[_id]
+
     }
 
     /**
@@ -314,6 +316,8 @@ class StackTree {
         return this._branches[this._branchId].get(digg)
     }
 
+
+
     /**
      * Returns the depth (number of elements) of the current branch.
      * @returns {number}
@@ -326,9 +330,9 @@ class StackTree {
 
     /**
      * Restores the state of the `StackTree` from serialized data.
-     * @param {SeriaraizedStackTree} datas - The serialized data.
+     * @param {SeriaraizableStackTree} datas - The serialized data.
      */
-    setSerializedData(datas) {
+    setSerializableData(datas) {
         for (const [key, value] of Object.entries(datas.branches || [])) {
             this._branches[key] = new this._branchClass(value);
 
@@ -340,12 +344,12 @@ class StackTree {
 
     /**
      * Returns the current state of the `StackTree` as a serializable object.
-     * @returns {SeriaraizedStackTree}
+     * @returns {SeriaraizableStackTree}
      */
-    getSerializedData() {
+    getSerializableData() {
         const branches = {};
         for (const [key, value] of Object.entries(this._branches)) {
-            branches[key] = value.getSerializedData();
+            branches[key] = value.getSerializableData();
 
         }
         return { branches: branches, count: this._countRef.n, linkedCounts: Object.assign({}, this._linkedCounts), linkMap: Object.assign({}, this._linkMap) }
@@ -354,16 +358,22 @@ class StackTree {
     /**
      * Shares branch data and a counter with another `StackTree` instance.
      * Primarily used internally by the `fork` method.
-     * @param {{[x in any]: BranchClass}} branches
-     * @param {{n: number}} countRef
-     * @param {{[k in any]:number}} linkMap 
-     * @param {{[k in any]:number}} linkedCounts 
+     * @param {Object} param0
+     * @param {{[x in any]: BranchClass}} [param0.branches]
+     * @param {{n: number}} [param0.countRef]
+     * @param {{[k in any]:number}} [param0.linkMap] 
+     * @param {{[k in any]:number}} [param0.linkedCounts] 
      */
-    setReference(branches, countRef, linkMap, linkedCounts) {
+    setReference({ branches, countRef, linkMap, linkedCounts }) {
         this._branches = branches
         this._countRef = countRef
         this._linkMap = linkMap
         this._linkedCounts = linkedCounts
+    }
+
+    getReference() {
+        return { branches: this._branches, countRef: this._countRef, linkMap: this._linkMap, linkedCounts: this._linkedCounts }
+
     }
 
     /**
