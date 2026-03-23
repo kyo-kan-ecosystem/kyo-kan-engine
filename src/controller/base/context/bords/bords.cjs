@@ -38,9 +38,10 @@ class Bords extends StackTree {
      * @param {*} branchClass 
      * @returns 
      */
-    constructor(initData = null, branchClass = BordsBranch) {
+    constructor(initData = null, id = null, branchClass = BordsBranch) {
+
         // @ts-ignore
-        super(initData, branchClass)
+        super(initData, id, branchClass)
         if (initData === false) {
             return
         }
@@ -141,7 +142,7 @@ class Bords extends StackTree {
 
 
     }
-    forkAsSubtree(name) {
+    forkAsNamedTree(name) {
 
         const tree = this.fork()
 
@@ -158,8 +159,10 @@ class Bords extends StackTree {
      * @param {{nameMap:LinkMapType, global:any} & import("../../../../util/stack.protocol").SeriaraizableStackTreeData} params
      */
 
+    // @ts-ignore
     setReference(params) {
 
+        // @ts-ignore
         super.setReference(params)
         this._nameMap = params.nameMap
         this._global = params.global

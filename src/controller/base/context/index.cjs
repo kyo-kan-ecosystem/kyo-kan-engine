@@ -198,6 +198,16 @@ class Context {
     }
     /**
      * 
+     * @param {string} name 
+     */
+    forkAsNamedTree(name) {
+        const bords = this.bords.forkAsNamedTree(name)
+
+
+        return this._fork(null, null, bords)
+    }
+    /**
+     * 
      * @param {*} id 
      * 
      */
@@ -207,12 +217,16 @@ class Context {
 
 
         }
-
-
-
         const branch = this.branches[id]
 
         const bords = this.bords.fork(branch?.bords)
+        return this._fork(id, branch, bords)
+
+
+    }
+    _fork(id, branch, bords) {
+
+
         const states = this.states.fork(branch?.state)
         const histories = this.histories.fork(branch?.histories)
 

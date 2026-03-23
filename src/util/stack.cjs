@@ -168,10 +168,11 @@ class StackTree {
 
     /**
      * Creates an instance of StackTree.
-     * @param {import("./stack.protocol").SeriaraizableStackTreeData | false | null} [initData=null] - Initial data to restore the tree state.
+     * @param {import("./stack.protocol").SeriaraizableStackTreeData | import("./stack.protocol").StackReference<BranchClass>| null} [initData=null] - Initial data to restore the tree state.
+     * @param {number?} id 
      * @param {any} [branchClass=Stack] - The stack class to be used internally.
      */
-    constructor(initData = null, branchClass = Stack) {
+    constructor(initData = null, id = null, branchClass = Stack) {
 
         this._countRef = { n: 0 };
         this._branchClass = branchClass;
@@ -182,8 +183,12 @@ class StackTree {
         this.topId = 0;
         this._branchId = this.topId
 
-        if (initData === false) {
+        if (id != null) {
+            // @ts-ignore
+            this.setReference(initData)
+            this.setBranchId(id)
             return
+
 
         }
         if (initData === null) {
@@ -193,6 +198,7 @@ class StackTree {
 
         }
 
+        // @ts-ignore
         this.setSerializableData(initData);
     }
 
@@ -206,11 +212,12 @@ class StackTree {
 
     /**
      * Checks if the given ID matches the top-level branch ID.
-     * @param {number} id 
+     * @param {number?} id 
      * @returns {boolean}
      */
-    isTop(id) {
-        return this.topId === id;
+    isTop(id = null) {
+        const _id = id == null ? this.getBranchId() : id
+        return this.topId === _id;
     }
 
     /**
@@ -219,12 +226,7 @@ class StackTree {
      * @returns {StackTree}
      */
     fork(id) {
-        /**
-         * @type {typeof this}
-         */
-        // @ts-ignore
-        const responseObj = new this.constructor(false, this._branchClass)
-        responseObj.setReference(this.getReference())
+
         /**
          * @type {number}
          */
@@ -239,6 +241,12 @@ class StackTree {
             this._linkMap[_id] = this._branchId
             this._linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
         }
+        /**
+        * @type {typeof this}
+        */
+        // @ts-ignore
+        const responseObj = new this.constructor(this.getReference(), this._branchClass)
+        responseObj.setReference()
         responseObj.setBranchId(_id)
         return responseObj;
 
@@ -304,7 +312,7 @@ class StackTree {
     /**
      * Gets an element from the current branch.
      * @param {number} digg - The offset from the top of the stack.
-     * @returns {DataType | null}
+     * 
      */
     get(digg = 0) {
         return this._branches[this._branchId].get(digg)
@@ -352,11 +360,7 @@ class StackTree {
     /**
      * Shares branch data and a counter with another `StackTree` instance.
      * Primarily used internally by the `fork` method.
-     * @param {Object} param0
-     * @param {{[x in any]: BranchClass}} [param0.branches]
-     * @param {{n: number}} [param0.countRef]
-     * @param {{[k in any]:number}} [param0.linkMap] 
-     * @param {{[k in any]:number}} [param0.linkedCounts] 
+    
      */
     setReference({ branches, countRef, linkMap, linkedCounts }) {
         this._branches = branches
