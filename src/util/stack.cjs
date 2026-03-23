@@ -6,6 +6,7 @@ const deepmerge = require("deepmerge")
  * A stack data structure that follows the LIFO (Last-In, First-Out) principle.
  * Intended for use in state history management and similar applications.
  * 
+ * @template DataType
  */
 class Stack {
     /**
@@ -36,7 +37,7 @@ class Stack {
     /**
      * Retrieves an element from the stack at a specified position from the top.
      * @param {number} [digg=0] - The offset from the top of the stack (0 is the top).
-     * @returns {any | null} The element at the specified position, or null if it does not exist.
+     * @returns {DataType} The element at the specified position, or null if it does not exist.
      */
     get(digg = 0) {
         if (this.isEmpty() === true) {
@@ -123,17 +124,10 @@ class Stack {
 }
 
 
-/**
- * A Facade for managing a stack structure with multiple branches.
- * Each branch is managed as an independent `Stack` instance.
- * @typedef {{ branches: {[k in any]: any}, count: number, linkedCounts:{[k in number]:number}, linkMap:{[k in number]:number} }} SeriaraizableStackTree
- * 
- * 
- *
- */
+
 /**
  * @template {Stack} BranchClass
- * @template {any} DataType
+ *
  */
 class StackTree {
     /**
@@ -174,7 +168,7 @@ class StackTree {
 
     /**
      * Creates an instance of StackTree.
-     * @param {SeriaraizableStackTree | false | null} [initData=null] - Initial data to restore the tree state.
+     * @param {import("./stack.protocol").SeriaraizableStackTreeData | false | null} [initData=null] - Initial data to restore the tree state.
      * @param {any} [branchClass=Stack] - The stack class to be used internally.
      */
     constructor(initData = null, branchClass = Stack) {
@@ -192,7 +186,7 @@ class StackTree {
             return
 
         }
-        if (!initData) {
+        if (initData === null) {
             this._branches[this.topId] = new this._branchClass();
             this._countRef.n = 1;
             return
@@ -267,9 +261,9 @@ class StackTree {
     }
 
     /**
-     * Gets the parent branch ID for a given branch ID.
+     * Gets the super branch ID for a given branch ID.
      * @param {number?} id The ID of the child branch.
-     * @returns {number | undefined} The ID of the parent branch, or undefined if it's a top-level branch or doesn't exist.
+     * @returns {number | undefined} The ID of the super branch, or undefined if it's a top-level branch or doesn't exist.
      */
     getSuperBranchId(id = null) {
         const _id = id == null ? this._branchId : id
@@ -279,7 +273,7 @@ class StackTree {
 
     /**
      * Gets the number of branches forked from a given branch ID.
-     * @param {number} id - The ID of the parent branch.
+     * @param {number} id - The ID of the super branch.
      * @returns {number} The number of direct child branches.
      */
     getLinkedCount(id) {
@@ -330,7 +324,7 @@ class StackTree {
 
     /**
      * Restores the state of the `StackTree` from serialized data.
-     * @param {SeriaraizableStackTree} datas - The serialized data.
+     * @param {import("./stack.protocol").SeriaraizableStackTreeData} datas - The serialized data.
      */
     setSerializableData(datas) {
         for (const [key, value] of Object.entries(datas.branches || [])) {
@@ -344,7 +338,7 @@ class StackTree {
 
     /**
      * Returns the current state of the `StackTree` as a serializable object.
-     * @returns {SeriaraizableStackTree}
+     * @returns {import("./stack.protocol").SeriaraizableStackTreeData}
      */
     getSerializableData() {
         const branches = {};

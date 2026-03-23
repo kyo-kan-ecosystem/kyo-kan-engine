@@ -5,10 +5,18 @@ const { BordsBranch } = require("./bords_branch.cjs")
 
 
 
+
+
 /**
  * @typedef {{[k in string]:any}} LinkMapType
  */
+/**
+ * 
+ */
 
+/**
+ * @extends StackTree<BordsBranch>
+ */
 class Bords extends StackTree {
 
     /**
@@ -26,15 +34,19 @@ class Bords extends StackTree {
 
     /**
      * 
-     * @param {{_nameMap?:LinkMapType, _treeLinkMap:LinkMapType}?} initData 
+     * @param {{_nameMap?:LinkMapType, _global?:any} & import("../../../../util/stack.protocol").SeriaraizableStackTreeData | false | null} initData 
      * @param {*} branchClass 
      * @returns 
      */
     constructor(initData = null, branchClass = BordsBranch) {
         // @ts-ignore
         super(initData, branchClass)
-        this._global = {}
-        this._nameMap = initData._nameMap || {}
+        if (initData === false) {
+            return
+        }
+
+        this._global = initData?._global || {}
+        this._nameMap = initData?._nameMap || {}
 
 
     }
@@ -143,17 +155,19 @@ class Bords extends StackTree {
 
 
     /**
-     * @param {{nameMap:LinkMapType}} params
+     * @param {{nameMap:LinkMapType, global:any} & import("../../../../util/stack.protocol").SeriaraizableStackTreeData} params
      */
-    // @ts-ignore
+
     setReference(params) {
-        // @ts-ignore
+
         super.setReference(params)
         this._nameMap = params.nameMap
+        this._global = params.global
     }
     getReference() {
         const ret = super.getReference()
         ret.nameMap = this._nameMap
+        ret.global = this._global
         return ret
     }
 
