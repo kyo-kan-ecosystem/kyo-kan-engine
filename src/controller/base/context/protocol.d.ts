@@ -8,19 +8,49 @@ export type StackTrees = {
     bords: Bords
 }
 
-export type ContextInit<FunctionsType, ReporterType> = Partial<{
+export type ForkFunctionType = (id: number?, context: any) => any
+export interface MaybeForkInterface {
+    fork: ForkFunctionType
+}
+
+export type MaybeForkType = {
+    fork?: ForkFunctionType
+}
+export type MaybeForkTypeMap = {
+    [key: string]: MaybeForkType
+}
+export type ContextSerialiableData = Partial<{
     states: any,
     repositries: any,
     bords: any,
     workflows: any,
     histories: any,
-    functions: FunctionsType,
+
     branches: Object<any, any>,
-    reporter: ReporterType,
     _countRef: { n: number }
+
 }>
 
-export type ContextInheritance = {
+const t: MaybeForkInterface = {
+
+}
+
+export type ContextInit<FunctionsType, ReporterType> = {
+    api?: {
+        functions: FunctionsType,
+        reporter: ReporterType,
+    }
+    data?: ContextSerialiableData,
+
+}
+
+const t: MaybeForkType = {
+    fork() {
+
+    }
+}
+
+export type ContextInheritance<FunctionsType extends MaybeForkTypeMap, ReporterType extends MaybeForkTypeMap> = {
     states: any,
     repositries: any,
     bords: any,
@@ -29,7 +59,8 @@ export type ContextInheritance = {
     functions: any,
     branches: any,
     reporter: any,
-    _countRef: any
+    _countRef: any,
+    branchId: number
 
 
 

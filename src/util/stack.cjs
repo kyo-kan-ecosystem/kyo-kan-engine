@@ -223,7 +223,7 @@ class StackTree {
     /**
      * Forks a new branch from the current branch.
      * @param {number?} [id] 
-     * @returns {StackTree}
+     * @returns {this}
      */
     fork(id) {
 

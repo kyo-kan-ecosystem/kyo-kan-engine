@@ -275,7 +275,22 @@ class Histories {
         }
         return historyIds
     }
+    /**
+     * 
+     * @returns {{state:any, request:any, response:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
+     */
+    getSerializableData() {
+        return {
+            state: this.state.getReferenceData(),
+            request: this.request.getReferenceData(),
+            response: this.response.getReferenceData(),
+            bords: {
+                global: this.bords.global.getReferenceData(),
+                currentWorkflow: this.bords.currentWorkflow.getReferenceData(),
+                subWorkflow: this.bords.subWorkflow.getReferenceData()
+            }
+        }
 
+    }
 }
-
 module.exports = { Histories }

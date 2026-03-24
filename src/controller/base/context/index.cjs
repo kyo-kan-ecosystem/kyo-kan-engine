@@ -56,7 +56,8 @@ const DEFUALT_CLASSES = {
 
 /**
  *
- * @template  ReporterType, ContextFunctionsType
+ * @template  {import("./protocol").MaybeForkType} ReporterType, 
+ * @template  {}ContextFunctionsType
  */
 class Context {
     /**
@@ -87,6 +88,10 @@ class Context {
      */
     branches
 
+    /**
+     * @type {number}
+     */
+    _branchId
 
     /**
      * @type {ContextFunctionsType}
@@ -105,12 +110,12 @@ class Context {
 
     /**
      * @param {Object} param0 
-     * @param {import("./protocol").ContextInit<ContextFunctionsType, ReporterType> | false} [param0.initData] 
+     * @param {import("./protocol").ContextInit<ContextFunctionsType, ReporterType> | false| null} [param0.initParams] 
      * @param {ContextClasses} [param0.classes] 
      * @param {import("./protocol").ContextInheritance?} [param0.inheritance] 
      */
-    constructor({ initData = false, inheritance = null, classes = DEFUALT_CLASSES }) {
-        if (initData === false) {
+    constructor({ initParams = null, inheritance = null, classes = DEFUALT_CLASSES }) {
+        if (initParams === false) {
             this.functions = inheritance.functions
             this.repositries = inheritance.repositries
             this.bords = inheritance.bords
@@ -120,21 +125,23 @@ class Context {
             this.branches = inheritance.branches
             this.reporter = inheritance.reporter
             this._countRef = inheritance._countRef
+
             return
         }
-        const _initData = initData || {}
+        const initData = initParams?.data || {}
 
-        this.functions = _initData.functions
-
-
-        this.repositries = new classes.repositries(_initData.repositries)
+        this.functions = initParams?.api?.functions
+        this.reporter = initParams?.api?.reporter
 
 
-        this.bords = new classes.bords(_initData.bords)
+        this.repositries = new classes.repositries(initData.repositries)
 
 
-        this.states = new classes.states(_initData.states)
-        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, _initData.workflows || {})
+        this.bords = new classes.bords(initData.bords)
+
+
+        this.states = new classes.states(initData.states)
+        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, initData.workflows || {})
         /**
          * @type {Workflows}
          */
@@ -144,14 +151,34 @@ class Context {
          * @type {Histories}
          */
         this.histories = new classes.histories({ states: this.states, bords: this.bords }, initData.histories)
-        this.branches = _initData.branches || {}
+        this.branches = initData.branches || {}
 
-        this.reporter = _initData.reporter
-        this._countRef = _initData._countRef || { n: 0 };
+        this.reporter = initData.reporter
+        this._countRef = initData._countRef || { n: 0 };
+        this._branchId = 0;
+        if (initParams === null) {
+            this._branchId = this._createIdMap()
+
+        }
 
 
 
 
+
+
+
+
+    }
+    /**
+     * @returns {import("./protocol").ContextSerialiableData}
+     */
+    getSerialiableData() {
+        return {
+            bords: this.bords.getSerializableData(),
+            states: this.states.getSerializableData(),
+            histories: this.histories.getSerializableData(),
+
+        }
 
     }
     /**
@@ -229,7 +256,12 @@ class Context {
 
         const states = this.states.fork(branch?.state)
         const histories = this.histories.fork(branch?.histories)
+        let _id = id
+        if (typeof id === 'undefined') {
+            _id = this._createIdMap({ bords, states, histories })
 
+
+        }
 
         /**
         * @type {import("./protocol").ContextInheritance}
@@ -243,7 +275,8 @@ class Context {
             functions: this.functions,
             reporter: this.reporter,
             repositries: this.repositries,
-            workflows: this.workflows
+            workflows: this.workflows,
+            id: _id
         }
 
         /**
@@ -251,11 +284,7 @@ class Context {
          */
         // @ts-ignore
         const forked = new this.constructor({ inheritance })
-        if (typeof id === 'undefined') {
-            const idMap = { bords: bords.getBranchId(), states: states.getBranchId(), histories: histories.getBranchId() }
-            this.branches[this._countRef.n] = idMap
-            this._countRef.n += 1
-        }
+
 
 
 
@@ -264,6 +293,25 @@ class Context {
 
 
     }
+    /**
+     * @param {Object} param0
+     * @param {Bords?} [param0.bords] 
+     * @param {States?} [param0.states] 
+     * @param {Histories?} [param0.histories] 
+     * @returns 
+     */
+    _createIdMap({ bords = null, states = null, histories = null } = {}) {
+        const _bords = bords || this.bords
+        const _states = states || this.states
+        const _histories = histories || this.histories
+        const idMap = { bords: _bords.getBranchId(), states: _states.getBranchId(), histories: _histories.getBranchId() }
+        const id = this._countRef.n
+        this.branches[this._countRef.n] = idMap
+        this._countRef.n += 1
+
+        return id
+    }
+
 
 
 

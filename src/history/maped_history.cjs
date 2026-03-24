@@ -329,7 +329,7 @@ class MapedHistory {
         /**
          * @type {SerializedHistoryData}
          */
-        const initData = this.getLinkedData()
+        const initData = this.getReferenceData()
         /**
          * @type {typeof this}
          */
@@ -405,7 +405,7 @@ class MapedHistory {
      * 
      * @returns {SerializedHistoryData}
      */
-    getLinkedData() {
+    getReferenceData() {
         return { logs: this._logs, branchLogs: this._branchLogs, countRef: this._countRef, linkedCounts: this._linkedCounts, linkMap: this._linkMap }
     }
 
