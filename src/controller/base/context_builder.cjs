@@ -20,7 +20,7 @@ class ContextBuilder {
      * @returns {Context}
      */
     _buildContext(contextInit) {
-        return new this._contextClass({ initParams: contextInit })
+        return new this._contextClass({ datas: contextInit })
     }
 
 }

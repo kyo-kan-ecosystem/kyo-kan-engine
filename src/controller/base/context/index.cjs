@@ -56,8 +56,8 @@ const DEFUALT_CLASSES = {
 
 /**
  *
- * @template  {import("./protocol").MaybeForkType} ReporterType, 
- * @template  {}ContextFunctionsType
+ * @template  {import("./protocol").MaybeForkType} ReporterType
+ * @template  {import("./protocol").MaybeForkTypeMap} ContextFunctionsType
  */
 class Context {
     /**
@@ -110,14 +110,14 @@ class Context {
 
     /**
      * @param {Object} param0 
-     * @param {import("./protocol").ContextInit<ContextFunctionsType, ReporterType> | false| null} [param0.initParams] 
+     * @param {import("./protocol").ContextSerialiableData | false| null} [param0.datas] 
+     * @param {import("./protocol").ContextApi} [param0.api]
      * @param {ContextClasses} [param0.classes] 
      * @param {import("./protocol").ContextInheritance?} [param0.inheritance] 
      */
-    constructor({ initParams = null, inheritance = null, classes = DEFUALT_CLASSES }) {
-        if (initParams === false) {
-            this.functions = inheritance.functions
-            this.repositries = inheritance.repositries
+    constructor({ datas = null, api = null, inheritance = null, classes = DEFUALT_CLASSES }) {
+        if (datas === false) {
+
             this.bords = inheritance.bords
             this.states = inheritance.states
             this.workflows = inheritance.workflows
@@ -125,23 +125,27 @@ class Context {
             this.branches = inheritance.branches
             this.reporter = inheritance.reporter
             this._countRef = inheritance._countRef
-
+            this._branchId = inheritance.branchId
+            const { functions, reporter } = this._forkApi(inheritance.reporter, inheritance.functions)
+            this.functions = functions
+            this.reporter = reporter
             return
         }
-        const initData = initParams?.data || {}
-
-        this.functions = initParams?.api?.functions
-        this.reporter = initParams?.api?.reporter
 
 
-        this.repositries = new classes.repositries(initData.repositries)
+        const { functions, reporter } = this._forkApi(api.reporter, api.functions)
+        this.functions = functions
+        this.reporter = reporter
 
 
-        this.bords = new classes.bords(initData.bords)
+        this.repositries = new classes.repositries(datas.repositries)
 
 
-        this.states = new classes.states(initData.states)
-        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, initData.workflows || {})
+        this.bords = new classes.bords(datas.bords)
+
+
+        this.states = new classes.states(datas.states)
+        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, datas.workflows || {})
         /**
          * @type {Workflows}
          */
@@ -150,14 +154,19 @@ class Context {
         /**
          * @type {Histories}
          */
-        this.histories = new classes.histories({ states: this.states, bords: this.bords }, initData.histories)
-        this.branches = initData.branches || {}
+        this.histories = new classes.histories({ states: this.states, bords: this.bords }, datas.histories)
+        this.branches = datas.branches || {}
 
-        this.reporter = initData.reporter
-        this._countRef = initData._countRef || { n: 0 };
-        this._branchId = 0;
-        if (initParams === null) {
+
+        this._countRef = datas._countRef || { n: 0 };
+
+        if (datas === null) {
             this._branchId = this._createIdMap()
+
+
+        }
+        else {
+            this._branchId = 0
 
         }
 
@@ -169,6 +178,8 @@ class Context {
 
 
     }
+
+
     /**
      * @returns {import("./protocol").ContextSerialiableData}
      */
@@ -223,6 +234,9 @@ class Context {
 
 
     }
+    getBranchId() {
+        return this._branchId
+    }
     /**
      * 
      * @param {string} name 
@@ -251,14 +265,15 @@ class Context {
 
 
     }
+
     _fork(id, branch, bords) {
 
 
         const states = this.states.fork(branch?.state)
         const histories = this.histories.fork(branch?.histories)
-        let _id = id
+        let branchId = id
         if (typeof id === 'undefined') {
-            _id = this._createIdMap({ bords, states, histories })
+            branchId = this._createIdMap({ bords, states, histories })
 
 
         }
@@ -276,7 +291,7 @@ class Context {
             reporter: this.reporter,
             repositries: this.repositries,
             workflows: this.workflows,
-            id: _id
+            branchId
         }
 
         /**
@@ -291,6 +306,38 @@ class Context {
         return forked
 
 
+
+    }
+    /**
+     * 
+     * @param {import("./protocol").MaybeForkType?} reporter 
+     * @param {import("./protocol").MaybeForkTypeMap?} functions
+     * @returns {{functions:any, reporter:any}} 
+     */
+    _forkApi(reporter, functions) {
+        const forkedFunctions = {}
+
+        for (const key in functions || {}) {
+            const functionObj = functions[key]
+            if ('fork' in functionObj) {
+                forkedFunctions[key] = functionObj.fork(this.getBranchId(), this)
+                continue
+
+
+            }
+            forkedFunctions[key] = functionObj
+
+        }
+        let forkedReporter
+        if (reporter !== null && 'fork' in reporter) {
+            forkedReporter = reporter.fork(this.getBranchId(), this)
+        } else {
+            forkedReporter = reporter
+        }
+        return {
+            functions: forkedFunctions,
+            reporter: forkedReporter
+        }
 
     }
     /**
