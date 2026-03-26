@@ -3,7 +3,7 @@ const { AbstractDispatcher } = require("./protocol.class.cjs");
 
 
 
-class DispatcherBase extends AbstractDispatcher {
+class SequenceDispatcherBase extends AbstractDispatcher {
     /**
    * 
    * @param {*} request 
@@ -139,7 +139,7 @@ class DispatcherBase extends AbstractDispatcher {
 
 }
 
-module.exports = { DispatcherBase }
+module.exports = { SequenceDispatcherBase }
 
 
 
