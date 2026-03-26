@@ -88,7 +88,7 @@ class DispatcherBase extends AbstractDispatcher {
     goSub(context, state, repsponse) {
         context.goSub();
         const subExecuteFunc = context.workflows.getCurrentWorkflow().enterWorkflow(context);
-        funcsArray.push(subExecuteFunc);
+
     }
     /**
      * 
