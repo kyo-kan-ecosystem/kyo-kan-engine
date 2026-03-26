@@ -15,12 +15,13 @@ class Registrater extends ContextBuilder {
     context
     /**
      * 
-     * @param {import("./context/protocol").ContextInit<any, any>?} contextInit      *
+     * @param {import("./context/protocol").ContextSerialiableData} datas
+     * @param {import("./context/protocol").ContextApi} api       *
      * @param {typeof import("./context/index.cjs").Context?} contextClass  
      */
-    constructor(contextInit, contextClass) {
+    constructor(datas, api, contextClass) {
         super(contextClass)
-        this.context = this._buildContext(contextInit)
+        this.context = this._buildContext(datas, api)
 
 
     }
@@ -68,9 +69,10 @@ class Registrater extends ContextBuilder {
          * @type {{workflow:string, executorConfig:import("../../../protocol/executor/protocol").ExecutorConfigure}[]}
          */
         const executorQueue = []
+
         for (const executorConfig of rootConfigure.executors || []) {
 
-            const item = { workflow: engineConfigure.root.workflow, executorConfig }
+            const item = { workflow: engineConfigure.root.workflow.id, executorConfig }
             executorQueue.push(item)
         }
 
@@ -94,13 +96,13 @@ class Registrater extends ContextBuilder {
              */
             const plugin = this.context.repositries.plugins.executors.get(item.executorConfig.plugin)
 
-            for (const [name, difinition] of Object.entries(plugin.getSubworkflows())) {
+            for (const [name, difinition] of Object.entries(plugin.getSubworkflows(item.executorConfig))) {
                 /**
                  * @type {WorkFlowPluginType}
                  */
                 const subWorkflowPlugin = this.context.repositries.plugins.workflows.get(difinition.plugin)
                 const configure = item.executorConfig.subworkflows[name]
-                const subWorkflowConfigure = subWorkflowPlugin.getConfigureParams(configure.params, executorId)
+                const subWorkflowConfigure = subWorkflowPlugin.getConfigureParams(configure, executorId)
                 const subwWorkflowId = this.context.repositries.configures.workflows.add(executorId, name, subWorkflowConfigure.params)
 
 
