@@ -1,6 +1,6 @@
 
 
-const { ContextBuilder } = require("./context_builder.cjs")
+const { ContextBuilder } = require("../../context/builder.cjs")
 
 
 

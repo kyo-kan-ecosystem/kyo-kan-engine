@@ -9,3 +9,7 @@ export type ModeAndContext = {
 export type ProcessCounter = {
     n: number
 }
+
+export type GetMode = {
+    getMode: () => any
+} 

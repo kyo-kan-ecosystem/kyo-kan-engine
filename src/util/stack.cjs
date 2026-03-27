@@ -127,6 +127,7 @@ class Stack {
 
 /**
  * @template {Stack} BranchClass
+ * @template DataType
  *
  */
 class StackTree {
@@ -312,7 +313,7 @@ class StackTree {
     /**
      * Gets an element from the current branch.
      * @param {number} digg - The offset from the top of the stack.
-     * 
+     * @returns {DataType}
      */
     get(digg = 0) {
         return this._branches[this._branchId].get(digg)

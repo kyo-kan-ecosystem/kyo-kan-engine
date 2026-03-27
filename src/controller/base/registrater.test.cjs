@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { Registrater } = require('./registrater.cjs');
-const { ContextBuilder } = require('./context_builder.cjs');
+const { ContextBuilder } = require('../../context/builder.cjs');
 
 describe('Registrater', () => {
     let registrater;
