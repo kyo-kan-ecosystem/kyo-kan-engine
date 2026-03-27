@@ -1,4 +1,4 @@
-const { Stack } = require("../../../../util/stack.cjs");
+const { Stack } = require("../../util/stack.cjs");
 
 /**
  * @extends {Stack<import("./bords.protocol").BordsProtocol>}

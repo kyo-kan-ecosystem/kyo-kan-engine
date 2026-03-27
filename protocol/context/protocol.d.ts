@@ -1,1 +1,1 @@
-export { Context } from '../../src/controller/base/context/index.cjs'
+export { Context } from '../../src/context/index.cjs'

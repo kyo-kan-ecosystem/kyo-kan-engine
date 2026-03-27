@@ -1,9 +1,9 @@
-const { RequestHistory } = require('../../../history/request.cjs');
-const { StateHistory } = require('../../../history/state.cjs');
-const { BordGlobalHistory } = require('../../../history/bords/global.cjs');
-const { BordCurrentWorkflowHistory } = require('../../../history/bords/current_workflow.cjs');
-const { BordSubWorkflowHistory } = require('../../../history/bords/sub_workflow.cjs');
-const { ResponseHistory } = require('../../../history/response.cjs');
+const { RequestHistory } = require('../history/request.cjs');
+const { StateHistory } = require('../history/state.cjs');
+const { BordGlobalHistory } = require('../history/bords/global.cjs');
+const { BordCurrentWorkflowHistory } = require('../history/bords/current_workflow.cjs');
+const { BordSubWorkflowHistory } = require('../history/bords/sub_workflow.cjs');
+const { ResponseHistory } = require('../history/response.cjs');
 
 
 /**
@@ -143,7 +143,7 @@ class Histories {
         }
         this._applyHistoryToTrees
         /**
-         * @type {{log:{mode:import('../../protocol').executeMode}, depth:number}}
+         * @type {{log:{mode:import('../controller/protocol').executeMode}, depth:number}}
          */
         const headState = this.state.getBranchHead()
         if (headState.log.mode === 'wait') {

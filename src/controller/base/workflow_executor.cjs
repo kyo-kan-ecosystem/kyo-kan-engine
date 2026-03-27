@@ -27,7 +27,7 @@
  */
 
 /**
- * @typedef {import("./context/workflows.cjs").Workflows} Workflows
+ * @typedef {import("../../context/workflows.cjs").Workflows} Workflows
  * 
  * 
  */
@@ -35,7 +35,7 @@
 
 
 /**
- * @typedef {function(*, import('./context/index.cjs').Context): Promise<ExecutionResult>} ExecuteFunction
+ * @typedef {function(*, import('../../context/index.cjs').Context): Promise<ExecutionResult>} ExecuteFunction
  */
 
 class Cursor {
@@ -67,7 +67,7 @@ class Cursor {
 /**
  * ワークフローを実行する関数
  * @param {*} request - リクエストオブジェクト
- * @param {import('./context/index.cjs').Context} context - コンテキストオブジェクト
+ * @param {import('../../context/index.cjs').Context} context - コンテキストオブジェクト
  * @returns {Promise<{state: State, responses: Array}>} 実行結果
  */
 async function executeWorkflow(request, context) {

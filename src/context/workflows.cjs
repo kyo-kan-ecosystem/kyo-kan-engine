@@ -28,16 +28,16 @@ class Workflows {
 
     getCurrentWorkflow() {
         /**
-         * @type {import("../../protocol").StateType}
+         * @type {import("../controller/protocol").StateType}
          */
         const state = this.states.get()
         /**
-         * @type { import("../../../workflow/protocol").WorkflowPluginConfigure}
+         * @type { import("../workflow/protocol").WorkflowPluginConfigure}
          */
 
         const configure = this.repositries.configures.workflows.get(state.workflow.id)
         /**
-         * @type {import("../../../workflow/protocol").Plugin}
+         * @type {import("../workflow/protocol").Plugin}
          */
         const workflow = this.repositries.plugins.workflows.get(configure.plugin)
 
@@ -60,7 +60,7 @@ class Workflows {
 
     goSub() {
         /**
-         * @type {import("../../protocol").StateType}
+         * @type {import("../controller/protocol").StateType}
         */
         const superState = this.states.get(1)
         const id = this.repositries.configures.workflows.getId(superState.workflow.subwWorkflow.name, superState.executor.executorId)
@@ -70,7 +70,7 @@ class Workflows {
 
 
         /**
-         * @type {import("../../protocol").StateType}
+         * @type {import("../controller/protocol").StateType}
          */
         const updateState = { workflow: currentWorkflowState }
         this.states.update(updateState)

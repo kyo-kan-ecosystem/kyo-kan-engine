@@ -1,6 +1,6 @@
 
 
-const { Context } = require("./context/index.cjs")
+const { Context } = require("../../context/index.cjs")
 
 const { ContextBuilder } = require("./context_builder.cjs")
 /**
@@ -14,7 +14,7 @@ class Controller {
     /**
      * 
      * @param {*} request 
-     * @param {import("./context/index.cjs").Context} context 
+     * @param {import("../../context/index.cjs").Context} context 
      */
     exec(request, context) {
 

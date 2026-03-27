@@ -1,9 +1,9 @@
-const { EngineConfigureRepositry } = require("../../../engine/repositry/configure.cjs");
-const { ExecutorPluginRepositry } = require("../../../executor/repositry/plugin.cjs");
-const { ExecutorConfigureRepositry } = require("../../../executor/repositry/configure.cjs");
+const { EngineConfigureRepositry } = require("../engine/repositry/configure.cjs");
+const { ExecutorPluginRepositry } = require("../executor/repositry/plugin.cjs");
+const { ExecutorConfigureRepositry } = require("../executor/repositry/configure.cjs");
 
-const { WorkflowPluginRepositry } = require("../../../workflow/repositry/plugins.cjs");
-const { WorkflowConfiguresRepositry } = require("../../../workflow/repositry/configures.cjs");
+const { WorkflowPluginRepositry } = require("../workflow/repositry/plugins.cjs");
+const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configures.cjs");
 
 
 

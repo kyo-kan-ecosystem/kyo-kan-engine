@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { WorkflowState } from "../workflow/protocol";
 
 
-export { Context } from "./base/context/index.cjs";
+export { Context } from "../context/index.cjs";
 
 
 export type ExecutorState = {

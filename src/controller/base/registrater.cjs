@@ -10,14 +10,14 @@ const { ContextBuilder } = require("./context_builder.cjs")
 
 class Registrater extends ContextBuilder {
     /**
-     * @type {import("./context/index.cjs").Context}
+     * @type {import("../../context/index.cjs").Context}
      */
     context
     /**
      * 
-     * @param {import("./context/protocol").ContextSerialiableData} datas
-     * @param {import("./context/protocol").ContextApi} api       *
-     * @param {typeof import("./context/index.cjs").Context?} contextClass  
+     * @param {import("../../context/protocol").ContextSerialiableData} datas
+     * @param {import("../../context/protocol").ContextApi} api       *
+     * @param {typeof import("../../context/index.cjs").Context?} contextClass  
      */
     constructor(datas, api, contextClass) {
         super(contextClass)

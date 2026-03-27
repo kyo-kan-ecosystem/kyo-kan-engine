@@ -1,4 +1,4 @@
-const { Context } = require("./context/index.cjs")
+const { Context } = require("../../context/index.cjs")
 
 
 class ContextBuilder {
@@ -16,8 +16,8 @@ class ContextBuilder {
         this._contextClass = contextClass || Context
     }
     /**
-     * @param {import("./context/protocol").ContextSerialiableData} datas
-     * @param {import("./context/protocol").ContextApi} api  
+     * @param {import("../../context/protocol").ContextSerialiableData} datas
+     * @param {import("../../context/protocol").ContextApi} api  
      * @returns {Context}
      */
     _buildContext(datas, api) {
