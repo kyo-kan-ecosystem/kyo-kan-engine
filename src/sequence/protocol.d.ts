@@ -1,8 +1,11 @@
 import { AbstractDispatcher } from "./protocol.class.cjs"
 
 export type ModeAndContext = {
-    mode?: string,
+    mode?: any,
     context?: any
 
 } | false | null | undefined
 
+export type ProcessCounter = {
+    n: number
+}
