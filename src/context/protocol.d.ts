@@ -19,21 +19,18 @@ export type MaybeForkType = {
 export type MaybeForkTypeMap = {
     [key: string]: MaybeForkType
 }
-export type ContextSerialiableData = Partial<{
+export type ContextSerializableData = Partial<{
     states: any,
     repositries: any,
     bords: any,
     workflows: any,
     histories: any,
-
     branches: Object<any, any>,
     _countRef: { n: number }
 
 }>
 
-const t: MaybeForkInterface = {
 
-}
 export type ContextApi<FunctionsType = any, ReporterType = any> = {
     functions: FunctionsType,
     reporter: ReporterType,
@@ -41,11 +38,7 @@ export type ContextApi<FunctionsType = any, ReporterType = any> = {
 
 
 
-const t: MaybeForkType = {
-    fork() {
 
-    }
-}
 
 export type ContextInheritance<FunctionsType extends MaybeForkTypeMap = any, ReporterType extends MaybeForkTypeMap = any> = {
     states: any,

@@ -16,7 +16,7 @@ class ContextBuilder {
         this._contextClass = contextClass || Context
     }
     /**
-     * @param {import("./protocol").ContextSerialiableData} datas
+     * @param {import("./protocol").ContextSerializableData} datas
      * @param {import("./protocol").ContextApi} api  
      * @returns {Context}
      */

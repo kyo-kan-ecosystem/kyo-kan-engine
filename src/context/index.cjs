@@ -111,7 +111,7 @@ class Context {
 
     /**
      * @param {Object} param0 
-     * @param {import("./protocol").ContextSerialiableData | false| null} [param0.datas] 
+     * @param {import("./protocol").ContextSerializableData | false| null} [param0.datas] 
      * @param {import("./protocol").ContextApi} [param0.api]
      * @param {ContextClasses} [param0.classes] 
      * @param {import("./protocol").ContextInheritance?} [param0.inheritance] 
@@ -194,7 +194,7 @@ class Context {
 
 
     /**
-     * @returns {import("./protocol").ContextSerialiableData}
+     * @returns {import("./protocol").ContextSerializableData}
      */
     getSerialiableData() {
         return {

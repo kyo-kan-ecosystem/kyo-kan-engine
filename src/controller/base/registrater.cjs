@@ -15,7 +15,7 @@ class Registrater extends ContextBuilder {
     context
     /**
      * 
-     * @param {import("../../context/protocol").ContextSerialiableData} datas
+     * @param {import("../../context/protocol").ContextSerializableData} datas
      * @param {import("../../context/protocol").ContextApi} api       *
      * @param {typeof import("../../context/index.cjs").Context?} contextClass  
      */
