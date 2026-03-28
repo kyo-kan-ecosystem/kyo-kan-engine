@@ -391,7 +391,7 @@ class StackTree {
 
     /**
      * Pushes data onto the current branch.
-     * @param {*} data
+     * @param {DataType} data
      */
     push(data) {
         this._branches[this._branchId].push(data)

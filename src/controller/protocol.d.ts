@@ -25,10 +25,10 @@ export type PartialSateType = Partial<StateType>
 
 
 
-export type executeMode = 'wait' | 'go' | 'goSub' | 'end' | 'back' | 'rewindWorokflow' | 'rewindReturn';
+export type executeMode = 'enter' | 'wait' | 'go' | 'goSub' | 'end' | 'back' | 'rewindWorokflow' | 'rewindReturn';
 
 export type State = {
-    mode: executeMode
+    mode?: executeMode
 } & StateType
 
 export type ExecutionResult = {

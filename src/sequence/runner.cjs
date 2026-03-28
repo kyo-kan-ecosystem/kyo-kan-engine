@@ -1,3 +1,4 @@
+
 const { SingleEvent } = require("../util/single_event.cjs")
 
 /**
@@ -21,9 +22,15 @@ class SequenceRunner {
     _contexts
 
     /**
+     * @type { import("../context/index.cjs").Context }
+     * */
+
+    _context
+
+    /**
      * 
      * @param {*} dispatcher 
-     * @param {*} context 
+     * @param {import("../context/index.cjs").Context} context 
      * @param {*} request 
      * @param {*} enterMode
      * @param {import("./protocol").ProcessCounter?} processCounter
@@ -60,9 +67,11 @@ class SequenceRunner {
 
             }
 
-
+            /**
+             * @type {import("../context/index.cjs").Context}
+             */
             const context = modeAndContext?.context || this.context
-            const mode = modeAndContext?.mode || context.getMode()
+            const mode = modeAndContext?.mode || context.states.getMode()
 
             if (context === this.context) {
                 this._processCounter.n++

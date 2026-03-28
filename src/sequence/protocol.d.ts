@@ -10,6 +10,6 @@ export type ProcessCounter = {
     n: number
 }
 
-export type GetMode = {
+export interface GetModeInterFace {
     getMode: () => any
 } 
