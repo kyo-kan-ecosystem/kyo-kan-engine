@@ -3,13 +3,7 @@
 
 
 
-/**
- * @typedef {Object} Workflow
- * @property {function(Object): Function} getExecuteFunction - 実行関数を取得
- * @property {function(Object): Function} getSubworkflow - サブワークフローに入る
- * @property {function(Object): Function} returnFromSubworkflow - サブワークフローから戻る
- * @property {function(Object): Function} back - 前の状態に戻る
- */
+
 
 const { Bords } = require("./bords/bords.cjs");
 const { Histories } = require("./histories.cjs");
@@ -108,6 +102,13 @@ class Context {
      */
     _countRef
 
+
+    /**
+     * @type {ContextClasses}
+     */
+    _classes
+
+
     /**
      * @param {Object} param0 
      * @param {import("./protocol").ContextSerialiableData | false| null} [param0.datas] 
@@ -116,11 +117,13 @@ class Context {
      * @param {import("./protocol").ContextInheritance?} [param0.inheritance] 
      */
     constructor({ datas = null, api = null, inheritance = null, classes = DEFUALT_CLASSES }) {
+        this._classes = classes
+
         if (datas === false) {
 
             this.bords = inheritance.bords
             this.states = inheritance.states
-            this.workflows = inheritance.workflows
+
             this.histories = inheritance.histories
             this.branches = inheritance.branches
             this.reporter = inheritance.reporter
@@ -129,6 +132,7 @@ class Context {
             const { functions, reporter } = this._forkApi(inheritance.reporter, inheritance.functions)
             this.functions = functions
             this.reporter = reporter
+            this.workflows = this._constructWorkflows(inheritance.workflows)
             return
         }
 
@@ -145,11 +149,8 @@ class Context {
 
 
         this.states = new classes.states(datas.states)
-        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries }, datas.workflows || {})
-        /**
-         * @type {Workflows}
-         */
-        this.workflows = new classes.workflows(workflowsInit)
+
+        this.workflows = this._constructWorkflows(datas.workflows)
 
         /**
          * @type {Histories}
@@ -179,6 +180,16 @@ class Context {
 
 
 
+    }
+    _constructWorkflows(datas = null, context = null) {
+        /**
+         * @type {ConstructorParameters<typeof Workflows>[0]}
+         */
+        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries, context: context || this }, datas || {})
+        /**
+         * @type {Workflows}
+         */
+        return new this._classes.workflows(workflowsInit)
     }
 
 

@@ -15,12 +15,17 @@ class Workflows {
 
     repositries
     /**
+     * @type {any}
+     */
+    context
+    /**
      * 
-     * @param {{states:import("./states/states.cjs").States, repositries:import("./repositries.cjs").Repositries}} initData 
+     * @param {{states:import("./states/states.cjs").States, repositries:import("./repositries.cjs").Repositries, context:any}} initData 
      */
     constructor(initData) {
         this.repositries = initData.repositries
         this.states = initData.states
+        this.context = initData.context
 
 
 
@@ -45,15 +50,11 @@ class Workflows {
 
 
     }
-    /**
-     * 
-  
-     * @param {*} context
-     */
-    go(context) {
+
+    go() {
 
         const { workflow, configure } = this.getCurrentWorkflow()
-        return workflow.go(context, configure)
+        return workflow.go(this.context, configure)
 
     }
 

@@ -11,9 +11,8 @@ const { BordsBranch } = require("./bords_branch.cjs")
  * @typedef {{[k in string]:any}} LinkMapType
  */
 /**
- * 
+ * TODO プラグインローカル実装 
  */
-
 /**
  * @extends StackTree<BordsBranch>
  */
