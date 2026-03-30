@@ -1,5 +1,6 @@
 
 const deepmerge = require("deepmerge")
+const { StackTreeRootPopError } = require("./errors.cjs")
 
 
 /**
@@ -169,7 +170,7 @@ class StackTree {
 
     /**
      * Creates an instance of StackTree.
-     * @param {import("./stack.protocol").SeriaraizableStackTreeData | import("./stack.protocol").StackReference<BranchClass>| null} [initData=null] - Initial data to restore the tree state.
+     * @param {import("./protocol").SeriaraizableStackTreeData | import("./protocol").StackReference<BranchClass>| null} [initData=null] - Initial data to restore the tree state.
      * @param {number?} id 
      * @param {any} [branchClass=Stack] - The stack class to be used internally.
      */
@@ -216,7 +217,7 @@ class StackTree {
      * @param {number?} id 
      * @returns {boolean}
      */
-    isTop(id = null) {
+    isRoot(id = null) {
         const _id = id == null ? this.getBranchId() : id
         return this.topId === _id;
     }
@@ -333,7 +334,7 @@ class StackTree {
 
     /**
      * Restores the state of the `StackTree` from serialized data.
-     * @param {import("./stack.protocol").SeriaraizableStackTreeData} datas - The serialized data.
+     * @param {import("./protocol").SeriaraizableStackTreeData} datas - The serialized data.
      */
     setSerializableData(datas) {
         for (const [key, value] of Object.entries(datas.branches || [])) {
@@ -347,7 +348,7 @@ class StackTree {
 
     /**
      * Returns the current state of the `StackTree` as a serializable object.
-     * @returns {import("./stack.protocol").SeriaraizableStackTreeData}
+     * @returns {import("./protocol").SeriaraizableStackTreeData}
      */
     getSerializableData() {
         const branches = {};
@@ -401,8 +402,23 @@ class StackTree {
      * Pops data from the current branch.
      * @returns {any}
      */
-    pop() {
-        return this._branches[this._branchId].pop()
+    pop(checkIsTop = true) {
+        const ret = this._branches[this._branchId].pop()
+        if (this.isEmptyNow() === true) {
+            if (this.isRoot() === true) {
+                if (checkIsTop === true) {
+                    throw new StackTreeRootPopError()
+
+                }
+                return ret
+            }
+            this.setBranchId(this.getSuperBranchId())
+
+
+
+        }
+        return ret
+
     }
 
 

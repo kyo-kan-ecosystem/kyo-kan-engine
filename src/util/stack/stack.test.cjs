@@ -85,12 +85,12 @@ describe('StackTree', () => {
     it('should initialize an empty tree', () => {
         const tree = new StackTree();
         expect(tree.getBranchId()).to.equal(0);
-        expect(tree.isTop(0)).to.be.true;
+        expect(tree.isRoot(0)).to.be.true;
         expect(tree.isEmptyNow()).to.be.true;
     });
 
     it('should handle constructor with initData=false', () => {
-        const tree = new StackTree(false);
+        const tree = new StackTree();
         // It should not initialize any branches
         expect(tree._branches).to.deep.equal({});
     });

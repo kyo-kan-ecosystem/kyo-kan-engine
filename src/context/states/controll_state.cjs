@@ -1,4 +1,4 @@
-import { StackTree } from "../../util/stack.cjs"
+import { StackTree } from "../../util/stack/stack.cjs"
 
 class ControllState {
     /**

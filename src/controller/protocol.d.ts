@@ -9,8 +9,8 @@ export type ControllStateType = {
     executorId?: string,
     callback?: string,
     executeMode?: ExecuteMode
-    subworkflowInit: any
-    subworkflowId: any
+    subworkflowInit?: any
+    subworkflowId?: any
 
 }
 

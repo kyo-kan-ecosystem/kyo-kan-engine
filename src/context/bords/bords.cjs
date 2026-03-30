@@ -1,5 +1,5 @@
 const deepmerge = require("deepmerge")
-const { StackTree } = require("../../util/stack.cjs")
+const { StackTree } = require("../../util/stack/stack.cjs")
 const { BordsBranch } = require("./bords_branch.cjs")
 
 
@@ -33,7 +33,7 @@ class Bords extends StackTree {
 
     /**
      * 
-     * @param {{_nameMap?:LinkMapType, _global?:any} & import("../../util/stack.protocol").SeriaraizableStackTreeData | false | null} initData 
+     * @param {{_nameMap?:LinkMapType, _global?:any} & import("../../util/stack/protocol").SeriaraizableStackTreeData | false | null} initData 
      * @param {*} branchClass 
      * @returns 
      */
@@ -99,42 +99,32 @@ class Bords extends StackTree {
         return item.subworkflow
     }
     pop() {
-
+        const nowId = this.getBranchId()
+        const name = this._nameMap[nowId]
         /**
          * @type {{workflow:any}}
          */
         const item = super.pop()
-        if (this.isEmptyNow() === true) {
-            const superBranch = this.getSuperBranchId()
 
-            if (typeof superBranch === "undefined") {
-                throw "this bor branch is top level"
-            }
-            const nowId = this.getBranchId()
-            const name = this._nameMap[nowId]
-            delete this._nameMap[nowId]
-            this.setBranchId(superBranch)
-            /**
-            * @type {{subworkflow?:any}}
-            */
-            const nowItem = this.get()
+
+        /**
+        * @type {{subworkflow?:any}}
+        */
+        const nowItem = this.get()
+        if (typeof name === "undefined") {
+            nowItem.subworkflow = item.workflow
+        }
+        else {
             const subworkflow = nowItem.subworkflow || {}
+
+
             subworkflow[name] = item.workflow
             nowItem.subworkflow = subworkflow
-            this.update(nowItem, true)
-            return item
-
         }
-        /**
-         * @type {{subworkflow?:any}}
-         */
-        const nowItem = this.get()
+        this.update(nowItem)
 
 
 
-
-        nowItem.subworkflow = item
-        this.update(nowItem, true)
         return item
 
 
@@ -155,7 +145,7 @@ class Bords extends StackTree {
 
 
     /**
-     * @param {{nameMap:LinkMapType, global:any} & import("../../util/stack.protocol").SeriaraizableStackTreeData} params
+     * @param {{nameMap:LinkMapType, global:any} & import("../../util/stack/protocol").SeriaraizableStackTreeData} params
      */
 
     // @ts-ignore
