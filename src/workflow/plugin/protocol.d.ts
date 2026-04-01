@@ -21,3 +21,12 @@ export type WorflowConcurrentPluginCnfigure = {
     executors: { [k in string]: any }
 }
 
+
+export type WorkflowResponse = {
+    context: any,
+    executor: any
+} | false
+
+export type WorkflowResponses = WorkflowResponse[]
+
+

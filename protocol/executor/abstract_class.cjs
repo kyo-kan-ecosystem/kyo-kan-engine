@@ -15,14 +15,7 @@ class AbstractExecutorPlugin {
     getSubworkflows(configure) {
         return configure.subworkflows
     }
-    /**
-     * @param {import("./protocol").ExecutorConfigure} configure 
-     * 
-     *
-     */
-    getEnterFunction(configure) {
-        return configure.enterFunction
-    }
+
 
 
 }

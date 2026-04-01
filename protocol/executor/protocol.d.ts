@@ -15,4 +15,7 @@ export type ExecutorFunctionResponse<WorkflowParamsType = any> = {
     callback?: string,
 
 }
-export type ExecutorFunction<OptionsType = any, RequestType = any, ContextFunctionType = any, ReporterType = any> = (options: OptionsType, context: Context<ContextFunctionType, ReporterType>) => any 
+
+export type ExecutorFunction<OptionsType = any, RequestType = any, ContextType = Context> = (options: OptionsType, context: ContextType) => void
+
+export type ExecutorType = { [k in string]: ExecutorFunction }

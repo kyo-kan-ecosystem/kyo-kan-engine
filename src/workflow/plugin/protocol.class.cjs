@@ -2,17 +2,20 @@
 
 
 
-
+/**
+ * 
+ */
 class AbstractWorkflow {
     /**
      * @abstract
      * @param {import("../../controller/protocol").Context} context 
     
      * @param {*} configure
-     * @returns {{state:any, response:any[]}} 
+     * @returns {import("./protocol").WorkflowResponses}
      */
     go(context, configure) {
-        return { state: null, response: [] }
+        throw new Error('Method not implemented.')
+
     }
 
     /**

@@ -8,31 +8,38 @@ class SequenceDispatcherBase extends AbstractDispatcher {
    * 
    * @param {*} request 
    * @param {import("../controller/protocol").Context<any,any>} context 
-   * 
+   * @returns {Promise<import("./protocol").ModeAndContexts>}
    * 
    */
 
     async enter(request, context) {
 
-        const executePlugin = context.workflows.go(context)
+        const workflowResponses = context.workflows.go()
         const state = context.states.get()
         let fucname = ''
+        const defualtEnterFuncName = context.repositries.configures.engine.get('executor').enterFunc
         if (state === null) {
-            fucname = context.repositries.configures.engine.get('executor').enterFunc
+            fucname = defualtEnterFuncName
 
         }
         else {
-            if (state.mode === 'wait') {
-                fucname = state.executor.callback
+            if (state.controlls?.executeMode === 'wait') {
+                fucname = state.controlls?.callback || defualtEnterFuncName
             }
             else {
-                fucname = context.repositries.configures.engine.get('executor').enterFunc
+                fucname = defualtEnterFuncName
             }
         }
+        const results = []
+        for (const workflowResponse of workflowResponses) {
+            if (workflowResponse === false) {
+                continue
+            }
+            await this._call(workflowResponse.executor, fucname, request, workflowResponse.context)
+            results.push({ context: workflowResponse.context })
 
-        const response = await this._call(executePlugin, fucname, request, context)
-        context.histories.forword(request, response)
-        return [response]
+        }
+        return results
 
 
 

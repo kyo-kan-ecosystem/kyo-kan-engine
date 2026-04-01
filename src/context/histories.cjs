@@ -111,11 +111,11 @@ class Histories {
     /**
      * 
      * @param {*} request 
-     * @param {*} response 
+     * 
      */
-    forword(request, response) {
+    forword(request) {
         this.request.forward(request, this._statesTree.getBranchDepth())
-        this.response.forward(response, this._statesTree.getBranchDepth())
+        //this.response.forward(response, this._statesTree.getBranchDepth())
         this.state.forward(this._statesTree.getStack().get(), this._statesTree.getBranchDepth())
         this.bords.global.forward(this._bordsTree.getGlobal(), this._bordsTree.getBranchDepth())
         this.bords.currentWorkflow.forward(this._bordsTree.getCurrentWorkflow(), this._bordsTree.getBranchDepth())
