@@ -7,7 +7,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
    * 
    * @param {*} request 
-   * @param {import("../controller/protocol").Context<any,any>} context 
+   * @param {import("../controller/protocol").Context} context 
    * @returns {Promise<import("./protocol").ModeAndContexts>}
    * 
    */
@@ -30,24 +30,40 @@ class SequenceDispatcherBase extends AbstractDispatcher {
                 fucname = defualtEnterFuncName
             }
         }
-        const results = []
-        for (const workflowResponse of workflowResponses) {
-            if (workflowResponse === false) {
-                continue
-            }
-            await this._call(workflowResponse.executor, fucname, request, workflowResponse.context)
-            results.push({ context: workflowResponse.context })
+
+        return this._runExecutor(workflowResponses, request, fucname)
+
+
+
+
+
+    }
+    /**
+     * 
+     * @param {*} request 
+     * @param {import("../controller/protocol").Context} context 
+     * @returns {Promise<import("./protocol").ModeAndContexts>}
+     * 
+    */
+    async wait(request, context) {
+        context.histories.forword(request)
+
+        return [false]
+    }
+    /**
+    * 
+    * @param {*} request 
+    * @param {import("../controller/protocol").Context} context 
+    * @returns {Promise<import("./protocol").ModeAndContexts>}
+    * 
+   */
+    end(request, context) {
+        if (context) {
 
         }
-        return results
-
-
-
 
     }
-    async wait(context, repsponses) {
-        return false
-    }
+
     /**
      * 
      * @param {import("../controller/protocol").Context<any,any>} context 
@@ -97,22 +113,8 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         const subExecuteFunc = context.workflows.getCurrentWorkflow().enterWorkflow(context);
 
     }
-    /**
-     * 
-     * @param {import("../controller/protocol").Context<any,>} context 
-     * @param {*} state 
-     * @param {*} repsponse 
-     */
-    end(context, state, repsponse) {
-        const isTopOnEnd = context.endSub();
-        if (!isTopOnEnd) {
-            return { state, responses };
-        }
-        const superWorkflowOnEnd = context.workflows.getCurrentWorkflow();
-        const superExecuteFuncOnEnd = superWorkflowOnEnd.returnFromSubworkflow(context);
-        funcsArray.push(superExecuteFuncOnEnd);
 
-    }
+
 
     back(context, state, repsponse) {
         const _request = context.back()
@@ -137,7 +139,30 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         const superWorkflowOnResetReturn = context.workflows.getCurrentWorkflow();
         const executeFuncOnResetReturn = superWorkflowOnResetReturn.returnAsReset(context);
         funcsArray.push(executeFuncOnResetReturn);
-        break;
+
+    }
+    /**
+     * 
+     * @param {import("../workflow/plugin/protocol").WorkflowResponses} workflowResponses 
+     * @param {*} request 
+     * @param {*} fucname 
+     * @returns 
+     */
+    async _runExecutor(workflowResponses, request, fucname) {
+        /**
+         * @type {import("./protocol").ModeAndContexts}
+         */
+        const results = []
+        for (const workflowResponse of workflowResponses) {
+            if (workflowResponse === false) {
+                results.push(false)
+                continue
+            }
+            await this._call(workflowResponse.executor, fucname, request, workflowResponse.context)
+            results.push({ context: workflowResponse.context })
+
+        }
+        return results
     }
     _call(plugin, funcname, request, context) {
         return plugin[funcname].call(request, context)

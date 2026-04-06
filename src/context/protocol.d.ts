@@ -27,6 +27,7 @@ export type ContextSerializableData = Partial<{
     histories: any,
     branches: Object<any, any>,
     _countRef: { n: number }
+    _linkMap: Object<any, any>
 
 }>
 
@@ -50,6 +51,7 @@ export type ContextInheritance<FunctionsType extends MaybeForkTypeMap = any, Rep
     branches: any,
     reporter: any,
     _countRef: any,
+    _linkMap: any
     branchId: number
 
 

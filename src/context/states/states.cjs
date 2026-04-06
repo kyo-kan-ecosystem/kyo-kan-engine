@@ -15,7 +15,7 @@ class States extends StackTree {
 
     }
     getExecuteMode() {
-        return this.get()?.controlls.executeMode
+        return (this.get() || {}).controlls?.executeMode
     }
     goSub() {
         this.push({})

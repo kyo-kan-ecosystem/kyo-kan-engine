@@ -62,6 +62,7 @@ class Context {
     /**
      * @type {Repositries}
      */
+    // @ts-ignore
     repositries
 
     /**
@@ -102,6 +103,10 @@ class Context {
      */
     _countRef
 
+    /**
+     * @type {Object<any, any>}
+     */
+    _linkMap
 
     /**
      * @type {ContextClasses}
@@ -112,7 +117,7 @@ class Context {
     /**
      * @param {Object} param0 
      * @param {import("./protocol").ContextSerializableData | false| null} [param0.datas] 
-     * @param {import("./protocol").ContextApi} [param0.api]
+     * @param {import("./protocol").ContextApi?} [param0.api]
      * @param {ContextClasses} [param0.classes] 
      * @param {import("./protocol").ContextInheritance?} [param0.inheritance] 
      */
@@ -121,45 +126,48 @@ class Context {
 
         if (datas === false) {
 
-            this.bords = inheritance.bords
-            this.states = inheritance.states
+            this.bords = inheritance?.bords
+            this.states = inheritance?.states
 
-            this.histories = inheritance.histories
-            this.branches = inheritance.branches
-            this.reporter = inheritance.reporter
-            this._countRef = inheritance._countRef
-            this._branchId = inheritance.branchId
-            const { functions, reporter } = this._forkApi(inheritance.reporter, inheritance.functions)
+            this.histories = inheritance?.histories
+            this.branches = inheritance?.branches
+            this.reporter = inheritance?.reporter
+            this._countRef = inheritance?._countRef
+            this._branchId = inheritance?.branchId || 0
+            this._linkMap = inheritance?._linkMap
+
+            const { functions, reporter } = this._forkApi(inheritance?.reporter, inheritance?.functions)
             this.functions = functions
             this.reporter = reporter
-            this.workflows = this._constructWorkflows(inheritance.workflows)
+            this.workflows = this._constructWorkflows(inheritance?.workflows)
             return
         }
 
 
-        const { functions, reporter } = this._forkApi(api.reporter, api.functions)
+        const { functions, reporter } = this._forkApi(api?.reporter, api?.functions)
         this.functions = functions
         this.reporter = reporter
 
 
-        this.repositries = new classes.repositries(datas.repositries)
+        this.repositries = new classes.repositries(datas?.repositries)
 
 
-        this.bords = new classes.bords(datas.bords)
+        this.bords = new classes.bords(datas?.bords)
 
 
-        this.states = new classes.states(datas.states)
+        this.states = new classes.states(datas?.states)
 
-        this.workflows = this._constructWorkflows(datas.workflows)
+        this.workflows = this._constructWorkflows(datas?.workflows)
 
         /**
          * @type {Histories}
          */
-        this.histories = new classes.histories({ states: this.states, bords: this.bords }, datas.histories)
-        this.branches = datas.branches || {}
+        this.histories = new classes.histories({ states: this.states, bords: this.bords }, datas?.histories)
+        this.branches = datas?.branches || {}
 
 
-        this._countRef = datas._countRef || { n: 0 };
+        this._countRef = datas?._countRef || { n: 0 };
+        this._linkMap = datas?._linkMap || {}
 
         if (datas === null) {
             this._branchId = this._createIdMap()
@@ -181,6 +189,12 @@ class Context {
 
 
     }
+    /**
+     * 
+     * @param {*} datas 
+     * @param {*} context 
+     * @returns 
+     */
     _constructWorkflows(datas = null, context = null) {
         /**
          * @type {ConstructorParameters<typeof Workflows>[0]}
@@ -205,42 +219,49 @@ class Context {
         }
 
     }
-    /**
-     * 
-     * @param {*} state
-     * @param {*} request  
-     */
-    forward(state, request) {
 
-        const branch = { state: this.states.getBranchId(), bord: this.bords.getBranchId() }
-        /**
-        * @type {BranchState}
-        */
-        const _state = Object.assign({ branch }, state);
-        this.states.update(_state)
-        this.histories.request.forward(request, this.states.getBranchDepth())
-
-
-
+    isRoot() {
+        return this.states.isRoot()
 
     }
+    isEmptyNow() {
+        return this.states.isEmptyNow()
+
+    }
+
     goSub() {
 
 
         this.states.goSub()
 
 
-        this.bords.push()
+        this.bords.push(this.states.get().controlls?.subworkflowInit)
 
 
         this.workflows.goSub()
 
     }
-    returnFromSubworkflow(request) {
+    returnFromSub() {
 
         this.bords.pop()
         this.states.pop()
+        const nowBranch = this.branches[this._branchId]
 
+        if (this.bords.getBranchId() !== nowBranch.bords || this.states.getBranchId() !== nowBranch.states) {
+            const linkedBranchId = this._linkMap[this._branchId]
+            this.setBranchId(linkedBranchId)
+            this.histories.setBranchId(this.branches[this._branchId].histories)
+
+
+        }
+
+    }
+    /**
+     * 
+     * @param {*} branchId 
+     */
+    setBranchId(branchId) {
+        this._branchId = branchId
     }
     reset() {
         this.bords.update()
@@ -287,9 +308,12 @@ class Context {
         let branchId = id
         if (typeof id === 'undefined') {
             branchId = this._createIdMap({ bords, states, histories })
+            this._linkMap[branchId] = this._branchId
+
 
 
         }
+
 
         /**
         * @type {import("./protocol").ContextInheritance}
@@ -304,6 +328,7 @@ class Context {
             reporter: this.reporter,
             repositries: this.repositries,
             workflows: this.workflows,
+            _linkMap: this._linkMap,
             branchId
         }
 
@@ -366,8 +391,11 @@ class Context {
         const _histories = histories || this.histories
         const idMap = { bords: _bords.getBranchId(), states: _states.getBranchId(), histories: _histories.getBranchId() }
         const id = this._countRef.n
-        this.branches[this._countRef.n] = idMap
         this._countRef.n += 1
+        this.branches[id] = idMap
+        this._linkMap[id] = this._branchId
+
+
 
         return id
     }

@@ -57,8 +57,8 @@ class Bords extends StackTree {
      * 
      * @param {*} workflow
      */
-    push(workflow) {
-        const item = { workflow }
+    push(workflow = null) {
+        const item = { workflow: workflow || {} }
         return super.push(item)
 
 

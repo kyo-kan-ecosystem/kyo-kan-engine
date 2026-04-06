@@ -400,10 +400,14 @@ class StackTree {
 
     /**
      * Pops data from the current branch.
+     * @param {Object} [param0={}] 
+     * @param {boolean} [param0.checkIsTop=true] 
+     * @param {boolean} [param0.autoreturn=true] 
      * @returns {any}
      */
     pop(checkIsTop = true) {
         const ret = this._branches[this._branchId].pop()
+
         if (this.isEmptyNow() === true) {
             if (this.isRoot() === true) {
                 if (checkIsTop === true) {
@@ -412,7 +416,10 @@ class StackTree {
                 }
                 return ret
             }
+
+
             this.setBranchId(this.getSuperBranchId())
+
 
 
 
