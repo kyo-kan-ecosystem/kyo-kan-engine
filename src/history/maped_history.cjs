@@ -386,6 +386,15 @@ class MapedHistory {
         return result;
 
     }
+    /**
+     * Branch out history.     
+     * 
+     * @param {number | true} [step=true]  
+     * @returns
+     */
+    branchOutHistory(step = true) {
+        return this.fork(null, step)
+    }
     getStep(branchId = null) {
         const _branchId = branchId || this._branchId
         return this._branchLogs[_branchId].length - 1
