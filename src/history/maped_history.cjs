@@ -334,10 +334,10 @@ class MapedHistory {
         return result
     }
     /**
-     * Creates a new `MapedHistory` instance that shares the same underlying data store.
-     * This is a lightweight way to create a new branch of history.
+     * Creates a new `MapedHistory` instance with forked history.
+     *
      * @param {any} [branchId] - The ID for the new branch. If not provided, a new unique ID is generated.
-     * @param {number| true?} [step=null] 
+     * @param {number| true?} [step=null] - Flag + Branch out step. if null, super-sub style branch out. if number, whole history branch out  
      * @returns {this} A new `MapedHistory` instance pointing to the new branch.
      */
     fork(branchId, step = null) {
@@ -363,7 +363,13 @@ class MapedHistory {
                 }
                 else {
                     initData.branchLogs[_branchId] = initData.branchLogs[this._branchId].slice(0, step)
-                    _step = step
+                    if (step >= 0) {
+                        _step = step
+                    }
+                    else {
+                        _step = Math.max(0, initData.branchLogs[_branchId].length + step)
+                    }
+
                 }
                 initData.linkMap[_branchId] = { branchId: this._branchId, step: _step }
 
