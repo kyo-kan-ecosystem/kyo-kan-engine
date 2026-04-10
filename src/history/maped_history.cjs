@@ -8,10 +8,12 @@ const equal = require('fast-deep-equal');
  * @typedef {BranchLogItem[]} BranchLog
  * @typedef {{[key in any]:BranchLog}} BranchLogs
  * @typedef {{history:number, branch:number}} CountRef
- * @typedef {{[k in any]:any}} LinkMap
+ * @typedef {{[k in any]:{branchId:any, step:number}}} LinkMap
+ * @typedef {{[k in any]:{branchId:any, branchOutStep:any}}} BranchOutMap
  * @typedef {{[k in any]:number}} LinkedCounts
- * @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, linkMap?:LinkMap, linkedCounts?:LinkedCounts}} SerializedHistoryData
+ * @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, linkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap}} SerializedHistoryData
  * @typedef {{log:any, depth:number}} BranchHead
+ * 
  */
 
 /**
@@ -51,7 +53,7 @@ class MapedHistory {
     _countRef
 
     /**
-     * A map to track the parent-child relationship between branches.
+     * A map to track the super-sub relationship between branches.
      * Key: child branch ID, Value: parent branch ID.
      * @protected
      * @type {LinkMap}
@@ -66,18 +68,29 @@ class MapedHistory {
     */
     _linkedCounts
 
+
+    /**
+     * A map to record history line branch.
+     * Key: branch     
+     * @protected
+     * @type {BranchOutMap}
+     */
+    _branchOutMap
+
     /**
      * Initializes a new MapedHistory instance.
      * @param {SerializedHistoryData?} [initData] - Optional data to initialize the history from.
      * If provided, the new instance can either be a deserialized state or a fork sharing data with another instance.
      */
     constructor(initData) {
+
         const _initData = initData || {}
         this._logs = _initData.logs || {}
         this._branchLogs = _initData.branchLogs || {}
         this._countRef = _initData.countRef || { history: 0, branch: 0 }
         this._linkMap = _initData.linkMap || {}
         this._linkedCounts = _initData.linkedCounts || {}
+        this._branchOutMap = _initData.branchOutMap || {}
         this._branchId = 0;
 
 
@@ -88,7 +101,7 @@ class MapedHistory {
      * Creates a new log entry with a unique ID and a reference count of 1.
      * This is an internal method used by `addNewLog`.
      * The provided data is deep-cloned to prevent mutation.
-     * @protected
+     * 
      * @param {any} data - The log data to store.
      * @returns {number} The ID of the newly created log.
      */
@@ -161,11 +174,11 @@ class MapedHistory {
      * If the new data is identical to the current head of the branch, it adds a non-updating reference.
      * Otherwise, it adds a new log entry.
      * @param {any} data - The data for the next state.
-     * @param {number?} depth - The depth for the new history step.
+     * @param {number} depth - The depth for the new history step.
      * @param {any?} branchId - The ID of the branch to move forward.
      * @returns {any} The ID of the log at the new head of the branch.
      */
-    forward(data, depth = null, branchId = null) {
+    forward(data, depth, branchId = null) {
         const headerLog = this.getBranchHead(branchId, false)
         if (headerLog === null) {
             return this.addNewLog(data, depth, branchId)
@@ -282,7 +295,7 @@ class MapedHistory {
 
         }
         const removedLogItem = branchLogItems.pop();
-        const removedLogId = removedLogItem.id;
+        const removedLogId = removedLogItem?.id;
         const logExist = branchLogItems.length > 0;
         this._logs[removedLogId].count -= 1
         if (this._logs[removedLogId].count === 0) {
@@ -290,6 +303,7 @@ class MapedHistory {
         }
 
 
+        // @ts-ignore
         return { removedLogItem, logExist };
     }
     isEmpty() {
@@ -323,28 +337,52 @@ class MapedHistory {
      * Creates a new `MapedHistory` instance that shares the same underlying data store.
      * This is a lightweight way to create a new branch of history.
      * @param {any} [branchId] - The ID for the new branch. If not provided, a new unique ID is generated.
+     * @param {number| true?} [step=null] 
      * @returns {this} A new `MapedHistory` instance pointing to the new branch.
      */
-    fork(branchId) {
-        /**
-         * @type {SerializedHistoryData}
-         */
+    fork(branchId, step = null) {
+
         const initData = this.getReferenceData()
-        /**
-         * @type {typeof this}
-         */
-        // @ts-ignore
-        const result = new this.constructor(initData)
 
         let _branchId = branchId;
         if (!branchId && branchId !== 0) {
             _branchId = this._countRef.branch;
-            this._countRef.history += 1;
-            this._linkMap[_branchId] = this._branchId
-            this._linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
+            initData.countRef.branch += 1;
+            if (step == null) {
+
+                initData.linkMap[_branchId] = { branchId: this._branchId, step: this.getStep() }
+                initData.linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
+            }
+            else {
+                let _step = 0
+                if (step === true) {
+                    initData.branchLogs[_branchId] = initData.branchLogs[this._branchId].concat()
+                    _step = initData.branchLogs[_branchId].length - 1
+
+
+                }
+                else {
+                    initData.branchLogs[_branchId] = initData.branchLogs[this._branchId].slice(0, step)
+                    _step = step
+                }
+                initData.linkMap[_branchId] = { branchId: this._branchId, step: _step }
+
+
+
+            }
+
+
         }
+        // @ts-ignore
+        const result = new this.constructor(initData)
+
         result.setBranchId(_branchId)
         return result;
+
+    }
+    getStep(branchId = null) {
+        const _branchId = branchId || this._branchId
+        return this._branchLogs[_branchId].length - 1
 
     }
     /**
@@ -361,7 +399,7 @@ class MapedHistory {
             throw new Error(`branchId ${_branchId} is not found`);
 
         }
-        const parentId = this._linkMap[_branchId];
+        const parentId = this._linkMap[_branchId].branchId;
         if (parentId in this._linkedCounts) {
             this._linkedCounts[parentId] -= 1
         }
@@ -403,12 +441,18 @@ class MapedHistory {
     }
     /**
      * 
-     * @returns {SerializedHistoryData}
+     * @returns {Required<SerializedHistoryData>}
      */
     getReferenceData() {
-        return { logs: this._logs, branchLogs: this._branchLogs, countRef: this._countRef, linkedCounts: this._linkedCounts, linkMap: this._linkMap }
+        return { logs: this._logs, branchLogs: this._branchLogs, countRef: this._countRef, linkedCounts: this._linkedCounts, linkMap: this._linkMap, branchOutMap: this._branchOutMap }
     }
 
+    /**
+     * 
+     */
+    clone() {
+
+    }
 
 }
 /**
