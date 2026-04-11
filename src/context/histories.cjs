@@ -3,7 +3,7 @@ const { StateHistory } = require('../history/state.cjs');
 const { BordGlobalHistory } = require('../history/bords/global.cjs');
 const { BordCurrentWorkflowHistory } = require('../history/bords/current_workflow.cjs');
 const { BordSubWorkflowHistory } = require('../history/bords/sub_workflow.cjs');
-const { ResponseHistory } = require('../history/response.cjs');
+
 /**
  * @typedef {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} BranchIdMapType
  */
@@ -12,7 +12,6 @@ const { ResponseHistory } = require('../history/response.cjs');
  * @typedef {{
  *    state:typeof StateHistory, 
  *    request:typeof RequestHistory, 
- *    response: typeof ResponseHistory, 
  *    bords:{
  *          global: typeof BordGlobalHistory, 
  *          subWorkflow: typeof BordSubWorkflowHistory, 
@@ -22,7 +21,7 @@ const { ResponseHistory } = require('../history/response.cjs');
 const DEFAULT_HISTORY_CLASSES = {
     state: StateHistory,
     request: RequestHistory,
-    response: ResponseHistory,
+
     bords: {
         global: BordGlobalHistory,
         subWorkflow: BordSubWorkflowHistory,
@@ -31,7 +30,7 @@ const DEFAULT_HISTORY_CLASSES = {
 }
 
 /**
- * @typedef {{state?:any, request?:any, response?:any, bords?:{global?:any, subWorkflow?:any, currentWorkflow:any}}} HistoryInit
+ * @typedef {{state?:any, request?:any, bords?:{global?:any, subWorkflow?:any, currentWorkflow:any}}} HistoryInit
  */
 
 
@@ -156,7 +155,7 @@ class Histories {
     _backOneStep() {
         this.state.back();
         this.request.back();
-        this.response.back();
+
         this.bords.global.back();
         this.bords.currentWorkflow.back();
         this.bords.subWorkflow.back();
@@ -216,7 +215,7 @@ class Histories {
             // @ts-ignore
             if (headState.log.mode === 'wait') {
                 // @ts-ignore
-                return { request: this.request.getBranchHead().log, response: this.response.getBranchHead().log };
+                return { request: this.request.getBranchHead().log };
             }
         }
         return false;
@@ -224,7 +223,7 @@ class Histories {
 
 
     /**
-     * @param {{state?:any, request?:any, response?:any, bords?:{global?:any, currentWorkflow?:any,subWorkflow?:any}}?} ids 
+     * @param {{state?:any, request?:any, bords?:{global?:any, currentWorkflow?:any,subWorkflow?:any}}?} ids 
      * @param {import('./protocol').StackTrees?} stackTrees 
      * 
      */
@@ -241,12 +240,11 @@ class Histories {
         // @ts-ignore
         const newHistories = new this.constructor(_stackTrees, false)
         /**
-         * @type {{state:any, request:any, response:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
+         * @type {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
          */
         const histories = {
             state: this.state.fork(_ids.state),
             request: this.request.fork(_ids.request),
-            response: this.response.fork(_ids.response),
             bords: {
                 global: this.bords.global.fork(_ids.bords?.global),
                 currentWorkflow: this.bords.currentWorkflow.fork(_ids.bords?.currentWorkflow),
@@ -274,12 +272,12 @@ class Histories {
     }
     /**
      * 
-     * @param {{state:any, request:any, response:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} histories 
+     * @param {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} histories 
      */
     setHistories(histories) {
         this.state = histories.state
         this.request = histories.request
-        this.response = histories.response
+
         this.bords.global = histories.bords.global
         this.bords.currentWorkflow = histories.bords.currentWorkflow
         this.bords.subWorkflow = histories.bords.subWorkflow
@@ -289,7 +287,7 @@ class Histories {
         const historyIds = {
             state: this.state.getBranchId(),
             request: this.request.getBranchId(),
-            response: this.response.getBranchId(),
+
             bords: {
                 global: this.bords.global.getBranchId(),
                 currentWorkflow: this.bords.currentWorkflow.getBranchId(),
@@ -300,13 +298,13 @@ class Histories {
     }
     /**
      * 
-     * @returns {{state:any, request:any, response:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
+     * @returns {{state:any, request:any,  bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
      */
     getSerializableData() {
         return {
             state: this.state.getReferenceData(),
             request: this.request.getReferenceData(),
-            response: this.response.getReferenceData(),
+
             bords: {
                 global: this.bords.global.getReferenceData(),
                 currentWorkflow: this.bords.currentWorkflow.getReferenceData(),
