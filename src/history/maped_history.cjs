@@ -54,15 +54,15 @@ class MapedHistory {
 
     /**
      * A map to track the super-sub relationship between branches.
-     * Key: child branch ID, Value: parent branch ID.
+     * Key: sub branch ID, Value: super branch ID.
      * @protected
      * @type {LinkMap}
     */
     _linkMap
 
     /**
-     * A map to count the number of child branches for a given branch.
-     * Key: parent branch ID, Value: number of children.
+     * A map to count the number of sub branches for a given branch.
+     * Key: super branch ID, Value: number of subren.
      * @protected
      * @type {LinkedCounts}
     */
@@ -402,7 +402,7 @@ class MapedHistory {
     }
     /**
      * Deletes a branch and its history log.
-     * It also decrements the linked count of its parent branch.
+     * It also decrements the linked count of its super branch.
      * @param {any} [branchId] - The ID of the branch to remove. Defaults to the current instance's branch ID.
      */
     removeBranch(branchId) {
@@ -414,17 +414,17 @@ class MapedHistory {
             throw new Error(`branchId ${_branchId} is not found`);
 
         }
-        const parentId = this._linkMap[_branchId].branchId;
-        if (parentId in this._linkedCounts) {
-            this._linkedCounts[parentId] -= 1
+        const superId = this._linkMap[_branchId].branchId;
+        if (superId in this._linkedCounts) {
+            this._linkedCounts[superId] -= 1
         }
         delete this._branchLogs[_branchId]
         delete this._linkMap[_branchId]
     }
     /**
-     * Gets the number of child branches forked from a given branch.
+     * Gets the number of sub branches forked from a given branch.
      * @param {any} [branchId] - The ID of the branch to check. Defaults to the current instance's branch ID.
-     * @returns {number} The number of child branches.
+     * @returns {number} The number of sub branches.
      */
     getLinkedCount(branchId) {
         let _branchId = branchId;
@@ -439,11 +439,11 @@ class MapedHistory {
         return this._linkedCounts[_branchId]
     }
     /**
-     * Gets the ID of the parent branch for a given branch.
-     * @param {any} [branchId] - The ID of the child branch. Defaults to the current instance's branch ID.
-     * @returns {any | undefined} The parent branch ID, or undefined if it's a root branch.
+     * Gets the ID of the super branch for a given branch.
+     * @param {any} [branchId] - The ID of the sub branch. Defaults to the current instance's branch ID.
+     * @returns {any | undefined} The super branch ID, or undefined if it's a root branch.
      */
-    getParentBranchId(branchId) {
+    getsuperBranchId(branchId) {
         const _branchId = branchId || this._branchId
         return this._linkMap[_branchId]
     }
@@ -477,7 +477,7 @@ class MapedHistory {
  */
 class MapedHistoryDeepEqual extends MapedHistory {
     /**
-     * Overrides the parent method to ensure data is deep-cloned before being added.
+     * Overrides the super method to ensure data is deep-cloned before being added.
      * This prevents the stored log from being mutated externally.
      * @param {any} data - The data for the new log.
      * @param {number} depth - The depth or step in the history for this log.
@@ -490,7 +490,7 @@ class MapedHistoryDeepEqual extends MapedHistory {
 
     }
     /**
-     * Overrides the parent method to use deep equality (`fast-deep-equal`) for comparing objects.
+     * Overrides the super method to use deep equality (`fast-deep-equal`) for comparing objects.
      * @protected
      * @param {any} logData - The existing log data from the history.
      * @param {any} data - The new data to compare.
