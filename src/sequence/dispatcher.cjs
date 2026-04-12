@@ -3,53 +3,16 @@ const { ensureArray } = require("../util/ensure_array.cjs")
 const { AbstractDispatcher } = require("./protocol.class.cjs")
 
 
-class DataResolver {
-    /**
-     * @type {Function}
-     */
-    _resolveFunction
-    /**
-     * @param {any} data
-     */
-    constructor(data) {
-        this.data = data
-        this.resolver = this.resolver.bind(this)
 
-    }
-    genaratePromise() {
-        return new Promise(this.applyResolver)
-    }
-    /**
-     * @param {Function} resolveFunction
-     */
-    applyResolver(resolveFunction) {
-        this._resolveFunction = resolveFunction
-
-    }
-    resolver() {
-        this._resolveFunction(this.data)
-
-
-    }
-}
-// TODO WorkflowStepからModeの廃止 
 class SequenceDispatcherBase extends AbstractDispatcher {
-    /**
-     * @type {typeof DataResolver}
-     */
-    _dataResolverClass
 
-    constructor(resolverClass = DataResolver) {
-        super()
-        this._dataResolverClass = resolverClass
 
-    }
 
     /**
    * 
    * @param {*} request 
    * @param {import("../controller/protocol").Context<any,any>} context 
-   * @returns {Promise<import("./protocol").ModeAndContext>[]}
+   * @returns {Promise<import("./protocol").StepResult>[]}
    * 
    */
     enter(request, context) {
@@ -74,7 +37,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * 
      * @param {*} request 
      * @param {import("../controller/protocol").Context<any, any>} context 
-     * @returns {Promise<import("./protocol").ModeAndContext>[]}
+     * @returns {Promise<import("./protocol").StepResult>[]}
      * 
     */
     wait(request, context) {
@@ -87,19 +50,19 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     * 
     * @param {*} request 
     * @param {import("../controller/protocol").Context<any, any>} context 
-    * @returns {Promise<import("./protocol").ModeAndContext>[]}
+    * @returns {Promise<import("./protocol").StepResult>[]}
     * 
    */
     end(request, context) {
         context.histories.forword(request)
         if (context.states.isRoot() === false) {
             context.states.controll.setExecuteMode('returnFromSub')
-            const resolver = new DataResolver({ context })
-            return [resolver.genaratePromise()]
+
+            return [Promise.resolve({ context })]
 
         }
 
-        return [new Promise(this._falseResolve)]
+        return [Promise.resolve(false)]
 
     }
 
@@ -107,25 +70,30 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     * 
     * @param {*} request 
     * @param {import("../controller/protocol").Context<any, any>} context 
-    * @returns {Promise<import("./protocol").ModeAndContext>[]}
+    * @returns {Promise<import("./protocol").StepResult>[]}
     * 
    */
     go(request, context) {
         context.histories.forword(request)
+        /**
+         * @type {Promise<import("./protocol").StepResult>[]}
+         */
         const proms = []
         /**
          * @type { import("../workflow/plugin/protocol").WorkflowSteps }
          */
         const workflowSteps = ensureArray(context.workflows.go())
-        const _workflowSteps = ensureArray(workflowSteps)
-        const resolver = new DataResolver(workflowSteps)
-        proms.push(resolver.genaratePromise())
+        /**
+         * @type { import("../workflow/plugin/protocol").WorkflowSteps }
+         */
+        const _workflowSteps = []
+
         for (const workflowStep of workflowSteps) {
 
-            if (workflowStep.context.context.states.get().mode !== 'go') {
+            if (workflowStep.context.states.controll.getExecuteMode() !== 'go') {
 
-                const resolver = new this._dataResolverClass(workflowStep)
-                proms.push(resolver.genaratePromise())
+
+                proms.push(Promise.resolve({ context: workflowStep.context }))
                 continue
 
 
@@ -133,6 +101,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
             _workflowSteps.push(workflowStep)
 
         }
+
         return proms.concat(this._runExecutor(_workflowSteps, request, null, true))
 
     }
@@ -184,7 +153,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      */
     _runExecutor(workflowSteps, request, defaultCallback = null, isEnsured = false) {
         /**
-         * @type {Promise<import("./protocol").ModeAndContext>[]}
+         * @type {Promise<import("./protocol").StepResult>[]}
          */
         const proms = []
 
@@ -194,10 +163,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         // @ts-ignore
         const _workflowSteps = isEnsured === true ? workflowSteps : ensureArray(workflowSteps)
         for (const workflowStep of _workflowSteps) {
-            if (workflowStep === false) {
-                proms.push(new Promise(this._falseResolve))
-                continue
-            }
+
             const _callback = workflowStep.callback || defaultCallback
 
             const prom = this._call(workflowStep.executor, _callback, request, workflowStep.context)
@@ -211,7 +177,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * @param {string} callback
      * @param {any} request
      * @param {import("../context/index.cjs").Context<any, any>} context
-     * @returns {Promise<import("./protocol").ModeAndContext>}
+     * @returns {Promise<import("./protocol").StepResult>}
      */
     async _call(plugin, callback, request, context) {
         await plugin[callback].call(plugin, request, context)

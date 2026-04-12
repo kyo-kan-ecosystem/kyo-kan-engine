@@ -1,12 +1,14 @@
 import { AbstractDispatcher } from "./protocol.class.cjs"
 
-export type ModeAndContext = {
-    mode?: any,
-    context?: any
+export type StepResult = {
+
+    context: any
 
 } | false | null | undefined
 
-export type ModeAndContexts = ModeAndContext[]
+export type StepResults = StepResult[]
+
+
 
 export type ProcessCounter = {
     n: number

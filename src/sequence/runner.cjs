@@ -53,7 +53,7 @@ class SequenceRunner {
     }
     /**
      * 
-     * @param {import("./protocol").ModeAndContext} modeAndContext 
+     * @param {import("./protocol").StepResult} modeAndContext 
      */
     run(modeAndContext = null) {
 
@@ -64,7 +64,7 @@ class SequenceRunner {
 
         else {
             /**
-             * @type {import("./protocol").ModeAndContext}
+             * @type {import("./protocol").StepResult}
              */
             const _modeAndContext = modeAndContext || { mode: this.enterMode }
             /**

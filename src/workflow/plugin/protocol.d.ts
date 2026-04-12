@@ -1,3 +1,4 @@
+import { Context } from "../../controller/protocol"
 
 
 
@@ -22,13 +23,13 @@ export type WorflowConcurrentPluginCnfigure = {
 }
 
 
-export type WorkflowStep = {
-    context: any,
+export type WorkflowStep<ContextType = Context<any, any>> = {
+    context: ContextType,
     executor: any,
-    callback?: any,
+    callback?: any
 }
 
-export type WorkflowSteps = WorkflowStep[]
+export type WorkflowSteps<ContextType = Context<any, any>> = WorkflowStep<ContextType>[]
 
 export type MaybeWorkflowSteps = WorkflowSteps | WorkflowStep
 

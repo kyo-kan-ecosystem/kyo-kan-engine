@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { WorkflowState } from "../workflow/protocol";
 
 
-export { Context } from "../context/index.cjs";
+export type { Context } from "../context/index.cjs";
 
 export type ExecuteMode = 'enter' | 'wait' | 'go' | 'goSub' | 'end' | 'back' | 'rewindWorokflow' | 'rewindReturn' | 'returnFromSub';
 export type ControllStateType = {
