@@ -1,6 +1,10 @@
-const { create_id } = require("../util/create_id.cjs")
+
 
 class Repositry {
+    /**
+     * @type{Object<any, any>}
+     */
+    _datas
     constructor(datas = {}) {
         this._datas = Object.assign({}, datas)
 

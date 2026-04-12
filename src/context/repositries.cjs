@@ -13,7 +13,7 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
  *       workflows?: any,
  *       executors?: any,
  *       engine?: any
- * }} ContextRepositryConfigureInits
+ * }} ContextRepositry
  */
 /**
  * @typedef {{
@@ -71,7 +71,7 @@ const DEFAULT_REPOSITRY_CLASSES = {
 }
 /**
  * @typedef {{
- *          configures?:ContextRepositryConfigureInits, 
+ *          configures?:ContextRepositry, 
  *          plugins?:ContextRepositryPlugins,
  *          classes?:ContextRepositryClasses
  * }} ContextRepositryArgs

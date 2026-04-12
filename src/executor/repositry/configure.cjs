@@ -2,7 +2,7 @@ const { Repositry } = require("../../repositry/base.cjs")
 class ExecutorConfigureRepositry extends Repositry {
     /**
      * 
-     * @param {import("./protocol").WorkNodeRepositryParams} params 
+     * @param {Partial<import("./protocol").WorkNodeRepositryParams>} params 
      */
     constructor(params = {}) {
         const length = params.length || 0

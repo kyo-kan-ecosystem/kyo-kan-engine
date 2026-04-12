@@ -5,7 +5,7 @@ const { Repositries } = require("./repositries.cjs")
 
 class Workflows {
     /**
-     * @type {import('./states/states.cjs').States}
+     * @type {import('./states/states.cjs').StatesType}
      */
     states
 
@@ -40,7 +40,7 @@ class Workflows {
          * @type { import("../workflow/protocol").WorkflowPluginConfigure}
          */
 
-        const configure = this.repositries.configures.workflows.get(state.workflow.id)
+        const configure = this.repositries.configures.workflows.get(state.workflow?.id)
         /**
          * @type {import("../workflow/protocol").Plugin}
          */

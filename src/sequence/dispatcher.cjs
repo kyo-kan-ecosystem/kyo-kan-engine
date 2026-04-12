@@ -105,13 +105,15 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         return proms.concat(this._runExecutor(_workflowSteps, request, null, true))
 
     }
+
     /**
-     * 
-     * @param {import("../controller/protocol").Context<any,any>} context 
-     * @param {*} state 
-     * @param {*} repsponse 
-     */
-    goSub(context, state, repsponse) {
+    * 
+    * @param {*} request 
+    * @param {import("../controller/protocol").Context<any, any>} context 
+    * @returns {Promise<import("./protocol").StepResult>[]}
+    * 
+   */
+    goSub(request, context) {
         context.goSub();
         const subExecuteFunc = context.workflows.getCurrentWorkflow().enterWorkflow(context);
 
@@ -173,23 +175,19 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         return proms
     }
     /**
-     * @param {{[k in string]:import("../../protocol/executor/protocol").ExecutorFunction}} plugin
+     * @param {{[k in string]:import("../../protocol/executor/protocol").ExecutorFunction}} executorId
      * @param {string} callback
      * @param {any} request
      * @param {import("../context/index.cjs").Context<any, any>} context
      * @returns {Promise<import("./protocol").StepResult>}
      */
-    async _call(plugin, callback, request, context) {
-        await plugin[callback].call(plugin, request, context)
+    async _call(executorId, callback, request, context) {
+        const executerConfigure = context.repositries.configures.executors.get(executorId)
+        await executorId[callback].call(, request, context)
         return { context }
 
     }
-    /**
-     * @param {any} resolve
-     */
-    _falseResolve(resolve) {
-        resolve(false)
-    }
+
 
 }
 
