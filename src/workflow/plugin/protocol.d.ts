@@ -22,11 +22,18 @@ export type WorflowConcurrentPluginCnfigure = {
 }
 
 
-export type WorkflowResponse = {
+export type WorkflowStep = {
     context: any,
-    executor: any
+    executor: any,
+    callback?: any,
 } | false
 
-export type WorkflowResponses = WorkflowResponse[]
+export type WorkflowSteps = WorkflowStep[]
+
+export type MaybeWorkflowSteps = WorkflowSteps | WorkflowStep
+
+
+
+
 
 

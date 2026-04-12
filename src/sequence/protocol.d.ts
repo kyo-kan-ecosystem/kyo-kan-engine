@@ -5,6 +5,7 @@ export type ModeAndContext = {
     context?: any
 
 } | false | null | undefined
+
 export type ModeAndContexts = ModeAndContext[]
 
 export type ProcessCounter = {

@@ -81,7 +81,7 @@ class Context {
     /**
      * @type {Object<any, {bords:any, histories:any, states:any}>}
      */
-    branches
+    _branches
 
     /**
      * @type {number}
@@ -130,7 +130,7 @@ class Context {
             this.states = inheritance?.states
 
             this.histories = inheritance?.histories
-            this.branches = inheritance?.branches
+            this._branches = inheritance?.branches
             this.reporter = inheritance?.reporter
             this._countRef = inheritance?._countRef
             this._branchId = inheritance?.branchId || 0
@@ -163,7 +163,7 @@ class Context {
          * @type {Histories}
          */
         this.histories = new classes.histories({ states: this.states, bords: this.bords }, datas?.histories)
-        this.branches = datas?.branches || {}
+        this._branches = datas?.branches || {}
 
 
         this._countRef = datas?._countRef || { n: 0 };
@@ -245,12 +245,12 @@ class Context {
 
         this.bords.pop()
         this.states.pop()
-        const nowBranch = this.branches[this._branchId]
+        const nowBranch = this._branches[this._branchId]
 
         if (this.bords.getBranchId() !== nowBranch.bords || this.states.getBranchId() !== nowBranch.states) {
             const linkedBranchId = this._linkMap[this._branchId]
             this.setBranchId(linkedBranchId)
-            this.histories.setBranchId(this.branches[this._branchId].histories)
+            this.histories.setBranchId(this._branches[this._branchId].histories)
 
 
         }
@@ -263,11 +263,7 @@ class Context {
     setBranchId(branchId) {
         this._branchId = branchId
     }
-    reset() {
-        this.bords.update()
 
-
-    }
     getBranchId() {
         return this._branchId
     }
@@ -287,12 +283,12 @@ class Context {
      * 
      */
     fork(id) {
-        if (typeof id != 'undefined' && id in this.branches === false) {
+        if (typeof id != 'undefined' && id in this._branches === false) {
             throw new Error(`branch id ${id} is not found`);
 
 
         }
-        const branch = this.branches[id]
+        const branch = this._branches[id]
 
         const bords = this.bords.fork(branch?.bords)
         return this._fork(id, branch, bords)
@@ -300,13 +296,20 @@ class Context {
 
     }
 
-    _fork(id, branch, bords) {
+    /**
+     * @param {any} id
+     * @param {{ state: number | null | undefined; histories: { state?: any; request?: any; bords?: { global?: any; currentWorkflow?: any; subWorkflow?: any; }; } | null | undefined; } | null} branchIds
+     * @param {null| true | number} step     * 
+     * @param {Bords} bords
+     */
+    _fork(id, branchIds, bords, step = null) {
 
 
-        const states = this.states.fork(branch?.state)
-        const histories = this.histories.fork(branch?.histories)
+        const states = this.states.fork(branchIds?.state)
+        const histories = this.histories.fork(branchIds?.histories, { states, bords }, step)
+
         let branchId = id
-        if (typeof id === 'undefined') {
+        if (id === null || typeof id === 'undefined') {
             branchId = this._createIdMap({ bords, states, histories })
             this._linkMap[branchId] = this._branchId
 
@@ -323,7 +326,7 @@ class Context {
             states,
             histories,
             _countRef: this._countRef,
-            branches: this.branches,
+            branches: this._branches,
             functions: this.functions,
             reporter: this.reporter,
             repositries: this.repositries,
@@ -355,19 +358,23 @@ class Context {
     _forkApi(reporter, functions) {
         const forkedFunctions = {}
 
-        for (const key in functions || {}) {
-            const functionObj = functions[key]
+        for (const key in Object.keys(functions || {})) {
+            // @ts-ignore
+            const functionObj = functions[key] || {}
             if ('fork' in functionObj) {
+                // @ts-ignore
                 forkedFunctions[key] = functionObj.fork(this.getBranchId(), this)
                 continue
 
 
             }
+            // @ts-ignore
             forkedFunctions[key] = functionObj
 
         }
         let forkedReporter
-        if (reporter !== null && 'fork' in reporter) {
+        if (!!reporter && 'fork' in reporter) {
+            // @ts-ignore
             forkedReporter = reporter.fork(this.getBranchId(), this)
         } else {
             forkedReporter = reporter
@@ -392,7 +399,7 @@ class Context {
         const idMap = { bords: _bords.getBranchId(), states: _states.getBranchId(), histories: _histories.getBranchId() }
         const id = this._countRef.n
         this._countRef.n += 1
-        this.branches[id] = idMap
+        this._branches[id] = idMap
         this._linkMap[id] = this._branchId
 
 

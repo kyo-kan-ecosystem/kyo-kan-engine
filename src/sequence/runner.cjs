@@ -11,7 +11,7 @@ class SequenceRunner {
     _processPathCounter
 
     /**
-     * @type {import("../util/single_event.cjs").SingleEvent<(request, context)=>void>}
+     * @type {import("../util/single_event.cjs").SingleEvent<(request:any, context:any)=>void>}
      */
     _processEndEvent
 
@@ -22,7 +22,7 @@ class SequenceRunner {
     _contexts
 
     /**
-     * @type { import("../context/index.cjs").Context }
+     * @type { import("../context/index.cjs").Context<any, any> }
      * */
 
     _context
@@ -30,7 +30,7 @@ class SequenceRunner {
     /**
      * 
      * @param {*} dispatcher 
-     * @param {import("../context/index.cjs").Context} context 
+     * @param {import("../context/index.cjs").Context<any, any>} context 
      * @param {*} request 
      * @param {*} enterMode
      * @param {import("./protocol").ProcessCounter?} processCounter
@@ -39,13 +39,13 @@ class SequenceRunner {
      */
     constructor(dispatcher, context, request, processEndEvent, contexts = null, processCounter = null, enterMode = 'enter') {
         this.dispatcher = dispatcher
-        this.context = context
+        this._context = context
         this.request = request
         this.run = this.run.bind(this)
         this.enterMode = enterMode
         this._processEndEvent = processEndEvent
         this._processPathCounter = processCounter || { n: 0 }
-        this._contexts = contexts || [this.context]
+        this._contexts = contexts || [this._context]
 
 
 
@@ -68,14 +68,14 @@ class SequenceRunner {
             }
 
             /**
-             * @type {import("../context/index.cjs").Context}
+             * @type {import("../context/index.cjs").Context<any, any>}
              */
-            const context = modeAndContext?.context || this.context
+            const context = modeAndContext?.context || this._context
             const executeMode = modeAndContext?.mode || context.states.getExecuteMode()
 
-            if (context === this.context) {
+            if (context === this._context) {
                 this._processPathCounter.n++
-                const prom = this.dispatcher[executeMode](this.request, this.context)
+                const prom = this.dispatcher[executeMode].call(this.request, this._context)
                 prom.then(this.run)
 
             }

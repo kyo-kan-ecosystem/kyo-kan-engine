@@ -6,13 +6,25 @@
  * 
  */
 class AbstractWorkflow {
+
     /**
-     * @abstract
-     * @param {import("../../controller/protocol").Context} context 
-    
-     * @param {*} configure
-     * @returns {import("./protocol").WorkflowResponses}
-     */
+    * @abstract
+    * @param {import("../../controller/protocol").Context<any,any>} context 
+   
+    * @param {*} configure
+    * @returns {import("./protocol").WorkflowStep}
+    */
+    now(context, configure) {
+        throw new Error('Method not implemented.')
+
+    }
+    /**
+    * @abstract
+    * @param {import("../../controller/protocol").Context<any,any>} context 
+   
+    * @param {*} configure
+    * @returns {import("./protocol").WorkflowStep}
+    */
     go(context, configure) {
         throw new Error('Method not implemented.')
 
@@ -20,7 +32,7 @@ class AbstractWorkflow {
 
     /**
      * @abstract
-     * @param {import("../../controller/protocol").Context} context
+     * @param {import("../../controller/protocol").Context<any, any>} context
      * @param {*} request
      * @returns {{state: any;response: any[];}}
      * @param {any} configure
@@ -29,7 +41,7 @@ class AbstractWorkflow {
         return { state: null, response: [] }
     }
     /**
-     * @param {import("../../controller/protocol").Context} context
+     * @param {import("../../controller/protocol").Context<any, any>} context
      * @param {any} request
      * @param {any} configure
      */
@@ -39,7 +51,7 @@ class AbstractWorkflow {
     }
     /**
      * @abstract
-     * @param {import("../../controller/protocol").Context} context
+     * @param {import("../../controller/protocol").Context<any, any>} context
      * @param {any} request
      * @param {any} configure
      * @returns {any}

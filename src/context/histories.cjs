@@ -224,10 +224,11 @@ class Histories {
 
     /**
      * @param {{state?:any, request?:any, bords?:{global?:any, currentWorkflow?:any,subWorkflow?:any}}?} ids 
-     * @param {import('./protocol').StackTrees?} stackTrees 
+     * @param {import('./protocol').StackTrees?} stackTrees
+     * @param {null | true | number} [step=null]  
      * 
      */
-    fork(ids = null, stackTrees = null) {
+    fork(ids = null, stackTrees = null, step = null) {
 
         const _ids = ids || {}
         /**
@@ -243,12 +244,12 @@ class Histories {
          * @type {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
          */
         const histories = {
-            state: this.state.fork(_ids.state),
-            request: this.request.fork(_ids.request),
+            state: this.state.fork(_ids.state, step),
+            request: this.request.fork(_ids.request, step),
             bords: {
-                global: this.bords.global.fork(_ids.bords?.global),
-                currentWorkflow: this.bords.currentWorkflow.fork(_ids.bords?.currentWorkflow),
-                subWorkflow: this.bords.subWorkflow.fork(_ids.bords?.subWorkflow)
+                global: this.bords.global.fork(_ids.bords?.global, step),
+                currentWorkflow: this.bords.currentWorkflow.fork(_ids.bords?.currentWorkflow, step),
+                subWorkflow: this.bords.subWorkflow.fork(_ids.bords?.subWorkflow, step)
             }
         }
 

@@ -57,6 +57,11 @@ class Workflows {
         return workflow.go(this.context, configure)
 
     }
+    now() {
+        const { workflow, configure } = this.getCurrentWorkflow()
+        return workflow.now(this.context, configure)
+    }
+
 
 
     goSub() {

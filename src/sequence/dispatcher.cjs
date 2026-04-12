@@ -1,3 +1,5 @@
+import { ensureArray } from "../util/ensure_array.cjs";
+
 const { AbstractDispatcher } = require("./protocol.class.cjs");
 
 
@@ -7,41 +9,37 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
    * 
    * @param {*} request 
-   * @param {import("../controller/protocol").Context} context 
+   * @param {import("../controller/protocol").Context<any,any>} context 
    * @returns {Promise<import("./protocol").ModeAndContexts>}
    * 
    */
-
     async enter(request, context) {
 
-        const workflowResponses = context.workflows.go()
+        const workflowSteps = context.workflows.now()
+
         const state = context.states.get()
         let fucname = ''
         const defualtEnterFuncName = context.repositries.configures.engine.get('executor').enterFunc
-        if (state === null) {
-            fucname = defualtEnterFuncName
 
+        if (state?.controlls?.executeMode === 'wait') {
+            fucname = state.controlls?.callback || defualtEnterFuncName
         }
         else {
-            if (state.controlls?.executeMode === 'wait') {
-                fucname = state.controlls?.callback || defualtEnterFuncName
-            }
-            else {
-                fucname = defualtEnterFuncName
-            }
+            fucname = defualtEnterFuncName
         }
 
-        return this._runExecutor(workflowResponses, request, fucname)
 
+        return await this._runExecutor(workflowResponses, request, fucname)
 
 
 
 
     }
+
     /**
      * 
      * @param {*} request 
-     * @param {import("../controller/protocol").Context} context 
+     * @param {import("../controller/protocol").Context<any, any>} context 
      * @returns {Promise<import("./protocol").ModeAndContexts>}
      * 
     */
@@ -53,28 +51,34 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
     * 
     * @param {*} request 
-    * @param {import("../controller/protocol").Context} context 
+    * @param {import("../controller/protocol").Context<any, any>} context 
     * @returns {Promise<import("./protocol").ModeAndContexts>}
     * 
    */
-    end(request, context) {
-        if (context) {
+    async end(request, context) {
+        context.histories.forword(request)
 
-        }
+        return [false]
 
     }
 
     /**
-     * 
-     * @param {import("../controller/protocol").Context<any,any>} context 
-    
-     * @param {Array} repsponses 
-     */
-    async go(request, context, repsponses) {
+    * 
+    * @param {*} request 
+    * @param {import("../controller/protocol").Context<any, any>} context 
+    * @returns {Promise<import("./protocol").ModeAndContexts>}
+    * 
+   */
+    async go(request, context) {
+        context.histories.forword(request)
         // TODO 並行実行に対応 
-        let executePlugins = context.workflows.go(context)
+        let executePlugins = context.workflows.go()
         if (!executePlugins) {
-            context.histories.state.addNewLog
+            if (context.isRoot() === false) {
+                return [{ mode: '' }]
+
+            }
+
 
         }
         if (Array.isArray(executePlugins) === false) {
@@ -143,30 +147,51 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     }
     /**
      * 
-     * @param {import("../workflow/plugin/protocol").WorkflowResponses} workflowResponses 
+     * @param {import("../workflow/plugin/protocol").MaybeWorkflowSteps} workflowSteps 
      * @param {*} request 
      * @param {*} fucname 
      * @returns 
      */
-    async _runExecutor(workflowResponses, request, fucname) {
+    _runExecutor(workflowSteps, request, fucname = null) {
         /**
-         * @type {import("./protocol").ModeAndContexts}
+         * @type {Promise<import("./protocol").ModeAndContext>[]}
          */
-        const results = []
-        for (const workflowResponse of workflowResponses) {
-            if (workflowResponse === false) {
-                results.push(false)
+        const proms = []
+
+        /**
+         * @type {import("../workflow/plugin/protocol").WorkflowSteps}
+         */
+        const _workflowSteps = ensureArray(workflowSteps)
+        for (const workflowStep of _workflowSteps) {
+            if (workflowStep === false) {
+                proms.push(new Promise(this._falseResolve))
                 continue
             }
-            await this._call(workflowResponse.executor, fucname, request, workflowResponse.context)
-            results.push({ context: workflowResponse.context })
+            const _funcname = workflowStep.callback || fucname
+
+            const prom = this._call(workflowStep.executor, fucname, request, workflowStep.context)
+            proms.push(prom)
 
         }
-        return results
+        return proms
     }
-    _call(plugin, funcname, request, context) {
-        return plugin[funcname].call(request, context)
+    /**
+     * @param {{[k in string]:import("../../protocol/executor/protocol").ExecutorFunction}} plugin
+     * @param {string} funcname
+     * @param {any} request
+     * @param {import("../context/index.cjs").Context<any, any>} context
+     * @returns {Promise<import("./protocol").ModeAndContext>}
+     */
+    async _call(plugin, funcname, request, context) {
+        await plugin[funcname].call(plugin, request, context)
+        return { context }
 
+    }
+    /**
+     * @param {any} resolve
+     */
+    _falseResolve(resolve) {
+        resolve(false)
     }
 
 }
