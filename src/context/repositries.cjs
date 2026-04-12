@@ -118,6 +118,14 @@ class Repositries {
         }
 
     }
+    /**
+     * @param {any} executorId
+     */
+    getExecutorCofigure(executorId) {
+        return this.configures.executors.get(executorId)
+
+
+    }
     getPluginRepositry() {
         return this.plugins
     }

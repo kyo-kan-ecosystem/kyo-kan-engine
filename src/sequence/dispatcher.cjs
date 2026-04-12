@@ -44,7 +44,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         context.histories.forword(request)
 
 
-        return [new Promise(this._falseResolve)]
+        return [Promise.resolve(false)]
     }
     /**
     * 
@@ -114,8 +114,19 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     * 
    */
     goSub(request, context) {
-        context.goSub();
-        const subExecuteFunc = context.workflows.getCurrentWorkflow().enterWorkflow(context);
+
+        context.histories.forword(request)
+        context.goSub()
+        /**
+         * @type { import("../workflow/plugin/protocol").WorkflowSteps }
+        */
+        const workflowSteps = ensureArray(context.goSub())
+
+
+        const subExecuteFunc = 
+        
+
+    
 
     }
 
@@ -182,8 +193,12 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * @returns {Promise<import("./protocol").StepResult>}
      */
     async _call(executorId, callback, request, context) {
+        if (typeof executorId === 'undefined' || executorId === null) {
+            return { context }
+        }
         const executerConfigure = context.repositries.configures.executors.get(executorId)
-        await executorId[callback].call(, request, context)
+
+        await executorId[callback].call(request, context)
         return { context }
 
     }

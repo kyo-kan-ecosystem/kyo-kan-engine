@@ -77,10 +77,11 @@ class Registrater extends ContextBuilder {
         }
 
 
+        let index = 0
+        while (executorQueue.length > index) {
 
-        while (executorQueue.length > 0) {
-
-            const item = executorQueue.shift()
+            const item = executorQueue[index]
+            index += 1
             /**
              * @type {import("../../workflow/protocol").WorkflowPluginConfigure}
              */
