@@ -1,13 +1,13 @@
-import { StackTree } from "../../util/stack/stack.cjs"
+
 
 class ControllState {
     /**
-     * @type {StackTree<any, import("../../controller/protocol").StateType>}
+     * @type {import("../../util/stack/stack.cjs").StackTree<any, import("../../controller/protocol").StateType>}
      */
     _state
     /**
      * 
-     * @param {*} state 
+     * @param {import("../../util/stack/stack.cjs").StackTree<any, import("../../controller/protocol").StateType>} state 
      */
     constructor(state) {
         this._state = state
@@ -26,6 +26,9 @@ class ControllState {
         this._state.update(state)
 
     }
+    /**
+     * @param {any} controlls
+     */
     setControlls(controlls) {
         const state = this._state.get() || {}
 
@@ -34,19 +37,34 @@ class ControllState {
 
         this._state.update(state)
     }
+    /**
+     * @param {any} executorId
+     */
     setExecutorId(executorId) {
         this.setControll('executorId', executorId)
 
     }
 
+    /**
+     * @param {any} callback
+     */
     setCallback(callback) {
         this.setControll('callback', callback)
 
     }
+    /**
+     * @param {import("../../controller/protocol").ExecuteMode} executeMode
+     */
     setExecuteMode(executeMode) {
         this.setControll('executeMode', executeMode)
 
     }
+    getExecuteMode() {
+        return this._state.get()?.controlls?.executeMode
+    }
+    /**
+     * @param {any} subworkflowId
+     */
     goSub(subworkflowId, subworkflowInit = null) {
         this.setExecuteMode('goSub')
         this.setControll('subworkflowId', subworkflowId)
@@ -57,6 +75,8 @@ class ControllState {
 
 
 
+
 }
 
+// @ts-ignore
 module.exports = { ControllState }

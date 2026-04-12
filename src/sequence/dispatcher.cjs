@@ -1,6 +1,6 @@
-import { ensureArray } from "../util/ensure_array.cjs";
+const { ensureArray } = require("../util/ensure_array.cjs")
 
-const { AbstractDispatcher } = require("./protocol.class.cjs");
+const { AbstractDispatcher } = require("./protocol.class.cjs")
 
 
 class DataResolver {
@@ -32,7 +32,7 @@ class DataResolver {
 
     }
 }
-
+// TODO WorkflowStepからModeの廃止 
 class SequenceDispatcherBase extends AbstractDispatcher {
     /**
      * @type {typeof DataResolver}
@@ -92,6 +92,12 @@ class SequenceDispatcherBase extends AbstractDispatcher {
    */
     end(request, context) {
         context.histories.forword(request)
+        if (context.states.isRoot() === false) {
+            context.states.controll.setExecuteMode('returnFromSub')
+            const resolver = new DataResolver({ context })
+            return [resolver.genaratePromise()]
+
+        }
 
         return [new Promise(this._falseResolve)]
 
@@ -115,22 +121,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         const resolver = new DataResolver(workflowSteps)
         proms.push(resolver.genaratePromise())
         for (const workflowStep of workflowSteps) {
-            if (workflowStep === false) {
-                if (context.isRoot() === false) {
-                    const state = context.states.get()
-                    state.mode = 'returnFromSub'
-                    context.states.update(state)
 
-
-
-                }
-                else {
-                    proms.push(new Promise(this._falseResolve))
-                }
-                continue
-
-
-            }
             if (workflowStep.context.context.states.get().mode !== 'go') {
 
                 const resolver = new this._dataResolverClass(workflowStep)

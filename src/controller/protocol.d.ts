@@ -29,9 +29,7 @@ export type PartialSateType = Partial<StateType>
 
 
 
-export type State = {
-    mode?: ExecuteMode
-} & StateType
+export type State = StateType
 
 export type ExecutionResult = {
     state: State;

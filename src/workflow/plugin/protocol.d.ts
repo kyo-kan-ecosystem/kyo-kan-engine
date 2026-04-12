@@ -26,7 +26,7 @@ export type WorkflowStep = {
     context: any,
     executor: any,
     callback?: any,
-} | false
+}
 
 export type WorkflowSteps = WorkflowStep[]
 

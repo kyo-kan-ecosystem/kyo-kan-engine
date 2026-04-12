@@ -1,18 +1,31 @@
 
 const { StackTree } = require('../../util/stack/stack.cjs');
 const { StateBranch } = require('./branch.cjs');
+const { ControllState } = require('./controll_state.cjs')
 
 
 /**
- * 
+ * @template {ControllState} ControllStateType
  * @extends {StackTree<StateBranch, import('../../controller/protocol').State>} 
  *
  */
 class States extends StackTree {
-
-
-    constructor(initData = null, id = null, branchClass = StateBranch) {
+    /**
+     * @type {ControllState}
+     */
+    controll
+    /**
+     * 
+     * @param {*} initData 
+     * @param {*} id 
+     * @param {*} branchClass 
+     * @param {*} controllClass 
+     */
+    constructor(initData = null, id = null, branchClass = StateBranch, controllClass = ControllState) {
         super(initData, id, branchClass)
+        this.controll = new controllClass(this)
+
+
 
     }
     getExecuteMode() {
@@ -26,5 +39,7 @@ class States extends StackTree {
     }
 }
 
-
+/**
+ * @typedef {States<ControllState>} StatesType
+ */
 module.exports = { States }
