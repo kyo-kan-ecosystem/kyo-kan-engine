@@ -7,45 +7,92 @@
  * */
 class AbstractDispatcher {
     /**
-     * 
-     * @param {*} context 
-     *
+     * @abstract
+     * @param {*} context
+     * @param {any} request
      */
     enter(request, context) {
 
     }
 
 
-    wait(request, context, state, response = null) {
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    wait(request, context) {
 
     }
 
 
-    go(request, context, state, repsponse) {
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    go(request, context) {
 
     }
 
-    goSub(request, context, state, repsponse) {
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    goSub(request, context) {
 
     }
-    end(request, context, state, repsponse) {
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    returnFromSub(request, context) {
 
     }
-    back(request, context, state, repsponse) {
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    end(request, context) {
 
     }
-    reset(request, context, state, repsponse) {
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    back(request, context) {
+
+    }
+    /**
+     * @param {any} request
+     * @param {any} context
+     */
+    reset(request, context) {
 
     }
 
 
-    rewindWorkflow(request, context, state, repsponse) {
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    rewindWorkflow(request, context) {
 
     }
 
 
 
-    rewindReturn(request, context, state, response) {
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    rewindReturn(request, context) {
 
     }
 

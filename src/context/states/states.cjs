@@ -10,7 +10,8 @@ const { StateBranch } = require('./branch.cjs');
  */
 class States extends StackTree {
 
-    constructor(initData = null, id, branchClass = StateBranch) {
+
+    constructor(initData = null, id = null, branchClass = StateBranch) {
         super(initData, id, branchClass)
 
     }

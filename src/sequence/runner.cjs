@@ -50,46 +50,48 @@ class SequenceRunner {
 
 
 
-
-
     }
     /**
      * 
-     * @param {import("./protocol").ModeAndContexts?} modeAndContexts 
+     * @param {import("./protocol").ModeAndContext} modeAndContext 
      */
-    run(modeAndContexts = null) {
-        const _modeAndContexts = modeAndContexts || [{ mode: this.enterMode }]
-        for (const modeAndContext of _modeAndContexts) {
-            if (modeAndContext === false) {
-                this._processPathCounter.n--
+    run(modeAndContext = null) {
 
-                continue
 
-            }
+        if (modeAndContext === false) {
+            this._processPathCounter.n--
+        }
 
+        else {
+            /**
+             * @type {import("./protocol").ModeAndContext}
+             */
+            const _modeAndContext = modeAndContext || { mode: this.enterMode }
             /**
              * @type {import("../context/index.cjs").Context<any, any>}
              */
-            const context = modeAndContext?.context || this._context
-            const executeMode = modeAndContext?.mode || context.states.getExecuteMode()
+            const context = _modeAndContext.context || this._context
+            const executeMode = _modeAndContext.mode || context.states.getExecuteMode()
 
             if (context === this._context) {
                 this._processPathCounter.n++
-                const prom = this.dispatcher[executeMode].call(this.request, this._context)
-                prom.then(this.run)
+                const proms = this.dispatcher[executeMode].call(this.request, this._context)
+                for (const prom of proms) {
+                    prom.then(this.run)
+                }
 
             }
             else {
                 this._contexts.push(context)
                 // @ts-ignore
                 const runner = new this.constructor(this.dispatcher, context, this.request, this._processEndEvent, this._contexts, this._processPathCounter, this.enterMode)
-                runner.run([modeAndContext])
+                runner.run(modeAndContext)
             }
-
-
-
-
         }
+
+
+
+
         if (this._processPathCounter.n === 0) {
             this._processEndEvent.emit(this.request, this._contexts)
 

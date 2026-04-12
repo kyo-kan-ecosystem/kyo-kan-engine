@@ -3,33 +3,67 @@ import { ensureArray } from "../util/ensure_array.cjs";
 const { AbstractDispatcher } = require("./protocol.class.cjs");
 
 
+class DataResolver {
+    /**
+     * @type {Function}
+     */
+    _resolveFunction
+    /**
+     * @param {any} data
+     */
+    constructor(data) {
+        this.data = data
+        this.resolver = this.resolver.bind(this)
 
+    }
+    genaratePromise() {
+        return new Promise(this.applyResolver)
+    }
+    /**
+     * @param {Function} resolveFunction
+     */
+    applyResolver(resolveFunction) {
+        this._resolveFunction = resolveFunction
+
+    }
+    resolver() {
+        this._resolveFunction(this.data)
+
+
+    }
+}
 
 class SequenceDispatcherBase extends AbstractDispatcher {
+    /**
+     * @type {typeof DataResolver}
+     */
+    _dataResolverClass
+
+    constructor(resolverClass = DataResolver) {
+        super()
+        this._dataResolverClass = resolverClass
+
+    }
+
     /**
    * 
    * @param {*} request 
    * @param {import("../controller/protocol").Context<any,any>} context 
-   * @returns {Promise<import("./protocol").ModeAndContexts>}
+   * @returns {Promise<import("./protocol").ModeAndContext>[]}
    * 
    */
-    async enter(request, context) {
+    enter(request, context) {
 
         const workflowSteps = context.workflows.now()
 
-        const state = context.states.get()
-        let fucname = ''
-        const defualtEnterFuncName = context.repositries.configures.engine.get('executor').enterFunc
-
-        if (state?.controlls?.executeMode === 'wait') {
-            fucname = state.controlls?.callback || defualtEnterFuncName
-        }
-        else {
-            fucname = defualtEnterFuncName
-        }
 
 
-        return await this._runExecutor(workflowResponses, request, fucname)
+        const defaultCallback = context.repositries.configures.engine.get('executor').enterFunc
+
+
+
+
+        return this._runExecutor(workflowSteps, request, defaultCallback)
 
 
 
@@ -40,25 +74,26 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * 
      * @param {*} request 
      * @param {import("../controller/protocol").Context<any, any>} context 
-     * @returns {Promise<import("./protocol").ModeAndContexts>}
+     * @returns {Promise<import("./protocol").ModeAndContext>[]}
      * 
     */
-    async wait(request, context) {
+    wait(request, context) {
         context.histories.forword(request)
 
-        return [false]
+
+        return [new Promise(this._falseResolve)]
     }
     /**
     * 
     * @param {*} request 
     * @param {import("../controller/protocol").Context<any, any>} context 
-    * @returns {Promise<import("./protocol").ModeAndContexts>}
+    * @returns {Promise<import("./protocol").ModeAndContext>[]}
     * 
    */
-    async end(request, context) {
+    end(request, context) {
         context.histories.forword(request)
 
-        return [false]
+        return [new Promise(this._falseResolve)]
 
     }
 
@@ -66,49 +101,53 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     * 
     * @param {*} request 
     * @param {import("../controller/protocol").Context<any, any>} context 
-    * @returns {Promise<import("./protocol").ModeAndContexts>}
+    * @returns {Promise<import("./protocol").ModeAndContext>[]}
     * 
    */
-    async go(request, context) {
+    go(request, context) {
         context.histories.forword(request)
-        // TODO 並行実行に対応 
-        let executePlugins = context.workflows.go()
-        if (!executePlugins) {
-            if (context.isRoot() === false) {
-                return [{ mode: '' }]
+        const proms = []
+        /**
+         * @type { import("../workflow/plugin/protocol").WorkflowSteps }
+         */
+        const workflowSteps = ensureArray(context.workflows.go())
+        const _workflowSteps = ensureArray(workflowSteps)
+        const resolver = new DataResolver(workflowSteps)
+        proms.push(resolver.genaratePromise())
+        for (const workflowStep of workflowSteps) {
+            if (workflowStep === false) {
+                if (context.isRoot() === false) {
+                    const state = context.states.get()
+                    state.mode = 'returnFromSub'
+                    context.states.update(state)
+
+
+
+                }
+                else {
+                    proms.push(new Promise(this._falseResolve))
+                }
+                continue
+
 
             }
+            if (workflowStep.context.context.states.get().mode !== 'go') {
+
+                const resolver = new this._dataResolverClass(workflowStep)
+                proms.push(resolver.genaratePromise())
+                continue
 
 
-        }
-        if (Array.isArray(executePlugins) === false) {
-            executePlugins = [executePlugins]
-        }
-        for (const executePlugin of executePlugins) {
-
-        }
-        const state = context.states.get()
-
-        let fucname = ''
-        if (state === null) {
-            fucname = context.repositries.configures.engine.get('executor').enterFunc
+            }
+            _workflowSteps.push(workflowStep)
 
         }
-        else {
+        return proms.concat(this._runExecutor(_workflowSteps, request, null, true))
 
-            fucname = context.repositries.configures.engine.get('executor').enterFunc
-
-
-        }
-
-        const response = await this._call(executePlugin, fucname, request, context)
-        context.histories.forword(request, response)
-        repsponses.push(response)
-        return repsponses
     }
     /**
      * 
-     * @param {import("../controller/protocol").Context<any,>} context 
+     * @param {import("../controller/protocol").Context<any,any>} context 
      * @param {*} state 
      * @param {*} repsponse 
      */
@@ -149,10 +188,10 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * 
      * @param {import("../workflow/plugin/protocol").MaybeWorkflowSteps} workflowSteps 
      * @param {*} request 
-     * @param {*} fucname 
+     * @param {*} defaultCallback 
      * @returns 
      */
-    _runExecutor(workflowSteps, request, fucname = null) {
+    _runExecutor(workflowSteps, request, defaultCallback = null, isEnsured = false) {
         /**
          * @type {Promise<import("./protocol").ModeAndContext>[]}
          */
@@ -161,15 +200,16 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         /**
          * @type {import("../workflow/plugin/protocol").WorkflowSteps}
          */
-        const _workflowSteps = ensureArray(workflowSteps)
+        // @ts-ignore
+        const _workflowSteps = isEnsured === true ? workflowSteps : ensureArray(workflowSteps)
         for (const workflowStep of _workflowSteps) {
             if (workflowStep === false) {
                 proms.push(new Promise(this._falseResolve))
                 continue
             }
-            const _funcname = workflowStep.callback || fucname
+            const _callback = workflowStep.callback || defaultCallback
 
-            const prom = this._call(workflowStep.executor, fucname, request, workflowStep.context)
+            const prom = this._call(workflowStep.executor, _callback, request, workflowStep.context)
             proms.push(prom)
 
         }
@@ -177,13 +217,13 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     }
     /**
      * @param {{[k in string]:import("../../protocol/executor/protocol").ExecutorFunction}} plugin
-     * @param {string} funcname
+     * @param {string} callback
      * @param {any} request
      * @param {import("../context/index.cjs").Context<any, any>} context
      * @returns {Promise<import("./protocol").ModeAndContext>}
      */
-    async _call(plugin, funcname, request, context) {
-        await plugin[funcname].call(plugin, request, context)
+    async _call(plugin, callback, request, context) {
+        await plugin[callback].call(plugin, request, context)
         return { context }
 
     }

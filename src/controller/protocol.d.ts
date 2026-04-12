@@ -4,7 +4,7 @@ import { WorkflowState } from "../workflow/protocol";
 
 export { Context } from "../context/index.cjs";
 
-export type ExecuteMode = 'enter' | 'wait' | 'go' | 'goSub' | 'end' | 'back' | 'rewindWorokflow' | 'rewindReturn';
+export type ExecuteMode = 'enter' | 'wait' | 'go' | 'goSub' | 'end' | 'back' | 'rewindWorokflow' | 'rewindReturn' | 'returnFromSub';
 export type ControllStateType = {
     executorId?: string,
     callback?: string,
@@ -30,7 +30,7 @@ export type PartialSateType = Partial<StateType>
 
 
 export type State = {
-    mode?: executeMode
+    mode?: ExecuteMode
 } & StateType
 
 export type ExecutionResult = {

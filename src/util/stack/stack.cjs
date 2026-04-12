@@ -353,6 +353,7 @@ class StackTree {
     getSerializableData() {
         const branches = {};
         for (const [key, value] of Object.entries(this._branches)) {
+            // @ts-ignore
             branches[key] = value.getSerializableData();
 
         }
@@ -362,6 +363,11 @@ class StackTree {
     /**
      * Shares branch data and a counter with another `StackTree` instance.
      * Primarily used internally by the `fork` method.
+     * @param {Object} param0 
+     * @param {*} param0.branches 
+     * @param {*} param0.countRef 
+     * @param {*} param0.linkMap 
+     * @param {*} param0.linkedCounts 
     
      */
     setReference({ branches, countRef, linkMap, linkedCounts }) {
