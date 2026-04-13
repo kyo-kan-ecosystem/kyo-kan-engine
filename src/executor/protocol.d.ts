@@ -1,6 +1,6 @@
-export type ExecutorConfigureFormatType = {
+export type ExecutorConfigureFormatType<ConfigureType = any, SubWorkflowsType = any, HooksType = any> = {
     plugin: any,
-    configure: any,
-    subWorkflows?: any
+    configure: ConfigureType,
+    subWorkflows?: SubWorkflowsType
     hooks?: any
 } 

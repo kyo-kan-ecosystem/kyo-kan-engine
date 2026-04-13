@@ -1,4 +1,8 @@
 const { Repositry } = require("../../repositry/base.cjs")
+
+/**
+ * @extends {Repositry<import("../protocol").ExecutorConfigureFormatType>}
+ */
 class ExecutorConfigureRepositry extends Repositry {
     /**
      * 
@@ -15,6 +19,9 @@ class ExecutorConfigureRepositry extends Repositry {
 
 
     }
+    /**
+     * @param {import("../protocol").ExecutorConfigureFormatType} data
+     */
     add(data) {
         const id = this.length
         this.set(id, data)

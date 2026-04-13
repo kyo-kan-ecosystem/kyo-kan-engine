@@ -1,10 +1,18 @@
 
 
+/**
+ * @template  DataType
+ */
+
 class Repositry {
     /**
-     * @type{Object<any, any>}
+     * @type {{[k in any]:DataType}}
      */
     _datas
+    /**
+     * 
+     * @param {{[k in any]:DataType}} [datas={}] 
+     */
     constructor(datas = {}) {
         this._datas = Object.assign({}, datas)
 
@@ -12,7 +20,7 @@ class Repositry {
     /**
      * 
      * @param {any} id 
-     * @param {*} data 
+     * @param {DataType} data 
      */
     set(id, data) {
         if (typeof id === 'undefined' || id === null) {
@@ -20,6 +28,7 @@ class Repositry {
 
 
         }
+
         this._datas[id] = data
     }
     /**
@@ -28,6 +37,7 @@ class Repositry {
      * 
      */
     get(id) {
+
         return this._datas[id]
     }
     getSerializeDatas() {
