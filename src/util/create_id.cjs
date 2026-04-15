@@ -1,10 +1,14 @@
 
 const DELIMITER = ':'
 
-function create_id(callerId, name) {
+/**
+ * @param {string} callerId
+ * @param {string} name
+ */
+function createId(callerId, name) {
     return callerId + DELIMITER + name
 }
 
 module.exports = {
-    create_id
+    createId
 }

@@ -1,20 +1,24 @@
 const { Repositry } = require("../../repositry/base.cjs")
-const { create_id } = require("../../util/create_id.cjs")
-
+const { createId } = require("../../util/create_id.cjs")
+/**
+ * Repositry for workflow configure
+ * 
+ * @extends {Repositry<import("../protocol").WorkflowPluginConfigure>}
+ */
 class WorkflowConfiguresRepositry extends Repositry {
 
     /**
      * 
-     * @param {*} calleId
-     * @param {*} name  
-     * @param {*} data 
+     * @param {*} callerId Id of excutor plugin which call target workflow
+     * @param {*} name  local name of target 
+     * @param {*} configure 
      * 
      * @returns 
      */
-    add(calleId, name, data,) {
+    add(callerId, name, configure) {
 
-        const id = create_id(calleId, name)
-        super.set(id, data)
+        const id = createId(callerId, name)
+        super.set(id, configure)
         return id
 
 
@@ -26,7 +30,7 @@ class WorkflowConfiguresRepositry extends Repositry {
      * @param {any} calleId
      */
     getId(name, calleId) {
-        return create_id(calleId, name)
+        return createId(calleId, name)
     }
 
 
