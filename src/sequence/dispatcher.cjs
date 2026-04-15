@@ -198,7 +198,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         }
         const executerConfigure = context.repositries.configures.executors.get(executorId)
 
-        await executorId[callback].call(request, context)
+        await context.repositries.plugins.executors.get(executerConfigure.plugin)[callback].call(request, context)
         return { context }
 
     }
