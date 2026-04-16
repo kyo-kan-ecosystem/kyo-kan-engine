@@ -229,18 +229,9 @@ class Context {
 
     }
 
-    goSub() {
 
 
-        this.states.goSub()
 
-
-        this.bords.push(this.states.get().controlls?.subworkflowInit)
-
-
-        this.workflows.goSub()
-
-    }
     returnFromSub() {
 
         this.bords.pop()

@@ -116,11 +116,8 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     goSub(request, context) {
 
         context.histories.forword(request)
-        context.goSub()
-        /**
-         * @type { import("../workflow/plugin/protocol").WorkflowSteps }
-        */
-        const workflowSteps = ensureArray(context.goSub())
+        context.workflows.goSub()
+
 
 
         const subExecuteFunc = 

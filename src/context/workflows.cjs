@@ -20,7 +20,7 @@ class Workflows {
     context
     /**
      * 
-     * @param {{states:import("./states/states.cjs").States, repositries:import("./repositries.cjs").Repositries, context:any}} initData 
+     * @param {{states:import("./states/states.cjs").StatesType, repositries:import("./repositries.cjs").Repositries, context:any}} initData 
      */
     constructor(initData) {
         this.repositries = initData.repositries
@@ -36,11 +36,17 @@ class Workflows {
          * @type {import("../controller/protocol").StateType}
          */
         const state = this.states.get()
+        return this._getWorkflow(state.workflow?.id)
+    }
+    /**
+     * @param {any} id
+     */
+    _getWorkflow(id) {
         /**
          * @type { import("../workflow/protocol").WorkflowPluginConfigure}
          */
 
-        const configure = this.repositries.configures.workflows.get(state.workflow?.id)
+        const configure = this.repositries.configures.workflows.get(id)
         /**
          * @type {import("../workflow/protocol").Plugin}
          */
@@ -66,13 +72,11 @@ class Workflows {
 
     goSub() {
 
-        /**
-         * @type {import("../controller/protocol").StateType}
-        */
-        const superState = this.states.get(1)
-        const id = this.repositries.configures.workflows.getId(superState.workflow.subwWorkflow.name, superState.executor.executorId)
 
-        const currentWorkflowState = Object.assign({ id }, superState.workflow.subwWorkflow)
+        const state = this.states.get()
+        const { workflow, configure } = this._getWorkflow(state.controlls?.subworkflowId)
+
+
 
 
 

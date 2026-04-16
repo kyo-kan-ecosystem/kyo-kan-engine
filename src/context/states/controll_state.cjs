@@ -1,17 +1,22 @@
+import { createId } from "../../util/create_id.cjs"
 
 
 class ControllState {
     /**
-     * @type {import("../../util/stack/stack.cjs").StackTree<any, import("../../controller/protocol").StateType>}
+     * @type {import("./states.cjs").StatesType}
      */
     _state
     /**
      * 
-     * @param {import("../../util/stack/stack.cjs").StackTree<any, import("../../controller/protocol").StateType>} state 
+     * @param {import("./states.cjs").StatesType} state 
      */
     constructor(state) {
         this._state = state
+
+
     }
+
+
     /**
      * 
      * @param {keyof import("../../controller/protocol").ControllStateType} key 
@@ -36,6 +41,13 @@ class ControllState {
         state.controlls = Object.assign({}, state.controlls || {}, controlls)
 
         this._state.update(state)
+    }
+    /**
+     * 
+     * @param {keyof import("../../controller/protocol").ControllStateType} key
+     */
+    getControlls(key) {
+        return this._state.get()?.controlls ? [key]
     }
     /**
      * @param {any} executorId
@@ -63,10 +75,11 @@ class ControllState {
         return this._state.get()?.controlls?.executeMode
     }
     /**
-     * @param {any} subworkflowId
+     * @param {any} subworkflowName
      */
-    goSub(subworkflowId, subworkflowInit = null) {
+    goSub(subworkflowName, subworkflowInit = null) {
         this.setExecuteMode('goSub')
+        const subworkflowId = createId(this.getControlls('executorId'), subworkflowName)
         this.setControll('subworkflowId', subworkflowId)
         this.setControll('subworkflowInit', subworkflowInit)
 
