@@ -74,7 +74,7 @@ class Stack {
     }
     /**
      * Updates the top element of the stack.
-     * @param {Partial<any>} upData - The data to update the top item with.
+     * @param {Partial<DataType>} upData - The data to update the top item with.
      * @param {true?} [isFullOverWrite] - If true, the item is completely replaced; otherwise, it's merged.
      */
     update(upData, isFullOverWrite) {
@@ -127,8 +127,9 @@ class Stack {
 
 
 /**
- * @template {Stack} BranchClass
  * @template DataType
+ * @template {Stack<DataType>} BranchClass
+ * 
  *
  */
 class StackTree {
@@ -248,7 +249,7 @@ class StackTree {
         */
         // @ts-ignore
         const responseObj = new this.constructor(this.getReference(), this._branchClass)
-        responseObj.setReference()
+
         responseObj.setBranchId(_id)
         return responseObj;
 
@@ -290,6 +291,9 @@ class StackTree {
         return this._linkedCounts[id] || 0;
     }
 
+    /**
+     * @param {number} id
+     */
     setBranchId(id) {
 
         this._branchId = id;
@@ -303,7 +307,7 @@ class StackTree {
 
     /**
      * Updates the top element of the current branch.
-     * @param {*} stackData
+     * @param {DataType} stackData
      * @param {true?} isFullOverWrite  
      */
     update(stackData, isFullOverWrite = null) {

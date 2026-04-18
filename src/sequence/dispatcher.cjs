@@ -116,14 +116,29 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     goSub(request, context) {
 
         context.histories.forword(request)
-        context.workflows.goSub()
+
+        const { workflowSteps, workflowId } = context.workflows.goSub()
+        /**
+       * @type { import("../workflow/plugin/protocol").WorkflowSteps }
+       */
+        const ensuredWorkfloSteps = ensureArray(workflowSteps)
+        const results = []
+
+        for (const workflowStep of ensuredWorkfloSteps) {
+            workflowStep.context.states.update({ workflow: { id: workflowId } })
+            results.push(Promise.resolve({ context: workflowStep.context }))
+        }
+
+        return results
 
 
 
-        const subExecuteFunc = 
-        
 
-    
+
+
+
+
+
 
     }
 

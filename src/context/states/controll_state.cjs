@@ -1,4 +1,4 @@
-import { createId } from "../../util/create_id.cjs"
+const { createId } = require("../../util/create_id.cjs")
 
 
 class ControllState {
@@ -46,8 +46,10 @@ class ControllState {
      * 
      * @param {keyof import("../../controller/protocol").ControllStateType} key
      */
-    getControlls(key) {
-        return this._state.get()?.controlls ? [key]
+    getControll(key) {
+        return this._state.get()?.controlls?.[key]
+
+
     }
     /**
      * @param {any} executorId
@@ -76,12 +78,13 @@ class ControllState {
     }
     /**
      * @param {any} subworkflowName
+     * @param {any} [subworkflowInit=null] 
      */
     goSub(subworkflowName, subworkflowInit = null) {
         this.setExecuteMode('goSub')
-        const subworkflowId = createId(this.getControlls('executorId'), subworkflowName)
+        const subworkflowId = createId(this.getControll('executorId'), subworkflowName)
         this.setControll('subworkflowId', subworkflowId)
-        this.setControll('subworkflowInit', subworkflowInit)
+        this.setControll('subworkflowInit', subworkflowInit || {})
 
 
     }
@@ -91,5 +94,5 @@ class ControllState {
 
 }
 
-// @ts-ignore
+
 module.exports = { ControllState }

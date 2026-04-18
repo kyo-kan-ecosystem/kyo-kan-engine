@@ -11,7 +11,7 @@ class AbstractWorkflow {
     * @param {import("../../controller/protocol").Context<any,any>} context 
       
     * @param {*} configure
-    * @returns {import("./protocol").WorkflowStep}
+    * @returns {import("./protocol").MaybeWorkflowSteps}
     */
     enterWorkflow(context, configure) {
         throw new Error('Method not implemented.')

@@ -75,16 +75,12 @@ class Workflows {
 
         const state = this.states.get()
         const { workflow, configure } = this._getWorkflow(state.controlls?.subworkflowId)
+        return { workflowSteps: workflow.enterWorkflow(this.context, configure), workflowId: state.controlls?.subworkflowId }
 
 
 
 
 
-        /**
-         * @type {import("../controller/protocol").StateType}
-         */
-        const updateState = { workflow: currentWorkflowState }
-        this.states.update(updateState)
 
 
 

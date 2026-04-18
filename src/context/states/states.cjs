@@ -6,7 +6,7 @@ const { ControllState } = require('./controll_state.cjs')
 
 /**
  * @template {ControllState} ControllStateType
- * @extends {StackTree<StateBranch, import('../../controller/protocol').State>} 
+ * @extends {StackTree<import('../../controller/protocol').State, StateBranch>} 
  *
  */
 class States extends StackTree {
