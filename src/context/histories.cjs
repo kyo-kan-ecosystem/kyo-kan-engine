@@ -35,7 +35,7 @@ const DEFAULT_HISTORY_CLASSES = {
 
 
 /**
- * @typedef {import('./states/states.cjs').States} States 
+ * @typedef {import('./states/states.cjs').StatesType} States 
  * @typedef {import("./bords/bords.cjs").Bords} Bords 
  */
 
@@ -64,7 +64,7 @@ class Histories {
 
 
     /**
-     * @type {import('./states/states.cjs').States}
+     * @type {import('./states/states.cjs').StatesType}
      * 
      */
     _statesTree
@@ -171,11 +171,11 @@ class Histories {
         // @ts-ignore
         if (headState.depth > this._statesTree.getBranchDepth()) {
             // @ts-ignore
-            this._statesTree.push(headState.log)
+            this._statesTree.now.push(headState.log)
         }
         else {
             // @ts-ignore
-            this._statesTree.update(headState.log)
+            this._statesTree.now.update(headState.log)
         }
 
         const headGlobal = this.bords.global.getBranchHead()
@@ -188,7 +188,7 @@ class Histories {
         // @ts-ignore
         if (headCurrentWorkflow.depth > this._bordsTree.getBranchDepth()) {
             // @ts-ignore
-            this._bordsTree.push(headCurrentWorkflow.log)
+            this._bordsTree.now.push(headCurrentWorkflow.log)
         }
         else {
             // @ts-ignore

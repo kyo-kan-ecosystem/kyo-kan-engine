@@ -27,3 +27,11 @@ export type StackReference<BranchClass> = {
     linkMap: { [k in any]: number },
     linkedCounts: { [k in any]: number }
 }
+
+export type StackTreeReferenceData = {
+
+    branches: any,
+    countRef: any,
+    linkMap: any,
+    linkedCounts: any
+}

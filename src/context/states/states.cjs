@@ -6,12 +6,12 @@ const { ControllState } = require('./controll_state.cjs')
 
 /**
  * @template {ControllState} ControllStateType
- * @extends {StackTree<import('../../controller/protocol').State, StateBranch>} 
+ * @extends {StackTree<StateBranch>} 
  *
  */
 class States extends StackTree {
     /**
-     * @type {ControllState}
+     * @type {ControllStateType}
      */
     controll
     /**
@@ -29,10 +29,10 @@ class States extends StackTree {
 
     }
     getExecuteMode() {
-        return (this.get() || {}).controlls?.executeMode
+        return (this.now.get() || {}).controlls?.executeMode
     }
     goSub() {
-        this.push({})
+        this.now.push({})
     }
     returnFromSub() {
         return this.pop()

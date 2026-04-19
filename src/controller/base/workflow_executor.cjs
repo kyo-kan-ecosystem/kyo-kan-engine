@@ -90,7 +90,7 @@ async function executeWorkflow(request, context) {
 
         // response_unitsとresponsesを結合
         responses = responses.concat(response_units);
-        context.states.update(state);
+        context.states.now.update(state);
 
 
         // stateのmodeによって分岐

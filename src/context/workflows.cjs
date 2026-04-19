@@ -35,7 +35,7 @@ class Workflows {
         /**
          * @type {import("../controller/protocol").StateType}
          */
-        const state = this.states.get()
+        const state = this.states.now.get()
         return this._getWorkflow(state.workflow?.id)
     }
     /**
@@ -73,7 +73,7 @@ class Workflows {
     goSub() {
 
 
-        const state = this.states.get()
+        const state = this.states.now.get()
         const { workflow, configure } = this._getWorkflow(state.controlls?.subworkflowId)
         return { workflowSteps: workflow.enterWorkflow(this.context, configure), workflowId: state.controlls?.subworkflowId }
 

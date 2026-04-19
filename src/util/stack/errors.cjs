@@ -5,5 +5,14 @@ class StackTreeRootPopError extends Error {
 
     }
 }
+class StackTreeRootSuperGetError extends Error {
+    /**
+     * @param {any} id
+     */
+    constructor(id) {
+        super(`This Tree id ${id} is root. Cannot get super branchid`)
+        this.name = 'StackTreeRootSuperGetError'
 
-module.exports = { StackTreeRootPopError }
+    }
+}
+module.exports = { StackTreeRootPopError, StackTreeRootSuperGetError }

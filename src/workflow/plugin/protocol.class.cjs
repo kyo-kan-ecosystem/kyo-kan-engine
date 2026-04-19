@@ -114,7 +114,7 @@ class ProtocolWorkflow extends AbstractWorkflow {
         /**
          * @type {import("../../controller/protocol").StateType}
          */
-        const state = context.states.get()
+        const state = context.states.now.get()
 
 
         return { state: null, response: [] }

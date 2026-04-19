@@ -171,7 +171,7 @@ class Context {
 
         if (datas === null) {
             this._branchId = this._createIdMap()
-            this.states.push({})
+            this.states.now.push({})
 
 
 

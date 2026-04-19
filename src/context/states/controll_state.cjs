@@ -23,31 +23,31 @@ class ControllState {
      * @param {*} value 
      */
     setControll(key, value) {
-        const state = this._state.get() || {}
+        const state = this._state.now.get() || {}
         const controlls = state.controlls || {}
         controlls[key] = value
         state.controlls = controlls
 
-        this._state.update(state)
+        this._state.now.update(state)
 
     }
     /**
      * @param {any} controlls
      */
     setControlls(controlls) {
-        const state = this._state.get() || {}
+        const state = this._state.now.get() || {}
 
 
         state.controlls = Object.assign({}, state.controlls || {}, controlls)
 
-        this._state.update(state)
+        this._state.now.update(state)
     }
     /**
      * 
      * @param {keyof import("../../controller/protocol").ControllStateType} key
      */
     getControll(key) {
-        return this._state.get()?.controlls?.[key]
+        return this._state.now.get()?.controlls?.[key]
 
 
     }
@@ -74,7 +74,7 @@ class ControllState {
 
     }
     getExecuteMode() {
-        return this._state.get()?.controlls?.executeMode
+        return this._state.now.get()?.controlls?.executeMode
     }
     /**
      * @param {any} subworkflowName

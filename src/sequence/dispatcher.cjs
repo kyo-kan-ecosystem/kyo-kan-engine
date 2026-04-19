@@ -125,7 +125,11 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         const results = []
 
         for (const workflowStep of ensuredWorkfloSteps) {
-            workflowStep.context.states.update({ workflow: { id: workflowId } })
+            workflowStep.context.states.now.update({ workflow: { id: workflowId } })
+            if (!workflowStep.context.states.controll.getExecuteMode()) {
+                workflowStep.context.states.controll.setExecuteMode('go')
+            }
+
             results.push(Promise.resolve({ context: workflowStep.context }))
         }
 

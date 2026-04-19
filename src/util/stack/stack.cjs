@@ -1,6 +1,6 @@
 
 const deepmerge = require("deepmerge")
-const { StackTreeRootPopError } = require("./errors.cjs")
+const { StackTreeRootPopError, StackTreeRootSuperGetError: StackTreeTopSuperGetError } = require("./errors.cjs")
 
 
 /**
@@ -127,8 +127,8 @@ class Stack {
 
 
 /**
- * @template DataType
- * @template {Stack<DataType>} BranchClass
+
+ * @template {Stack<any>} BranchClass
  * 
  *
  */
@@ -167,7 +167,11 @@ class StackTree {
      * @type {{[k in number]:number}}
     */
     _linkMap
-
+    /**
+     * @type {BranchClass}
+     */
+    // @ts-ignore
+    now
 
     /**
      * Creates an instance of StackTree.
@@ -195,8 +199,10 @@ class StackTree {
 
         }
         if (initData === null) {
-            this._branches[this.topId] = new this._branchClass();
+
+
             this._countRef.n = 1;
+            this.setBranchId(this.topId)
             return
 
         }
@@ -244,9 +250,7 @@ class StackTree {
             this._linkMap[_id] = this._branchId
             this._linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
         }
-        /**
-        * @type {typeof this}
-        */
+
         // @ts-ignore
         const responseObj = new this.constructor(this.getReference(), this._branchClass)
 
@@ -274,11 +278,14 @@ class StackTree {
     /**
      * Gets the super branch ID for a given branch ID.
      * @param {number?} id The ID of the child branch.
-     * @returns {number | undefined} The ID of the super branch, or undefined if it's a top-level branch or doesn't exist.
+     * @returns {number} The ID of the super branch, or undefined if it's a top-level branch or doesn't exist.
      */
     getSuperBranchId(id = null) {
         const _id = id == null ? this._branchId : id
-        return this._linkMap[_id]
+        if (_id in this._linkMap) {
+            return this._linkMap[_id]
+        }
+        throw new StackTreeTopSuperGetError()
 
     }
 
@@ -301,28 +308,13 @@ class StackTree {
             // Create an empty stack for the new branch
             this._branches[id] = new this._branchClass();
         }
+        this.now = this._branches[id]
 
 
     }
 
-    /**
-     * Updates the top element of the current branch.
-     * @param {DataType} stackData
-     * @param {true?} isFullOverWrite  
-     */
-    update(stackData, isFullOverWrite = null) {
 
-        this._branches[this._branchId].update(stackData, isFullOverWrite)
-    }
 
-    /**
-     * Gets an element from the current branch.
-     * @param {number} digg - The offset from the top of the stack.
-     * @returns {DataType}
-     */
-    get(digg = 0) {
-        return this._branches[this._branchId].get(digg)
-    }
 
 
 
@@ -380,7 +372,10 @@ class StackTree {
         this._linkMap = linkMap
         this._linkedCounts = linkedCounts
     }
-
+    /**
+     * 
+     * @returns {import("./protocol").StackTreeReferenceData}
+     */
     getReference() {
         return { branches: this._branches, countRef: this._countRef, linkMap: this._linkMap, linkedCounts: this._linkedCounts }
 
@@ -400,13 +395,7 @@ class StackTree {
 
     }
 
-    /**
-     * Pushes data onto the current branch.
-     * @param {DataType} data
-     */
-    push(data) {
-        this._branches[this._branchId].push(data)
-    }
+
 
     /**
      * Pops data from the current branch.
@@ -426,6 +415,7 @@ class StackTree {
                 }
                 return ret
             }
+
 
 
             this.setBranchId(this.getSuperBranchId())

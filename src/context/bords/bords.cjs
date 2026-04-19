@@ -26,6 +26,7 @@ class Bords extends StackTree {
     /**
      * @type {LinkMapType}
      */
+    // @ts-ignore
     _nameMap
 
 
@@ -59,7 +60,7 @@ class Bords extends StackTree {
      */
     push(workflow = null) {
         const item = { workflow: workflow || {} }
-        return super.push(item)
+        return this.now.push(item)
 
 
     }
@@ -67,10 +68,8 @@ class Bords extends StackTree {
 
 
     getCurrentWorkflow() {
-        /**
-         * @type {{workflow:any}}
-         */
-        const item = this.get()
+
+        const item = this.now.get()
         return item.workflow
 
 
@@ -81,21 +80,18 @@ class Bords extends StackTree {
      * @param {true?} [isFullOverWrite=null]  
      */
     updateCurrentWorkflowBord(data, isFullOverWrite = null) {
-        /**
-         * @type {{current:any}}
-         */
-        const item = this.get() || {}
+
+        const item = this.now.get() || {}
         item.current = data
-        this.update(item, isFullOverWrite)
+
+        this.now.update(item, isFullOverWrite)
 
 
     }
 
     getSubworkflowBord() {
-        /**
-         * @type {{subworkflow?:any}}
-         */
-        const item = this.get()
+
+        const item = this.now.get()
         return item.subworkflow
     }
     pop() {
@@ -110,7 +106,7 @@ class Bords extends StackTree {
         /**
         * @type {{subworkflow?:any}}
         */
-        const nowItem = this.get()
+        const nowItem = this.now.get()
         if (typeof name === "undefined") {
             nowItem.subworkflow = item.workflow
         }
@@ -121,7 +117,7 @@ class Bords extends StackTree {
             subworkflow[name] = item.workflow
             nowItem.subworkflow = subworkflow
         }
-        this.update(nowItem)
+        this.now.update(nowItem)
 
 
 
@@ -131,6 +127,9 @@ class Bords extends StackTree {
 
 
     }
+    /**
+     * @param {string} name
+     */
     forkAsNamedTree(name) {
 
         const tree = this.fork()
@@ -156,11 +155,22 @@ class Bords extends StackTree {
         this._nameMap = params.nameMap
         this._global = params.global
     }
+    /**
+     * 
+     * @returns {import("./bords.protocol").BordsReferenceDataProtocol}
+     */
     getReference() {
+        /**
+         * @type {import("./bords.protocol").BordRefernceData}
+         */
+        const bordData = {
+            nameMap: this._nameMap,
+            global: this._global
+        }
         const ret = super.getReference()
-        ret.nameMap = this._nameMap
-        ret.global = this._global
-        return ret
+
+        return Object.assign(ret, bordData)
+
     }
 
 
@@ -195,11 +205,11 @@ class Bords extends StackTree {
      * @param {*} subworkflow 
      */
     setSubWorkFlow(subworkflow) {
-        this.update({ subworkflow })
+        this.now.update({ subworkflow })
     }
 
     getSubWorkflow() {
-        return this.get()?.subworkflow;
+        return this.now.get()?.subworkflow;
     }
 
 
