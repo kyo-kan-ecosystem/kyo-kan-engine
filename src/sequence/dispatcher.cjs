@@ -5,7 +5,17 @@ const { AbstractDispatcher } = require("./protocol.class.cjs")
 
 
 class SequenceDispatcherBase extends AbstractDispatcher {
+    /**
+      * 
+      * @param {*} request 
+      * @param {import("../controller/protocol").Context<any,any>} context 
+      * @returns {Promise<import("./protocol").StepResult>[]}
+      * 
+      */
+    // 開始時処理と継続処理を分離。enterは継続処理とする。resumeに変更　executemodeの型にも反映
+    start(request, context) {
 
+    }
 
 
     /**
@@ -15,13 +25,20 @@ class SequenceDispatcherBase extends AbstractDispatcher {
    * @returns {Promise<import("./protocol").StepResult>[]}
    * 
    */
+
     enter(request, context) {
+
+
+        if (context.states.isStart() === true) {
+
+
+        }
 
         const workflowSteps = context.workflows.now()
 
 
 
-        const defaultCallback = context.repositries.configures.engine.get('executor').enterFunc
+        const defaultCallback = context.repositries.configures.engine.get().executor.enterFunc
 
 
 
@@ -118,6 +135,13 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         context.histories.forword(request)
 
         const { workflowSteps, workflowId } = context.workflows.goSub()
+        return this._startWorkflow(workflowSteps, workflowId)
+    }
+    /**
+     * @param {any} workflowSteps
+     * @param {any} workflowId
+     */
+    _startWorkflow(workflowSteps, workflowId) {
         /**
        * @type { import("../workflow/plugin/protocol").WorkflowSteps }
        */

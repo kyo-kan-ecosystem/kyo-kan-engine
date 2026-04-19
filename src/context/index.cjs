@@ -379,7 +379,7 @@ class Context {
     /**
      * @param {Object} param0
      * @param {Bords?} [param0.bords] 
-     * @param {States?} [param0.states] 
+     * @param { import("./states/states.cjs").StatesType?} [param0.states] 
      * @param {Histories?} [param0.histories] 
      * @returns 
      */
@@ -404,9 +404,6 @@ class Context {
 
 
 
-    initRoot(rootFlow = '', psuedoCalleId = '') {
-        // wip
-    }
 
 
 

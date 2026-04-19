@@ -1,4 +1,4 @@
-import { AbstractDispatcher } from "./protocol.class.cjs"
+import type { AbstractDispatcher } from "./protocol.class.cjs"
 
 export type StepResult = {
 
@@ -16,4 +16,7 @@ export type ProcessCounter = {
 
 export interface GetModeInterFace {
     getMode: () => any
-} 
+}
+export type ExecuteMode = keyof AbstractDispatcher
+
+

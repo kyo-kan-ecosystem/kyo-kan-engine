@@ -1,6 +1,6 @@
 
 const deepmerge = require("deepmerge")
-const { StackTreeRootPopError, StackTreeRootSuperGetError: StackTreeTopSuperGetError } = require("./errors.cjs")
+const { StackTreeRootPopError, StackTreeRootSuperGetError, StackTreeBranchDoesNotExistError } = require("./errors.cjs")
 
 
 /**
@@ -202,7 +202,7 @@ class StackTree {
 
 
             this._countRef.n = 1;
-            this.setBranchId(this.topId)
+            this.setBranchId(this.topId, false)
             return
 
         }
@@ -285,7 +285,7 @@ class StackTree {
         if (_id in this._linkMap) {
             return this._linkMap[_id]
         }
-        throw new StackTreeTopSuperGetError()
+        throw new StackTreeRootSuperGetError(id)
 
     }
 
@@ -300,12 +300,17 @@ class StackTree {
 
     /**
      * @param {number} id
+     * @param {boolean} [isStrict=true] 
      */
-    setBranchId(id) {
+    setBranchId(id, isStrict = true) {
 
         this._branchId = id;
         if (!this._branches[id]) {
-            // Create an empty stack for the new branch
+            if (isStrict === true) {
+                throw new StackTreeBranchDoesNotExistError(id)
+
+            }
+
             this._branches[id] = new this._branchClass();
         }
         this.now = this._branches[id]

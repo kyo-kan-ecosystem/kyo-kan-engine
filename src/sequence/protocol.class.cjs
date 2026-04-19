@@ -6,12 +6,22 @@
  * @abstract
  * */
 class AbstractDispatcher {
+
     /**
      * @abstract
      * @param {*} context
      * @param {any} request
      */
-    enter(request, context) {
+    start(request, context) {
+
+    }
+
+    /**
+     * @abstract
+     * @param {*} context
+     * @param {any} request
+     */
+    resume(request, context) {
 
     }
 

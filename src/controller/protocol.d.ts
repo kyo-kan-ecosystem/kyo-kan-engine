@@ -1,10 +1,10 @@
 import { exec } from "child_process";
 import { WorkflowState } from "../workflow/protocol";
+import { ExecuteMode } from "../sequence/protocol";
 
 
 export type { Context } from "../context/index.cjs";
 
-export type ExecuteMode = 'enter' | 'wait' | 'go' | 'goSub' | 'end' | 'back' | 'rewindWorokflow' | 'rewindReturn' | 'returnFromSub';
 export type ControllStateType = {
     executorId?: string,
     callback?: string,

@@ -19,13 +19,18 @@ const DEFAULT_ENGINE_CONFIGURE = {
         enterFunc: 'enter'
     }
 }
-
+/**
+ * @extends {Repositry<EngineConfigure>}
+ */
 class EngineConfigureRepositry extends Repositry {
     constructor(datas = DEFAULT_ENGINE_CONFIGURE) {
-        super(datas)
+        super({ engine: datas })
 
 
 
+    }
+    get() {
+        return super.get('engine')
     }
 
 }
