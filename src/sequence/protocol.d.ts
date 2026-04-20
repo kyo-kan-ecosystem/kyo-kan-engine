@@ -4,7 +4,7 @@ export type StepResult = {
 
     context: any
 
-} | false | null | undefined
+} | false
 
 export type StepResults = StepResult[]
 

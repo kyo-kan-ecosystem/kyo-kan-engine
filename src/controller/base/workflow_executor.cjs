@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../protocol").executeMode} executeMode
+ * @typedef {import("../../sequence/protocol").ExecuteMode} executeMode
 */
 
 

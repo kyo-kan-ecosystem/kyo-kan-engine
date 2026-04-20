@@ -32,17 +32,17 @@ class SequenceRunner {
      * @param {*} dispatcher 
      * @param {import("../context/index.cjs").Context<any, any>} context 
      * @param {*} request 
-     * @param {*} enterMode
+     * @param {import("./protocol").ExecuteMode} [startMode=start]
      * @param {import("./protocol").ProcessCounter?} processCounter
      * @param {import("../util/single_event.cjs").SingleEvent<(request:any, contexts:any[])=>void>} processEndEvent
      * @param {any[]?} contexts    
      */
-    constructor(dispatcher, context, request, processEndEvent, contexts = null, processCounter = null, enterMode = 'enter') {
+    constructor(dispatcher, context, request, processEndEvent, contexts = null, processCounter = null, startMode = 'start') {
         this.dispatcher = dispatcher
         this._context = context
-        this.request = request
+        this._request = request
         this.run = this.run.bind(this)
-        this.enterMode = enterMode
+        this.startMode = startMode
         this._processEndEvent = processEndEvent
         this._processPathCounter = processCounter || { n: 0 }
         this._contexts = contexts || [this._context]
@@ -53,29 +53,34 @@ class SequenceRunner {
     }
     /**
      * 
-     * @param {import("./protocol").StepResult} modeAndContext 
+     * @param {import("./protocol").StepResult?} stepResult 
      */
-    run(modeAndContext = null) {
+    run(stepResult = null) {
 
 
-        if (modeAndContext === false) {
+        if (stepResult === false) {
             this._processPathCounter.n--
         }
 
         else {
             /**
-             * @type {import("./protocol").StepResult}
-             */
-            const _modeAndContext = modeAndContext || { mode: this.enterMode }
+          
             /**
              * @type {import("../context/index.cjs").Context<any, any>}
              */
-            const context = _modeAndContext.context || this._context
-            const executeMode = _modeAndContext.mode || context.states.getExecuteMode()
+            const context = stepResult?.context || this._context
+            let executeMode = this.startMode
+            if (this._context.states.isStart() === false) {
+                // @ts-ignore
+                executeMode = context.states.controll.getExecuteMode()
+
+            }
+
+
 
             if (context === this._context) {
                 this._processPathCounter.n++
-                const proms = this.dispatcher[executeMode].call(this.request, this._context)
+                const proms = this.dispatcher[executeMode].call(this._request, this._context)
                 for (const prom of proms) {
                     prom.then(this.run)
                 }
@@ -84,8 +89,8 @@ class SequenceRunner {
             else {
                 this._contexts.push(context)
                 // @ts-ignore
-                const runner = new this.constructor(this.dispatcher, context, this.request, this._processEndEvent, this._contexts, this._processPathCounter, this.enterMode)
-                runner.run(modeAndContext)
+                const runner = new this.constructor(this.dispatcher, context, this._request, this._processEndEvent, this._contexts, this._processPathCounter, this.startMode)
+                runner.run(stepResult)
             }
         }
 
@@ -93,7 +98,7 @@ class SequenceRunner {
 
 
         if (this._processPathCounter.n === 0) {
-            this._processEndEvent.emit(this.request, this._contexts)
+            this._processEndEvent.emit(this._request, this._contexts)
 
         }
 

@@ -1,3 +1,5 @@
+const { ControllStateValueNotExistError } = require("./protocl.class.cjs")
+
 const { createId } = require("../../util/create_id.cjs")
 
 
@@ -44,10 +46,19 @@ class ControllState {
     }
     /**
      * 
-     * @param {keyof import("../../controller/protocol").ControllStateType} key
+     * @template {keyof import("../../controller/protocol").ControllStateType} KeyType
+     * @param {KeyType} key
+     * @param {boolean} [isStrict=true] 
+     * @returns {import("../../controller/protocol").ControllStateType[KeyType]}
      */
-    getControll(key) {
-        return this._state.now.get()?.controlls?.[key]
+    getControll(key, isStrict = true) {
+        const ret = this._state.now.get()?.controlls?.[key]
+        if (isStrict === true && (ret === null || typeof ret === 'undefined')) {
+            throw new ControllStateValueNotExistError(key)
+
+
+        }
+        return ret
 
 
     }
@@ -66,15 +77,21 @@ class ControllState {
         this.setControll('callback', callback)
 
     }
+    getCallback() {
+        return this.getControll('callback', false)
+    }
+
     /**
-     * @param {import("../../controller/protocol").ExecuteMode} executeMode
+     * @param {import("../../sequence/protocol").ExecuteMode} executeMode
      */
     setExecuteMode(executeMode) {
         this.setControll('executeMode', executeMode)
 
     }
+
     getExecuteMode() {
-        return this._state.now.get()?.controlls?.executeMode
+
+        return this.getControll('executeMode')
     }
     /**
      * @param {any} subworkflowName
@@ -82,7 +99,7 @@ class ControllState {
      */
     goSub(subworkflowName, subworkflowInit = null) {
         this.setExecuteMode('goSub')
-        const subworkflowId = createId(this.getControll('executorId'), subworkflowName)
+        const subworkflowId = createId(this.getControll('executorId', false) || '', subworkflowName)
         this.setControll('subworkflowId', subworkflowId)
         this.setControll('subworkflowInit', subworkflowInit || {})
 
