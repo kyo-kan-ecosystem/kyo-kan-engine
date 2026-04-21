@@ -47,11 +47,19 @@ class ControllState {
     /**
      * 
      * @template {keyof import("../../controller/protocol").ControllStateType} KeyType
+     * @overload
      * @param {KeyType} key
-     * @param {boolean} [isStrict=true] 
+     * @param {true} isStrict
      * @returns {import("../../controller/protocol").ControllStateType[KeyType]}
+     * 
+     * @overload
+    *  @param {KeyType} key
+     * @param {false} isStrict 
+     * @returns {import("../../controller/protocol").ControllStateType[KeyType]?}
      */
+    // @ts-ignore
     getControll(key, isStrict = true) {
+        // @ts-ignore
         const ret = this._state.now.get()?.controlls?.[key]
         if (isStrict === true && (ret === null || typeof ret === 'undefined')) {
             throw new ControllStateValueNotExistError(key)
@@ -88,10 +96,15 @@ class ControllState {
         this.setControll('executeMode', executeMode)
 
     }
+    /**
+     * 
+     * @param {boolean} isStrict 
+     * 
+     */
+    getExecuteMode(isStrict = true) {
 
-    getExecuteMode() {
-
-        return this.getControll('executeMode')
+        // @ts-ignore
+        return this.getControll('executeMode', isStrict)
     }
     /**
      * @param {any} subworkflowName
