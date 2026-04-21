@@ -24,6 +24,10 @@ class States extends StackTree {
     constructor(initData = null, id = null, branchClass = StateBranch, controllClass = ControllState) {
         super(initData, id, branchClass)
         this.controll = new controllClass(this)
+        if (initData === null) {
+            this.now.push({ isStart: true })
+
+        }
 
 
 
@@ -38,9 +42,23 @@ class States extends StackTree {
         return this.pop()
     }
     isStart() {
-        return this.isRoot() && this.now.isEmpty()
+        return this.now.get()?.isStart === true
 
     }
+    setNotStart() {
+        this.now.update({ isStart: false })
+    }
+    setIsBoot() {
+        this.now.update({ isBoot: true })
+    }
+    isBoot() {
+        return this.now.get()?.isBoot === true
+    }
+    setNotBoot() {
+        this.now.update({ isBoot: false })
+    }
+
+
 }
 
 /**

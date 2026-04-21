@@ -1,11 +1,8 @@
 const { Repositry } = require("../../repositry/base.cjs")
 
-/**
- * @typedef {{root:{workflow:{plugin:string, id:string}},executor:{enterFunc:string}}} EngineConfigure
- */
 
 /**
- * @type {EngineConfigure}
+ * @type {import("./protocol").EngineConfigure}
  */
 const DEFAULT_ENGINE_CONFIGURE = {
     root: {
@@ -17,10 +14,14 @@ const DEFAULT_ENGINE_CONFIGURE = {
     },
     executor: {
         enterFunc: 'enter'
+    },
+    sequence: {
+        start: 'start',
+        resume: 'resume'
     }
 }
 /**
- * @extends {Repositry<EngineConfigure>}
+ * @extends {Repositry<import("./protocol").EngineConfigure>}
  */
 class EngineConfigureRepositry extends Repositry {
     constructor(datas = DEFAULT_ENGINE_CONFIGURE) {

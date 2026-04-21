@@ -38,13 +38,12 @@ class SequenceRunner {
      * @param {import("../util/single_event.cjs").SingleEvent<(request:any, contexts:any[])=>void>} processEndEvent
      * @param {any[]?} contexts    
      */
-    constructor(dispatcher, context, request, processEndEvent, contexts = null, processCounter = null, startMode = 'start', resumeMode = 'resume') {
+    constructor(dispatcher, context, request, processEndEvent, contexts = null, processCounter = null) {
         this.dispatcher = dispatcher
         this._context = context
         this._request = request
         this.run = this.run.bind(this)
-        this.startMode = startMode
-        this.resumeMode = resumeMode
+
         this._processEndEvent = processEndEvent
         this._processPathCounter = processCounter || { n: 0 }
         this._contexts = contexts || [this._context]
@@ -75,12 +74,13 @@ class SequenceRunner {
             if (stepResult === null) {
                 if (this._context.states.isStart() === false) {
 
-                    executeMode = this.resumeMode
+                    executeMode = this._context.repositries.configures.engine.get().sequence.resume
+
                 }
                 else {
-                    executeMode = this.startMode
+                    executeMode = this._context.repositries.configures.engine.get().sequence.start
                 }
-
+                // 次にやること　BootをDispatcher側で実装。 Boot用のプラグインリポジトリを追加
             }
             else {
 
@@ -93,6 +93,7 @@ class SequenceRunner {
 
             if (context === this._context) {
                 this._processPathCounter.n++
+                // @ts-ignore
                 const proms = this.dispatcher[executeMode].call(this.dispatcher, this._request, this._context)
                 for (const prom of proms) {
                     prom.then(this.run)

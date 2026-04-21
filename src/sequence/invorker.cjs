@@ -8,7 +8,8 @@ import { SequenceRunner } from "./runner.cjs";
  */
 function invokeSequence(request, context, processEndEvent, runnerClass = SequenceRunner, dispatcherClass = SequenceDispatcherBase, enterMode = 'enter') {
     const dispatcher = new dispatcherClass()
-    const runner = new runnerClass(dispatcher, context, request, processEndEvent, null, null, enterMode)
+    // @ts-ignore
+    const runner = new runnerClass(dispatcher, context, request, processEndEvent, null, null)
     runner.run()
 }
 

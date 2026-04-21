@@ -14,6 +14,16 @@ class SequenceDispatcherBase extends AbstractDispatcher {
       */
     // 開始時処理と継続処理を分離。enterは継続処理とする。resumeに変更　executemodeの型にも反映
     start(request, context) {
+        const workflowSteps = context.workflows.now()
+
+
+
+        const defaultCallback = context.repositries.configures.engine.get().executor.enterFunc
+
+
+
+
+        return this._runExecutor(workflowSteps, request, defaultCallback)
 
     }
 
@@ -26,13 +36,9 @@ class SequenceDispatcherBase extends AbstractDispatcher {
    * 
    */
 
-    enter(request, context) {
+    resume(request, context) {
 
 
-        if (context.states.isStart() === true) {
-
-
-        }
 
         const workflowSteps = context.workflows.now()
 

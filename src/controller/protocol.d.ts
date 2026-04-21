@@ -18,7 +18,9 @@ export type ControllStateType = {
 export type StateType = {
 
     workflow?: WorkflowState,
-    controlls?: ControllStateType
+    controlls?: ControllStateType,
+    isStart?: boolean,
+    isBoot?: boolean
 
 }
 
