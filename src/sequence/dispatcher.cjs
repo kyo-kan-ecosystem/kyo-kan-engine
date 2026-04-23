@@ -1,3 +1,5 @@
+import { BootCallbackDoesNotExistsError } from "./protocol.error.cjs"
+
 const { ensureArray } = require("../util/ensure_array.cjs")
 
 const { AbstractDispatcher } = require("./protocol.class.cjs")
@@ -9,24 +11,49 @@ class SequenceDispatcherBase extends AbstractDispatcher {
       * 
       * @param {*} request 
       * @param {import("../controller/protocol").Context<any,any>} context 
-      * @returns {Promise<import("./protocol").StepResult>[]}
+      * @returns {Promise<Promise<import("./protocol").StepResult>[]>}
       * 
       */
-    // 開始時処理と継続処理を分離。enterは継続処理とする。resumeに変更　executemodeの型にも反映
-    start(request, context) {
-        const workflowSteps = context.workflows.now()
+
+    async start(request, context) {
+        const bootExecutors = context.repositries.configures.boot.getAll()
+        const bootPromies = []
+        const bootCallbackName = context.repositries.configures.engine.get().boot.callback
+        for (const { plugin, configure } of bootExecutors) {
+            const executor = context.repositries.plugins.executors.get(plugin)
+            if (bootCallbackName in executor === false) {
+                throw new BootCallbackDoesNotExistsError(plugin, bootCallbackName)
+
+            }
+
+            bootPromies.push(executor[bootCallbackName].call(configure, request, context))
 
 
 
+        }
+        await Promise.all(bootPromies)
+
+        const workflowSteps = context.workflows.start()
+        return this._runEnterFunction(request, context, workflowSteps)
+
+
+
+    }
+    /**
+     * 
+     * @param {*} request 
+     * @param {*} context 
+     * @param {*} workflowSteps 
+     * @returns 
+     */
+    _runEnterFunction(request, context, workflowSteps) {
         const defaultCallback = context.repositries.configures.engine.get().executor.enterFunc
 
 
 
 
         return this._runExecutor(workflowSteps, request, defaultCallback)
-
     }
-
 
     /**
    * 

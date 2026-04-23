@@ -66,7 +66,7 @@ class Stack {
 
     /**
      * Adds a new element to the top of the stack.
-     * @param {any} item - The element to add.
+     * @param {DataType} item - The element to add.
      */
     push(item) {
         this._items.push(item)

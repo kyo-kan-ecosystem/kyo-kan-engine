@@ -1,3 +1,5 @@
+const { BootExecutorConfigureRepositry } = require("../executor/repositry/boot.cjs");
+
 const { EngineConfigureRepositry } = require("../engine/repositry/configure.cjs");
 const { ExecutorPluginRepositry } = require("../executor/repositry/plugin.cjs");
 const { ExecutorConfigureRepositry } = require("../executor/repositry/configure.cjs");
@@ -12,14 +14,16 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
  * @typedef {{
  *       workflows?: any,
  *       executors?: any,
- *       engine?: any
+ *       engine?: any,
+ *       boot?: any
  * }} ContextRepositry
  */
 /**
  * @typedef {{
  *       workflows: WorkflowConfiguresRepositry,
- *       executors: ExecutorConfigureRepositry
- *       engine: EngineConfigureRepositry
+ *       executors: ExecutorConfigureRepositry,
+ *       engine: EngineConfigureRepositry,
+ *       boot: BootExecutorConfigureRepositry
  * }} ContextRepositryConfigures
  */
 
@@ -36,7 +40,8 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
  *      configures:{
  *          workflows: typeof WorkflowConfiguresRepositry,
  *          executors: typeof ExecutorConfigureRepositry,
- *          engine: typeof EngineConfigureRepositry
+ *          engine: typeof EngineConfigureRepositry,
+ *          boot: typeof BootExecutorConfigureRepositry  
  *      },     
  *      plugins: {
  *           workflows: typeof WorkflowPluginRepositry,
@@ -59,7 +64,9 @@ const DEFAULT_REPOSITRY_CLASSES = {
     configures: {
         workflows: WorkflowConfiguresRepositry,
         executors: ExecutorConfigureRepositry,
+        boot: BootExecutorConfigureRepositry,
         engine: EngineConfigureRepositry
+
     },
 
     plugins: {
@@ -87,6 +94,8 @@ class Repositries {
     plugins
 
 
+
+
     /**
      * 
      * @param {ContextRepositryArgs} args 
@@ -100,7 +109,8 @@ class Repositries {
 
             workflows: new classes.configures.workflows(configures.workflows || {}),
             executors: new classes.configures.executors(configures.executors || {}),
-            engine: new classes.configures.engine(configures.engine || {})
+            engine: new classes.configures.engine(configures.engine || {}),
+            boot: new classes.configures.boot(configures.boot || {})
         }
 
 
@@ -132,6 +142,8 @@ class Repositries {
     getConfiguresAsSerializeDatas() {
         const result = {}
         for (const [key, value] of Object.entries(this.configures)) {
+
+            // @ts-ignore
             result[key] = value.getSerializeDatas()
 
         }

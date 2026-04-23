@@ -18,6 +18,9 @@ const DEFAULT_ENGINE_CONFIGURE = {
     sequence: {
         start: 'start',
         resume: 'resume'
+    },
+    boot: {
+        callback: 'boot'
     }
 }
 /**

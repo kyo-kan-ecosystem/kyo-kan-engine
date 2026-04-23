@@ -32,8 +32,6 @@ class SequenceRunner {
      * @param {{[k in string]:import("./protocol").DispatchFunction}} dispatcher 
      * @param {import("../context/index.cjs").Context<any, any>} context 
      * @param {*} request 
-     * @param {import("./protocol").ExecuteMode} [startMode=start]
-     * @param {import("./protocol").ExecuteMode} [resumeMode=resume]
      * @param {import("./protocol").ProcessCounter?} processCounter
      * @param {import("../util/single_event.cjs").SingleEvent<(request:any, contexts:any[])=>void>} processEndEvent
      * @param {any[]?} contexts    
@@ -43,6 +41,7 @@ class SequenceRunner {
         this._context = context
         this._request = request
         this.run = this.run.bind(this)
+        this._processPromises = this._processPromises.bind(this)
 
         this._processEndEvent = processEndEvent
         this._processPathCounter = processCounter || { n: 0 }
@@ -93,11 +92,16 @@ class SequenceRunner {
 
             if (context === this._context) {
                 this._processPathCounter.n++
+
                 // @ts-ignore
                 const proms = this.dispatcher[executeMode].call(this.dispatcher, this._request, this._context)
-                for (const prom of proms) {
-                    prom.then(this.run)
+                if (proms instanceof Promise) {
+                    proms.then(this._processPromises)
                 }
+                else {
+                    this._processPromises(proms)
+                }
+
 
             }
             else {
@@ -120,6 +124,16 @@ class SequenceRunner {
 
 
 
+    }
+    /**
+     * 
+     * @param {Promise<any>[]} proms 
+     */
+    _processPromises(proms) {
+
+        for (const prom of proms) {
+            prom.then(this.run)
+        }
     }
 
 }

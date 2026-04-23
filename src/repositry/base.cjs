@@ -1,7 +1,7 @@
 
 
 /**
- * @template  DataType
+ * @template  [DataType=any]
  */
 
 class Repositry {

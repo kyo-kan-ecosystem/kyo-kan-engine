@@ -5,7 +5,7 @@ const { ControllState } = require('./controll_state.cjs')
 
 
 /**
- * @template {ControllState} ControllStateType
+ * @template {ControllState} [ControllStateType=ControllState]
  * @extends {StackTree<StateBranch>} 
  *
  */
@@ -24,10 +24,7 @@ class States extends StackTree {
     constructor(initData = null, id = null, branchClass = StateBranch, controllClass = ControllState) {
         super(initData, id, branchClass)
         this.controll = new controllClass(this)
-        if (initData === null) {
-            this.now.push({ isStart: true })
 
-        }
 
 
 

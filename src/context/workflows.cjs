@@ -32,10 +32,7 @@ class Workflows {
     }
 
     getCurrentWorkflow() {
-        if (this.states.isStart() === true) {
-            const defaultWorkflow = this.repositries.configures.engine.get().root.workflow.id
-            return this._getWorkflow(defaultWorkflow)
-        }
+
 
         /**
          * @type {import("../controller/protocol").StateType}
@@ -73,6 +70,18 @@ class Workflows {
         return workflow.now(this.context, configure)
     }
     start() {
+
+        const workflowId = this.repositries.configures.engine.get().root.workflow.id
+        const { workflow, configure } = this._getWorkflow(workflowId)
+        this.states.now.update({ 'workflow': { id: workflowId } })
+        return workflow.enterWorkflow(this.context, configure)
+
+
+
+
+
+
+
 
     }
 

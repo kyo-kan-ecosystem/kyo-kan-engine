@@ -14,6 +14,9 @@ export type EngineConfigure<SequenceType = ExecuteMode> = {
         start: SequenceType,
         resume: SequenceType
 
+    },
+    boot: {
+        callback: string
     }
 }
 
