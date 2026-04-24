@@ -47,16 +47,16 @@ class ControllState {
     /**
      * 
      * @template {keyof import("../../controller/protocol").ControllStateType} KeyType
-     * @overload
-     * @param {KeyType} key
-     * @param {true} isStrict
-     * @returns {import("../../controller/protocol").ControllStateType[KeyType]}
      * 
      * @overload
+     * @param {KeyType} key
+     * @param {true | undefined} [isStrict=True]
+     * @returns {Required<import("../../controller/protocol").ControllStateType[KeyType]>}     * 
+     * @overload
     *  @param {KeyType} key
-     * @param {false} isStrict 
-     * @returns {import("../../controller/protocol").ControllStateType[KeyType]?}
-     */
+     * @param {false} isStrict
+     * @returns {import("../../controller/protocol").ControllStateType[KeyType]}     
+     * */
     // @ts-ignore
     getControll(key, isStrict = true) {
         // @ts-ignore
@@ -117,6 +117,12 @@ class ControllState {
         this.setControll('subworkflowInit', subworkflowInit || {})
 
 
+    }
+    getSubworkflowId() {
+        return this.getControll('subworkflowId')
+    }
+    getSubworkflowInit() {
+        return this.getControll('subworkflowInit', false)
     }
 
 

@@ -29,12 +29,13 @@ class States extends StackTree {
 
 
     }
-    getExecuteMode() {
-        return (this.now.get() || {}).controlls?.executeMode
-    }
     goSub() {
-        this.now.push({})
+        const subworkflowId = this.controll.getSubworkflowId()
+        this.now.push({ workflow: { id: subworkflowId } })
+
+
     }
+
     returnFromSub() {
         return this.pop()
     }

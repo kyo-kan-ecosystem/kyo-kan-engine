@@ -1,12 +1,8 @@
 
-export type WorkflowState = {
+export type WorkflowState<StateType = any, InitDataType = any> = {
     id: any;
-    subwWorkflow?: {
-        name: any;
-        data?: any;
-        callback?: string;
-    };
-    data?: any;
+    initData?: InitDataType;
+    state?: StateType;
 
 
 

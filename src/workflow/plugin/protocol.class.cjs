@@ -22,7 +22,7 @@ class AbstractWorkflow {
     * @param {import("../../controller/protocol").Context<any,any>} context 
    
     * @param {*} configure
-    * @returns {import("./protocol").WorkflowStep}
+    * @returns {import("./protocol").MaybeWorkflowSteps}
     */
     now(context, configure) {
         throw new Error('Method not implemented.')
@@ -33,7 +33,7 @@ class AbstractWorkflow {
     * @param {import("../../controller/protocol").Context<any,any>} context 
    
     * @param {*} configure
-    * @returns {import("./protocol").WorkflowStep}
+    * @returns {import("./protocol").MaybeWorkflowSteps}
     */
     go(context, configure) {
         throw new Error('Method not implemented.')
@@ -44,12 +44,27 @@ class AbstractWorkflow {
      * @abstract
      * @param {import("../../controller/protocol").Context<any, any>} context
      * @param {*} request
-     * @returns {{state: any;response: any[];}}
      * @param {any} configure
+     * @returns {import("./protocol").MaybeWorkflowSteps}
+     */
+    exitAsSubworkflow(context, request, configure) {
+        throw new Error('Method not implemented.')
+
+    }
+    /**
+     * @abstract
+     * @param {import("../../controller/protocol").Context<any, any>} context
+     * @param {*} request    
+     * @param {any} configure
+     * @returns {import("./protocol").MaybeWorkflowSteps}
      */
     returnFromSubworkflow(context, request, configure) {
-        return { state: null, response: [] }
+        throw new Error('Method not implemented.')
+
     }
+
+
+
     /**
      * @param {import("../../controller/protocol").Context<any, any>} context
      * @param {any} request
@@ -81,10 +96,12 @@ class AbstractWorkflow {
     }
     /**
      * @abstract
-     * @param {*} configure 
-     * @param {*} executorId 
+     * @param {*} configure
+     * @param {*} executorId
+     * @param {any} executorConfig
+     * @param {any? | undefined} workingObject
      */
-    addExecutor(configure, executorId, executorConfig) {
+    addExecutor(configure, executorId, executorConfig, workingObject) {
 
     }
     /**
@@ -110,7 +127,7 @@ class ProtocolWorkflow extends AbstractWorkflow {
      * @returns {{state: any;response: any[];}}
      * @param {any} configure
      */
-    returnFromSubworkflow(context, request, configure) {
+    exitFromSubworkflow(context, request, configure) {
         /**
          * @type {import("../../controller/protocol").StateType}
          */

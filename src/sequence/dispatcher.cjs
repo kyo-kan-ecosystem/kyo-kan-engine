@@ -1,4 +1,4 @@
-import { BootCallbackDoesNotExistsError } from "./protocol.error.cjs"
+const { BootCallbackDoesNotExistsError } = require("./protocol.error.cjs")
 
 const { ensureArray } = require("../util/ensure_array.cjs")
 
@@ -16,6 +16,23 @@ class SequenceDispatcherBase extends AbstractDispatcher {
       */
 
     async start(request, context) {
+
+        await this._boot(request, context)
+        context.histories.forword(request)
+        const workflowSteps = context.workflows.start()
+        const results = this._runEnterFunction(request, context, workflowSteps)
+        context.states.setNotStart()
+        return results
+
+
+
+    }
+    /**
+     * 
+     * @param {*} request 
+     * @param {import("../controller/protocol").Context<any,any>} context  
+     */
+    _boot(request, context) {
         const bootExecutors = context.repositries.configures.boot.getAll()
         const bootPromies = []
         const bootCallbackName = context.repositries.configures.engine.get().boot.callback
@@ -31,14 +48,9 @@ class SequenceDispatcherBase extends AbstractDispatcher {
 
 
         }
-        await Promise.all(bootPromies)
-
-        const workflowSteps = context.workflows.start()
-        return this._runEnterFunction(request, context, workflowSteps)
-
-
-
+        return Promise.all(bootPromies)
     }
+
     /**
      * 
      * @param {*} request 
@@ -59,23 +71,19 @@ class SequenceDispatcherBase extends AbstractDispatcher {
    * 
    * @param {*} request 
    * @param {import("../controller/protocol").Context<any,any>} context 
-   * @returns {Promise<import("./protocol").StepResult>[]}
+   * @returns {Promise<Promise<import("./protocol").StepResult>[]>}
    * 
    */
 
-    resume(request, context) {
+    async resume(request, context) {
 
 
-
+        if (context.states.isBoot() === true) {
+            await this._boot(request, context)
+            context.states.setNotBoot()
+        }
         const workflowSteps = context.workflows.now()
-
-
-
         const defaultCallback = context.repositries.configures.engine.get().executor.enterFunc
-
-
-
-
         return this._runExecutor(workflowSteps, request, defaultCallback)
 
 
@@ -166,6 +174,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     goSub(request, context) {
 
         context.histories.forword(request)
+        context.states.goSub()
 
         const { workflowSteps, workflowId } = context.workflows.goSub()
         return this._startWorkflow(workflowSteps, workflowId)
@@ -199,6 +208,20 @@ class SequenceDispatcherBase extends AbstractDispatcher {
 
 
 
+
+
+    }
+    /**
+    * 
+    * @param {*} request
+    * @param { import("../controller/protocol").Context < any, any >} context
+    * @returns { Promise < import("./protocol").StepResult > [] }
+    * 
+   */
+
+    returnFromSub(request, context) {
+        context.histories.forword(request)
+        context.workflows.returnFromSubworkflow(context, request)
 
 
     }

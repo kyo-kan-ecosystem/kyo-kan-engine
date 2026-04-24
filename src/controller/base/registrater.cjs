@@ -78,6 +78,8 @@ class Registrater extends ContextBuilder {
 
 
         let index = 0
+        const workerObjects = new Map()
+
         while (executorQueue.length > index) {
 
             const item = executorQueue[index]
@@ -86,12 +88,15 @@ class Registrater extends ContextBuilder {
              * @type {import("../../workflow/protocol").WorkflowPluginConfigure}
              */
             const workflowConfigure = this.context.repositries.configures.workflows.get(item.workflow)
+            let workerObject = workerObjects.get(item.workflow)
+
             /**
              * @type {WorkFlowPluginType}
              */
             const workflowPlugin = this.context.repositries.plugins.workflows.get(workflowConfigure.plugin)
             const executorId = this.context.repositries.configures.executors.add(item.executorConfig)
-            workflowPlugin.addExecutor(workflowConfigure, executorId, item.executorConfig)
+            workerObject = workflowPlugin.addExecutor(workflowConfigure, executorId, item.executorConfig, workerObject)
+            workerObjects.set(item.workflow, workerObject)
             /**
              * @type {import("../../../protocol/executor/abstract_class.cjs").AbstractExecutorPlugin}
              */

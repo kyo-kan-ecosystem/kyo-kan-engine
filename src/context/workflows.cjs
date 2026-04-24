@@ -86,13 +86,19 @@ class Workflows {
     }
 
 
-
     goSub() {
 
+        const subworkflowId = this.states.controll.getSubworkflowId()
+        const { workflow, configure } = this._getWorkflow(subworkflowId)
 
-        const state = this.states.now.get()
-        const { workflow, configure } = this._getWorkflow(state.controlls?.subworkflowId)
-        return { workflowSteps: workflow.enterWorkflow(this.context, configure), workflowId: state.controlls?.subworkflowId }
+
+
+        return {
+            workflowSteps: workflow.enterWorkflow(this.context, configure),
+            workflowId: this.states.now.get()?.workflow?.id
+        }
+
+
 
 
 
@@ -106,11 +112,14 @@ class Workflows {
      * 
      * @param {*} context
      * @param {*} request 
-     * @returns {{state:any, response:any[]}} 
+     * @returns {import("../workflow/plugin/protocol").MaybeWorkflowSteps} 
      */
     returnFromSubworkflow(context, request) {
-        const { plugin, configure } = this.getCurrentWorkflow()
-        return plugin.returnFromSubworkflow(context, request, configure)
+        const { workflow, configure } = this.getCurrentWorkflow()
+        workflow.exitAsSubworkflow(context, request, configure)
+        const { workflow: superWorkflow, configure: superConfigure } = this.getCurrentWorkflow()
+        return superWorkflow.returnFromSubworkflow(context, request, superConfigure)
+
     }
 
 
