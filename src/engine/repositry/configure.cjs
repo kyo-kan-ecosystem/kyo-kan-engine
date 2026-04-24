@@ -33,6 +33,13 @@ class EngineConfigureRepositry extends Repositry {
 
 
     }
+    /**
+     * 
+     * @param {import("./protocol").EngineConfigure} datas 
+     */
+    set(datas) {
+        super.set('engine', datas)
+    }
     get() {
         return super.get('engine')
     }

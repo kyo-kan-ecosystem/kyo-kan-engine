@@ -1,5 +1,5 @@
 
-const { Repositries } = require("./repositries.cjs")
+
 
 
 
@@ -87,6 +87,7 @@ class Workflows {
 
 
     goSub() {
+        const { configure: currentConfigure } = this.getCurrentWorkflow()
 
         const subworkflowId = this.states.controll.getSubworkflowId()
         const { workflow, configure } = this._getWorkflow(subworkflowId)
@@ -94,7 +95,7 @@ class Workflows {
 
 
         return {
-            workflowSteps: workflow.enterWorkflow(this.context, configure),
+            workflowSteps: workflow.enterAsSubworkflow(this.context, configure),
             workflowId: this.states.now.get()?.workflow?.id
         }
 
@@ -114,10 +115,11 @@ class Workflows {
      * @param {*} request 
      * @returns {import("../workflow/plugin/protocol").MaybeWorkflowSteps} 
      */
-    returnFromSubworkflow(context, request) {
+    returnFromSub(context, request) {
         const { workflow, configure } = this.getCurrentWorkflow()
-        workflow.exitAsSubworkflow(context, request, configure)
+        workflow.exitFromSubworkflow(context, request, configure)
         const { workflow: superWorkflow, configure: superConfigure } = this.getCurrentWorkflow()
+
         return superWorkflow.returnFromSubworkflow(context, request, superConfigure)
 
     }

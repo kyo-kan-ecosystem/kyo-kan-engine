@@ -10,7 +10,7 @@ const { ContextBuilder } = require("../../context/builder.cjs")
 
 class Registrater extends ContextBuilder {
     /**
-     * @type {import("../../context/index.cjs").Context}
+     * @type {import("../../context/index.cjs").Context<any, any>}
      */
     context
     /**
@@ -43,7 +43,7 @@ class Registrater extends ContextBuilder {
     }
     /**
      * 
-     * @param {import("../../engine/repositry/configure.cjs").EngineConfigure} values 
+     * @param {import("../../engine/repositry/configure.cjs")} values 
      */
     setEngineConfigue(values) {
         this.context.repositries.configures.engine.set(values)
@@ -54,9 +54,7 @@ class Registrater extends ContextBuilder {
      * @param {any} configure 
      */
     parseConfigure(configure) {
-        /**
-         * @type {import("../../engine/repositry/configure.cjs").EngineConfigure}
-         */
+
         const engineConfigure = this.context.repositries.configures.engine.get()
         /**
          * @type {WorkFlowPluginType}

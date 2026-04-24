@@ -20,6 +20,18 @@ class AbstractWorkflow {
     /**
     * @abstract
     * @param {import("../../controller/protocol").Context<any,any>} context 
+      
+    * @param {*} configure
+    * @returns {import("./protocol").MaybeWorkflowSteps}
+    */
+    enterAsSubworkflow(context, configure) {
+        throw new Error('Method not implemented.')
+
+    }
+
+    /**
+    * @abstract
+    * @param {import("../../controller/protocol").Context<any,any>} context 
    
     * @param {*} configure
     * @returns {import("./protocol").MaybeWorkflowSteps}
@@ -47,7 +59,7 @@ class AbstractWorkflow {
      * @param {any} configure
      * @returns {import("./protocol").MaybeWorkflowSteps}
      */
-    exitAsSubworkflow(context, request, configure) {
+    exitFromSubworkflow(context, request, configure) {
         throw new Error('Method not implemented.')
 
     }
@@ -99,7 +111,7 @@ class AbstractWorkflow {
      * @param {*} configure
      * @param {*} executorId
      * @param {any} executorConfig
-     * @param {any? | undefined} workingObject
+     * @param {any?} workingObject
      */
     addExecutor(configure, executorId, executorConfig, workingObject) {
 
@@ -119,27 +131,8 @@ class AbstractWorkflow {
 
 }
 
-class ProtocolWorkflow extends AbstractWorkflow {
-    /**
-     *
-     * @param {import("../../controller/protocol").Context} context
-     * @param {*} request
-     * @returns {{state: any;response: any[];}}
-     * @param {any} configure
-     */
-    exitFromSubworkflow(context, request, configure) {
-        /**
-         * @type {import("../../controller/protocol").StateType}
-         */
-        const state = context.states.now.get()
-
-
-        return { state: null, response: [] }
-    }
-
-
-}
 
 
 
-module.exports = { AbstractWorkflow, ProtocolWorkflow }
+
+module.exports = { AbstractWorkflow }

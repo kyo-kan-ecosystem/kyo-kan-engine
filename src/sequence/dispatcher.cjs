@@ -215,13 +215,21 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     * 
     * @param {*} request
     * @param { import("../controller/protocol").Context < any, any >} context
-    * @returns { Promise < import("./protocol").StepResult > [] }
+    * @returns { Promise < import("./protocol").StepResult >[] }
     * 
    */
 
     returnFromSub(request, context) {
         context.histories.forword(request)
-        context.workflows.returnFromSubworkflow(context, request)
+        const ensuredSteps = ensureArray(context.workflows.returnFromSub(context, request))
+        const workflowSteps = []
+        for (const workflowStep of ensuredSteps) {
+            workflowStep.callback = context.states.controll.getCallback()
+            workflowSteps.push(workflowStep)
+
+        }
+        return this._runExecutor(workflowSteps, request, null, true)
+
 
 
     }

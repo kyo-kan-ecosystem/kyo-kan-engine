@@ -8,6 +8,8 @@ export type WorkflowConfigureFormatBase = {
 
 }
 
+export type
+
 export type WorkflowStepPluginConfigure = {
     executors: Array<any>
 
