@@ -96,10 +96,10 @@ class Registrater extends ContextBuilder {
             workerObject = workflowPlugin.addExecutor(workflowConfigure, executorId, item.executorConfig, workerObject)
             workerObjects.set(item.workflow, workerObject)
             /**
-             * @type {import("../../../protocol/executor/abstract_class.cjs").AbstractExecutorPlugin}
+             * @type {import("../../../protocol/executor/baic_class.cjs").AbstractExecutorPlugin}
              */
             const plugin = this.context.repositries.plugins.executors.get(item.executorConfig.plugin)
-
+            if () { }
             for (const [name, difinition] of Object.entries(plugin.getSubworkflows(item.executorConfig))) {
                 /**
                  * @type {WorkFlowPluginType}

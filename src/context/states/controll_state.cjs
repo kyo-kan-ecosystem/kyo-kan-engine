@@ -112,8 +112,7 @@ class ControllState {
      */
     goSub(subworkflowName, subworkflowInit = null) {
         this.setExecuteMode('goSub')
-        const subworkflowId = createId(this.getControll('executorId', false) || '', subworkflowName)
-        this.setControll('subworkflowId', subworkflowId)
+
         this.setControll('subworkflowInit', subworkflowInit || {})
 
 

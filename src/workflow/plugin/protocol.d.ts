@@ -1,14 +1,31 @@
 import { Context } from "../../controller/protocol"
 
+/**
+ * Confingure which call on the flay configure
+ 
+ */
 
+export type WorkflowConfigureFormatBase<ExecutorsType = any, ParamsType = any> = {
+    plugin: string;
+    executors: ExecutorsType;
+    params?: ParamsType;
+}
 
-export type WorkflowConfigureFormatBase = {
-    plugin: string,
-    id: string,
+/**
+ * Confingure which Call Registered Workflow
+ * 
+ */
+export type WorkflowConfigureFormatIdType<ParamsType = any> = {
+    id: string
+    params?: ParamsType
+
 
 }
 
-export type
+
+export type WorkflowConfigureFormatUnion = WorkflowConfigureFormatBase | WorkflowConfigureFormatIdType
+
+
 
 export type WorkflowStepPluginConfigure = {
     executors: Array<any>

@@ -1,5 +1,5 @@
 import { executeMode } from "../../src/controller/protocol"
-import { WorkflowConfigureFormatBase } from "../../src/workflow/plugin/protocol"
+import { WorkflowConfigureFormatBase, WorkflowConfigureFormatUnion } from "../../src/workflow/plugin/protocol"
 import { Context } from "../context/protocol"
 
 export type ExecutorConfigure<ParamsType = any> = {
@@ -15,7 +15,17 @@ export type ExecutorFunctionResponse<WorkflowParamsType = any> = {
     callback?: string,
 
 }
+export type SubWorkflowConfigures = { [k in string]: Partial<WorkflowConfigureFormatUnion> }
+export type BasicConfigure = { subworkflows?: SubWorkflowConfigures, params: any }
+export type ExecutorFunctionBaseType<ConfiguresType = any, RequestType = any, ContextType = Context> = (configures: ConfiguresType, request: RequestType, context: ContextType) => void
+export type ExecuterFunction<ConfiguresType = any, RequestType = any> = ExecutorFunctionBaseType<ConfiguresType, RequestType, Context>
+export type GetSubworkflowFunctionType<ConfiguresType = any> = (configure: ConfiguresType) => { [k in string]: WorkflowConfigureFormatUnion }
+export type ExecutorBaseType = { [k in string]: ExecutorFunction }
+export type WithGetSubworkflow = {
+    getSubworkflow: GetSubworkflowFunctionType
 
-export type ExecutorFunction<OptionsType = any, RequestType = any, ContextType = Context> = (options: OptionsType, context: ContextType) => void
+}
 
-export type ExecutorType = { [k in string]: ExecutorFunction }
+export type MabeWithGetSubworkflow = Partial<WithGetSubworkflow>
+
+

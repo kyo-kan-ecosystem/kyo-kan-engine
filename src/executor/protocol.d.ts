@@ -3,8 +3,12 @@ export type ExecutorConfigureFormatBaseType<ConfigureType = any> = {
     configure: ConfigureType
 }
 
-export type ExecutorConfigureFormatType<ConfigureType = any, SubWorkflowsType = any, HooksType = any> = ExecutorConfigureFormatBaseType<ConfigureType> & {
+export type ExecutorConfigureFormatType<ConfigureType = any> = ExecutorConfigureFormatBaseType<ConfigureType> & {
 
-    subWorkflows?: SubWorkflowsType
-    hooks?: any
+    subWorkflows: {
+        [name in any]: {
+            id: any,
+            callback?: any
+        }
+    }
 } 
