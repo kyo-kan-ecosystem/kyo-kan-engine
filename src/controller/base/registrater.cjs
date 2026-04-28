@@ -1,5 +1,6 @@
 
 
+
 const { ContextBuilder } = require("../../context/builder.cjs")
 
 
@@ -14,13 +15,19 @@ class Registrater extends ContextBuilder {
      */
     context
     /**
+     * @type {}
+     */
+    plugins
+
+    /**
      * 
      * @param {import("../../context/protocol").ContextSerializableData} datas
-     * @param {import("../../context/protocol").ContextApi} api       *
-     * @param {typeof import("../../context/index.cjs").Context?} contextClass  
+     * @param {import("../../context/protocol").ContextApi} api       
+     * @param {typeof import("../../context/index.cjs").Context<any, any>?} [contextClass=Context]  
      */
     constructor(datas, api, contextClass) {
         super(contextClass)
+
         this.context = this._buildContext(datas, api)
 
 
@@ -43,7 +50,7 @@ class Registrater extends ContextBuilder {
     }
     /**
      * 
-     * @param {import("../../engine/repositry/configure.cjs")} values 
+     * @param {import("../../engine/repositry/protocol.d.ts").EngineConfigure} values 
      */
     setEngineConfigue(values) {
         this.context.repositries.configures.engine.set(values)
@@ -56,11 +63,13 @@ class Registrater extends ContextBuilder {
     parseConfigure(configure) {
 
         const engineConfigure = this.context.repositries.configures.engine.get()
+        const rootWorkFlowPluginId = engineConfigure.root.workflow.id
+
         /**
          * @type {WorkFlowPluginType}
          */
-        const rootWorkFlowPlugin = this.context.repositries.plugins.workflows.get(engineConfigure.root.workflow.plugin)
-        const rootWorkFlowPluginId = engineConfigure.root.workflow.id
+        const rootWorkFlowPlugin = this.context.repositries.plugins.workflows.get(rootWorkFlowPluginId)
+
         const rootConfigure = rootWorkFlowPlugin.getConfigureParams(configure)
         this.context.repositries.configures.workflows.set(rootWorkFlowPluginId, rootConfigure)
         /**

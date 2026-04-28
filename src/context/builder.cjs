@@ -2,7 +2,7 @@ const { Context } = require("./index.cjs")
 
 
 /**
- * @template ContextClassType
+ * @template [ContextClassType=typeof Context<any, any>]
  */
 class ContextBuilder {
 
@@ -17,7 +17,7 @@ class ContextBuilder {
      * */
 
     // @ts-ignore
-    constructor(contextClass = Context) {
+    constructor(contextClass) {
         // @ts-ignore
         this._contextClass = contextClass || Context
     }
