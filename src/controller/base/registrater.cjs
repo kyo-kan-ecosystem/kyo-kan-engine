@@ -1,3 +1,8 @@
+import { DEFAULT_WORKFLOW_REGISTRATION } from "../../engine/defaults/workflow.cjs"
+
+const { DEFAULT_ENGINE_CONFIGURE } = require("../../engine/defaults/configure.cjs")
+
+const deepmerge = require("deepmerge")
 
 
 
@@ -10,50 +15,79 @@ const { ContextBuilder } = require("../../context/builder.cjs")
  */
 
 class Registrater extends ContextBuilder {
-    /**
-     * @type {import("../../context/index.cjs").Context<any, any>}
-     */
-    context
-    /**
-     * @type {}
-     */
-    plugins
 
     /**
+     * @type {Object<any, any>?}
+     */
+    _functions
+
+    /**
+     * @type {Object<any, any>?}
      * 
-     * @param {import("../../context/protocol").ContextSerializableData} datas
-     * @param {import("../../context/protocol").ContextApi} api       
-     * @param {typeof import("../../context/index.cjs").Context<any, any>?} [contextClass=Context]  
+     * 
      */
-    constructor(datas, api, contextClass) {
+    _reporter
+
+    /**
+     * @type {Object<any, any>}
+     */
+    _executorPlugins
+
+
+    /**
+     * @type {Object<any, any>?}
+     */
+    _workflowPlugins
+
+    /**
+     * @type {Partial<import("../../engine/repositry/protocol.d.ts").EngineConfigure>?}
+     */
+    _engineConfigure
+
+
+
+    /**
+     *@param {Object} param0 
+     *
+     *@param {typeof import("../protocol.js").Context | null | undefined}[param0.contextClass=null]
+     *@param {any}[param0.defaultWorkflowPlugins=null]
+     */
+    constructor({ contextClass = null, defaultWorkflowPlugins = DEFAULT_WORKFLOW_REGISTRATION } = {}) {
         super(contextClass)
-
-        this.context = this._buildContext(datas, api)
-
-
+        this._functions = {}
+        this._reporter = {}
+        this._executorPlugins = {}
+        this._engineConfigure = {}
+        this._workflowPlugins = Object.assign({}, defaultWorkflowPlugins)
     }
+
+
     /**
      * 
      * @param {*} pluginName 
      * @param {*} plugin 
      */
     registerExecutorPlugin(pluginName, plugin) {
-        this.context.repositries.plugins.executors.set(pluginName, plugin)
+        this._executorPlugins[pluginName] = plugin
     }
+
     /**
-     * 
-     * @param {*} pluginName 
-     * @param {*} plugin 
+     * @param {string | number} pluginName
+     * @param {any} plugin
      */
     registerWorkflowPlugin(pluginName, plugin) {
-        this.context.repositries.plugins.workflows.set(pluginName, plugin)
+
+        this._workflowPlugins[pluginName] = plugin
     }
+
+
+
     /**
      * 
-     * @param {import("../../engine/repositry/protocol.d.ts").EngineConfigure} values 
+     * @param {Partial<import("../../engine/repositry/protocol.d.ts").EngineConfigure>} values 
      */
-    setEngineConfigue(values) {
-        this.context.repositries.configures.engine.set(values)
+    registerEngineConfigueres(values) {
+        this._engineConfigure = deepmerge(this._engineConfigure || {}, values)
 
     }
     /**
@@ -62,7 +96,8 @@ class Registrater extends ContextBuilder {
      */
     parseConfigure(configure) {
 
-        const engineConfigure = this.context.repositries.configures.engine.get()
+        const engineConfigure = deepmerge(DEFAULT_ENGINE_CONFIGURE, this._engineConfigure || {})
+        const context = this._buildContext()
         const rootWorkFlowPluginId = engineConfigure.root.workflow.id
 
         /**

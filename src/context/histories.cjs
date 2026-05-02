@@ -194,7 +194,7 @@ class Histories {
             // @ts-ignore
             this._bordsTree.updateGlobal(headGlobal.log)
             // @ts-ignore
-            this._bordsTree.updateCurrentWorkflowBord(headCurrentWorkflow.log, true)
+            this._bordsTree.updateCurrentExecutorBord(headCurrentWorkflow.log, true)
             // @ts-ignore
             this._bordsTree.setSubWorkFlow(headSubWorkflow.log)
         }

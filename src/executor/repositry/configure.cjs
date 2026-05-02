@@ -28,7 +28,19 @@ class ExecutorConfigureRepositry extends Repositry {
         this.length += 1
         return id
     }
+    /**
+     * 
+     * @param {*} name 
+     * @param {import("../protocol").ExecutorConfigureFormatType} data 
+     */
+    addWithName(name, data) {
+        this.set(name, data)
+
+    }
+
 
 }
+
+
 
 module.exports = { ExecutorConfigureRepositry }

@@ -144,9 +144,6 @@ class Context {
         }
 
 
-        const { functions, reporter } = this._forkApi(api?.reporter, api?.functions)
-        this.functions = functions
-        this.reporter = reporter
 
 
         this.repositries = new classes.repositries(datas?.repositries)
@@ -169,7 +166,7 @@ class Context {
         this._countRef = datas?._countRef || { n: 0 };
         this._linkMap = datas?._linkMap || {}
 
-        if (datas === null) {
+        if (datas === null || !datas.states) {
             this._branchId = this._createIdMap()
 
             this.states.now.push({ isStart: true })
@@ -181,6 +178,9 @@ class Context {
             this._branchId = 0
 
         }
+        const { functions, reporter } = this._forkApi(api?.reporter, api?.functions)
+        this.functions = functions
+        this.reporter = reporter
 
 
 
@@ -218,6 +218,9 @@ class Context {
             histories: this.histories.getSerializableData(),
 
         }
+
+    }
+    getInitData() {
 
     }
 

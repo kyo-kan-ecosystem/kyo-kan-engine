@@ -10,9 +10,7 @@ const { BordsBranch } = require("./bords_branch.cjs")
 /**
  * @typedef {{[k in string]:any}} LinkMapType
  */
-/**
- * TODO プラグインローカル実装 
- */
+
 /**
  * @extends StackTree<BordsBranch>
  */
@@ -79,7 +77,7 @@ class Bords extends StackTree {
      * @param {*} data
      * @param {true?} [isFullOverWrite=null]  
      */
-    updateCurrentWorkflowBord(data, isFullOverWrite = null) {
+    updateCurrentExecutorBord(data, isFullOverWrite = null) {
 
         const item = this.now.get() || {}
         item.current = data

@@ -1,35 +1,26 @@
+const deepmerge = require("deepmerge")
+
+const { DEFAULT_ENGINE_CONFIGURE } = require("../defaults/configure.cjs")
+
 const { Repositry } = require("../../repositry/base.cjs")
 
 
 /**
- * @type {import("./protocol").EngineConfigure}
- */
-const DEFAULT_ENGINE_CONFIGURE = {
-    root: {
-        workflow: {
-            plugin: 'step',
-            id: ''
-        }
-
-    },
-    executor: {
-        enterFunc: 'enter'
-    },
-    sequence: {
-        start: 'start',
-        resume: 'resume'
-    },
-    boot: {
-        callback: 'boot'
-    }
-}
-/**
  * @extends {Repositry<import("./protocol").EngineConfigure>}
  */
 class EngineConfigureRepositry extends Repositry {
-    constructor(datas = DEFAULT_ENGINE_CONFIGURE) {
-        super({ engine: datas })
 
+    _key = 'engine'
+
+    /**
+     * 
+     * @param {Partial<import("./protocol").EngineConfigure>?} datas 
+     */
+    constructor(datas, key = 'engine') {
+
+        const configure = deepmerge(DEFAULT_ENGINE_CONFIGURE, datas || {})
+        super({ [key]: configure })
+        this._key = key
 
 
     }
@@ -38,10 +29,10 @@ class EngineConfigureRepositry extends Repositry {
      * @param {import("./protocol").EngineConfigure} datas 
      */
     set(datas) {
-        super.set('engine', datas)
+        super.set(this._key, datas)
     }
     get() {
-        return super.get('engine')
+        return super.get(this._key)
     }
 
 }

@@ -1,9 +1,10 @@
 import { StackTreeReferenceData } from "../../util/stack/protocol"
 
 export type BordsProtocol {
-    current: any
+    current?: any
     workflow?: any,
-    subworkflow?: any
+    subworkflow?: any,
+
 
 }
 export type BordRefernceData = {
