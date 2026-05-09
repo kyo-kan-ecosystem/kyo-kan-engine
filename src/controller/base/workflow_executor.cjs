@@ -27,7 +27,7 @@
  */
 
 /**
- * @typedef {import("../../context/workflows.cjs").Workflows} Workflows
+ * @typedef {import("../../workflow/context.cjs").WorkflowsContext} Workflows
  * 
  * 
  */

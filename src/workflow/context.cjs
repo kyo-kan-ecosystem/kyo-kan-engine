@@ -3,14 +3,14 @@
 
 
 
-class Workflows {
+class WorkflowsContext {
     /**
-     * @type {import('./states/states.cjs').StatesType}
+     * @type {import('../context/states/states.cjs').StatesType}
      */
     states
 
     /**
-     * @type {import("./repositries.cjs").Repositries}
+     * @type {import("../context/repositries.cjs").Repositries}
      */
 
     repositries
@@ -20,7 +20,7 @@ class Workflows {
     context
     /**
      * 
-     * @param {{states:import("./states/states.cjs").StatesType, repositries:import("./repositries.cjs").Repositries, context:any}} initData 
+     * @param {{states:import("../context/states/states.cjs").StatesType, repositries:import("../context/repositries.cjs").Repositries, context:any}} initData 
      */
     constructor(initData) {
         this.repositries = initData.repositries
@@ -45,12 +45,12 @@ class Workflows {
      */
     _getWorkflow(id) {
         /**
-         * @type { import("../workflow/protocol").WorkflowPluginConfigure}
+         * @type { import("./protocol").WorkflowPluginConfigure}
          */
 
         const configure = this.repositries.configures.workflows.get(id)
         /**
-         * @type {import("../workflow/protocol").Plugin}
+         * @type {import("./protocol").WorkflowPlugin}
          */
         const workflow = this.repositries.plugins.workflows.get(configure.plugin)
 
@@ -113,7 +113,7 @@ class Workflows {
      * 
      * @param {*} context
      * @param {*} request 
-     * @returns {import("../workflow/plugin/protocol").MaybeWorkflowSteps} 
+     * @returns {import("./plugin/protocol").MaybeWorkflowSteps} 
      */
     returnFromSub(context, request) {
         const { workflow, configure } = this.getCurrentWorkflow()
@@ -128,4 +128,4 @@ class Workflows {
 
 }
 
-module.exports = { Workflows }
+module.exports = { WorkflowsContext }

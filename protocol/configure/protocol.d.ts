@@ -1,4 +1,5 @@
-import { EngineConfigure } from "../../src/engine/repositry/configure.cjs"
+import type { EngineConfigure } from "../../src/engine/repositry/configure.cjs"
+import type { WorkflowPluginConfigure } from "../workflow/protocol"
 
 
 export type WorkflowPluginFormat = {
@@ -25,6 +26,12 @@ export type ExecutorConfigureFormat = {
 }
 
 export type ConfigureFormat = {
-    engine?: EngineConfigure
-    plugins?: any
+    engine?: EngineConfigure,
+    root: any
+    workflows?: {
+        [workflowName in string]: any
+    },
+    executors?: {
+        [k in string]: any
+    }
 }

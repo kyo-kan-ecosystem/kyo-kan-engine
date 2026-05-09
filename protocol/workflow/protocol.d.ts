@@ -1,1 +1,1 @@
-export * from '../../src/workflow/protocol'
+export type * from '../../src/workflow/protocol'

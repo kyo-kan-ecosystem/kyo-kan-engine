@@ -5,30 +5,24 @@
 
 
 
-const { Bords } = require("./bords/bords.cjs");
-const { Histories } = require("./histories.cjs");
-const { Repositries } = require("./repositries.cjs");
-const { States } = require("./states/states.cjs");
-const { Workflows } = require("./workflows.cjs");
+const { Bords } = require("./bords/bords.cjs")
+const { Histories } = require("./histories.cjs")
+const { Repositries } = require("./repositries.cjs")
+const { States } = require("./states/states.cjs")
+const { WorkflowsContext } = require("../workflow/context.cjs")
 
 
 
 
 
 
-/**
- * @typedef {{branch?:{
- *      bord:any,
- *      state:any
- * }}} BranchState
- */
 
 /**
  * @typedef {{
  *      bords:typeof Bords,
  *      repositries:typeof Repositries,
  *      states: typeof States,
- *      workflows: typeof Workflows,
+ *      workflows: typeof WorkflowsContext,
  *      histories: typeof Histories  
  * }} ContextClasses
  */
@@ -39,7 +33,7 @@ const DEFUALT_CLASSES = {
     bords: Bords,
     repositries: Repositries,
     states: States,
-    workflows: Workflows,
+    workflows: WorkflowsContext,
     histories: Histories
 
 
@@ -70,7 +64,7 @@ class Context {
      */
     bords
     /**
-     * @type {Workflows}
+     * @type {WorkflowsContext}
      */
     workflows
 
@@ -198,11 +192,11 @@ class Context {
      */
     _constructWorkflows(datas = null, context = null) {
         /**
-         * @type {ConstructorParameters<typeof Workflows>[0]}
+         * @type {ConstructorParameters<typeof WorkflowsContext>[0]}
          */
         const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries, context: context || this }, datas || {})
         /**
-         * @type {Workflows}
+         * @type {WorkflowsContext}
          */
         return new this._classes.workflows(workflowsInit)
     }
