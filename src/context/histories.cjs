@@ -36,7 +36,7 @@ const DEFAULT_HISTORY_CLASSES = {
 
 /**
  * @typedef {import('./states/states.cjs').StatesType} States 
- * @typedef {import("./bords/bords.cjs").Bords} Bords 
+ * @typedef {import("../bords/bords.cjs").Bords} Bords 
  */
 
 class Histories {
@@ -70,7 +70,7 @@ class Histories {
     _statesTree
 
     /**
-     * @type {import('./bords/bords.cjs').Bords}
+     * @type {import('../bords/bords.cjs').Bords}
      */
     _bordsTree
 

@@ -5,10 +5,10 @@
 
 
 
-const { Bords } = require("./bords/bords.cjs")
+const { Bords } = require("../bords/bords.cjs")
 const { Histories } = require("./histories.cjs")
 const { Repositries } = require("./repositries.cjs")
-const { States } = require("./states/states.cjs")
+const { States } = require("../states/states.cjs")
 const { WorkflowsContext } = require("../workflow/context.cjs")
 const { ExecutorsContext } = require("../executor/context.cjs")
 
@@ -52,7 +52,7 @@ const DEFUALT_CLASSES = {
  */
 class Context {
     /**
-     * @type {import("./states/states.cjs").StatesType}
+     * @type {import("../states/states.cjs").StatesType}
      */
     states
 
@@ -339,7 +339,8 @@ class Context {
             repositries: this.repositries,
             workflows: this.workflows,
             _linkMap: this._linkMap,
-            branchId
+            branchId,
+            executors: undefined
         }
 
         /**
@@ -395,7 +396,7 @@ class Context {
     /**
      * @param {Object} param0
      * @param {Bords?} [param0.bords] 
-     * @param { import("./states/states.cjs").StatesType?} [param0.states] 
+     * @param { import("../states/states.cjs").StatesType?} [param0.states] 
      * @param {Histories?} [param0.histories] 
      * @returns 
      */

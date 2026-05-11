@@ -51,11 +51,11 @@ class ControllState {
      * @overload
      * @param {KeyType} key
      * @param {true | undefined} [isStrict=True]
-     * @returns {Required<import("../../controller/protocol").ControllStateType[KeyType]>}     * 
+     * @returns {Required<import("../../controller/protocol").ControllStateType>[KeyType]}     
      * @overload
     *  @param {KeyType} key
      * @param {false} isStrict
-     * @returns {import("../../controller/protocol").ControllStateType[KeyType]}     
+     * @returns {import("../../controller/protocol").ControllStateType[KeyType] | undefined}     
      * */
     // @ts-ignore
     getControll(key, isStrict = true) {

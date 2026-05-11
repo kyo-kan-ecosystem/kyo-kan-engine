@@ -1,4 +1,4 @@
-import { StackTreeReferenceData } from "../../util/stack/protocol"
+import { StackTreeReferenceData } from "../util/stack/protocol"
 
 export type BordsProtocol {
     current?: any

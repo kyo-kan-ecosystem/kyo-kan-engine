@@ -1,5 +1,5 @@
 const deepmerge = require("deepmerge")
-const { StackTree } = require("../../util/stack/stack.cjs")
+const { StackTree } = require("../util/stack/stack.cjs")
 const { BordsBranch } = require("./bords_branch.cjs")
 
 
@@ -32,7 +32,7 @@ class Bords extends StackTree {
 
     /**
      * 
-     * @param {{_nameMap?:LinkMapType, _global?:any} & import("../../util/stack/protocol").SeriaraizableStackTreeData | false | null} initData 
+     * @param {{_nameMap?:LinkMapType, _global?:any} & import("../util/stack/protocol").SeriaraizableStackTreeData | false | null} initData 
      * @param {*} branchClass 
      * @returns 
      */
@@ -142,7 +142,7 @@ class Bords extends StackTree {
 
 
     /**
-     * @param {{nameMap:LinkMapType, global:any} & import("../../util/stack/protocol").SeriaraizableStackTreeData} params
+     * @param {{nameMap:LinkMapType, global:any} & import("../util/stack/protocol").SeriaraizableStackTreeData} params
      */
 
     // @ts-ignore
