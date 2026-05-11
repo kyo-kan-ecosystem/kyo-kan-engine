@@ -10,6 +10,7 @@ const { Histories } = require("./histories.cjs")
 const { Repositries } = require("./repositries.cjs")
 const { States } = require("./states/states.cjs")
 const { WorkflowsContext } = require("../workflow/context.cjs")
+const { ExecutorsContext } = require("../executor/context.cjs")
 
 
 
@@ -23,7 +24,8 @@ const { WorkflowsContext } = require("../workflow/context.cjs")
  *      repositries:typeof Repositries,
  *      states: typeof States,
  *      workflows: typeof WorkflowsContext,
- *      histories: typeof Histories  
+ *      histories: typeof Histories,
+ *      executors: typeof ExecutorsContext   
  * }} ContextClasses
  */
 /**
@@ -34,7 +36,8 @@ const DEFUALT_CLASSES = {
     repositries: Repositries,
     states: States,
     workflows: WorkflowsContext,
-    histories: Histories
+    histories: Histories,
+    executors: ExecutorsContext
 
 
 }
@@ -67,6 +70,11 @@ class Context {
      * @type {WorkflowsContext}
      */
     workflows
+
+    /**
+     * @type {ExecutorsContext}
+     */
+    executors
 
     /**
      * @type {Histories}
@@ -127,13 +135,22 @@ class Context {
             this._branches = inheritance?.branches
             this.reporter = inheritance?.reporter
             this._countRef = inheritance?._countRef
-            this._branchId = inheritance?.branchId || 0
+
+
             this._linkMap = inheritance?._linkMap
+
+
+
+            this.repositries = inheritance?.repositries
+            this.workflows = inheritance?.workflows
+            this.executors = inheritance?.executors
+
+            this.setBranchId(inheritance?.branchId)
 
             const { functions, reporter } = this._forkApi(inheritance?.reporter, inheritance?.functions)
             this.functions = functions
             this.reporter = reporter
-            this.workflows = this._constructWorkflows(inheritance?.workflows)
+
             return
         }
 
@@ -149,6 +166,7 @@ class Context {
         this.states = new classes.states(datas?.states)
 
         this.workflows = this._constructWorkflows(datas?.workflows)
+        this.executors = new classes.executors(datas?.executors)
 
         /**
          * @type {Histories}

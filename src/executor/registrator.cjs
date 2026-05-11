@@ -13,10 +13,24 @@ class ExecutorsRegistrator extends Registrater {
      */
     _configures
 
-    constructor() {
-        super()
+    /**
+     * @type {import("./protocol").ExecutorConfigureFormatType[]}
+     */
+    _booConfigures
+    /**
+     * 
+     * @param {Object} [param0={}] 
+     * @param {any?} [param0.configures=null] 
+     * @param {any?} [param0.plugins=null]
+     * @param {any?} [param0.bootConfigures=null] 
+     */
+    constructor({ configures = null, plugins = null, bootConfigures = null } = {}) {
+        const count = Object.keys(configures || {}).length - 1
+        super(count)
         this._plugins = {}
-        this._configures = {}
+        this._configures = deepmerge({}, configures || {})
+        this._booConfigures = deepmerge([], bootConfigures || [])
+
 
 
     }

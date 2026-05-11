@@ -24,4 +24,9 @@ export type ExecutorConfigureFormatType<ConfigureType = any> = ExecutorConfigure
 
     subWorkflows?: SubworflowsConfigureFormat,
     subworkflowMap?: { [name in any]: any }
-} 
+}
+
+export type ExecutorConfigures = {
+    boots?: any,
+    plugins?: any
+}

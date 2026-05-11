@@ -40,7 +40,7 @@ class Repositry {
 
         return this._datas[id]
     }
-    getSerializeDatas() {
+    getDatas() {
         return this._datas
     }
 }

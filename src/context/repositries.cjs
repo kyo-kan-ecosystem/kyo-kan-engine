@@ -1,8 +1,7 @@
 const { BootExecutorConfigureRepositry } = require("../executor/repositry/boot.cjs");
 
 const { EngineConfigureRepositry } = require("../engine/repositry/configure.cjs");
-const { ExecutorPluginRepositry } = require("../executor/repositry/plugin.cjs");
-const { ExecutorConfigureRepositry } = require("../executor/repositry/configure.cjs");
+
 
 const { WorkflowPluginRepositry } = require("../workflow/repositry/plugins.cjs");
 const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configures.cjs");
@@ -21,9 +20,7 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
 /**
  * @typedef {{
  *       workflows: WorkflowConfiguresRepositry,
- *       executors: ExecutorConfigureRepositry,
  *       engine: EngineConfigureRepositry,
- *       boot: BootExecutorConfigureRepositry
  * }} ContextRepositryConfigures
  */
 
@@ -31,21 +28,17 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
 /**
  * @typedef {{
  *          workflows:WorkflowPluginRepositry, 
- *          executors:ExecutorPluginRepositry
- * }} ContextRepositryPlugins
+ *}} ContextRepositryPlugins
  *    
  */
 /**
  * @typedef {{
  *      configures:{
- *          workflows: typeof WorkflowConfiguresRepositry,
- *          executors: typeof ExecutorConfigureRepositry,
- *          engine: typeof EngineConfigureRepositry,
- *          boot: typeof BootExecutorConfigureRepositry  
+ *          workflows: typeof WorkflowConfiguresRepositry,           
+ *          engine: typeof EngineConfigureRepositry         
  *      },     
  *      plugins: {
- *           workflows: typeof WorkflowPluginRepositry,
- *           executors: typeof ExecutorPluginRepositry
+ *           workflows: typeof WorkflowPluginRepositry           
  *      }} } ContextRepositryClasses
     
  * 
@@ -63,15 +56,13 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
 const DEFAULT_REPOSITRY_CLASSES = {
     configures: {
         workflows: WorkflowConfiguresRepositry,
-        executors: ExecutorConfigureRepositry,
-        boot: BootExecutorConfigureRepositry,
         engine: EngineConfigureRepositry
 
     },
 
     plugins: {
         workflows: WorkflowPluginRepositry,
-        executors: ExecutorPluginRepositry
+
     }
 
 
@@ -108,9 +99,9 @@ class Repositries {
         this.configures = {
 
             workflows: new classes.configures.workflows(configures.workflows || {}),
-            executors: new classes.configures.executors(configures.executors || {}),
+
             engine: new classes.configures.engine(configures.engine || {}),
-            boot: new classes.configures.boot(configures.boot || {})
+
         }
 
 
@@ -122,20 +113,13 @@ class Repositries {
         else {
             this.plugins = {
                 workflows: new classes.plugins.workflows({}),
-                executors: new classes.plugins.executors({})
+
             }
 
         }
 
     }
-    /**
-     * @param {any} executorId
-     */
-    getExecutorCofigure(executorId) {
-        return this.configures.executors.get(executorId)
 
-
-    }
     getPluginRepositry() {
         return this.plugins
     }
@@ -144,7 +128,7 @@ class Repositries {
         for (const [key, value] of Object.entries(this.configures)) {
 
             // @ts-ignore
-            result[key] = value.getSerializeDatas()
+            result[key] = value.getDatas()
 
         }
         return result

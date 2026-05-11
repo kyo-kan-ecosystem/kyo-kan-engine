@@ -14,7 +14,7 @@ class ArrayRepositry {
 
 
     }
-    getAll() {
+    getDatas() {
         return this._datas
 
     }

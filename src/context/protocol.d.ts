@@ -26,6 +26,7 @@ export type ContextSerializableData = Partial<{
     workflows: any,
     histories: any,
     branches: Object<any, any>,
+    executors: any,
     _countRef: { n: number }
     _linkMap: Object<any, any>
 
@@ -50,6 +51,7 @@ export type ContextInheritance<FunctionsType extends MaybeForkTypeMap = any, Rep
     functions: any,
     branches: any,
     reporter: any,
+    executors: any,
     _countRef: any,
     _linkMap: any
     branchId: number
