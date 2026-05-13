@@ -4,28 +4,16 @@
 
 
 class WorkflowsContext {
-    /**
-     * @type {import('../context/states/states.cjs').StatesType}
-     */
-    states
 
     /**
-     * @type {import("../context/repositries.cjs").Repositries}
+     * @type {}
      */
+    plugins
+    configures
 
-    repositries
-    /**
-     * @type {any}
-     */
-    context
-    /**
-     * 
-     * @param {{states:import("../context/states/states.cjs").StatesType, repositries:import("../context/repositries.cjs").Repositries, context:any}} initData 
-     */
     constructor(initData) {
         this.repositries = initData.repositries
-        this.states = initData.states
-        this.context = initData.context
+
 
 
 

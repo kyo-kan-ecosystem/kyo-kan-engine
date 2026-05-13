@@ -1,7 +1,7 @@
-const { Stack } = require("../../util/stack/stack.cjs");
+const { Stack } = require("../util/stack/stack.cjs");
 
 /**
- * @extends {Stack<import("../../controller/protocol").StateType>}
+ * @extends {Stack<import("../controller/protocol").StateType>}
  */
 class StateBranch extends Stack { }
 

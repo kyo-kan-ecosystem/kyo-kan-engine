@@ -1,6 +1,6 @@
 const { ControllStateValueNotExistError } = require("./protocl.class.cjs")
 
-const { createId } = require("../../util/create_id.cjs")
+const { createId } = require("../util/create_id.cjs")
 
 
 class ControllState {
@@ -21,7 +21,7 @@ class ControllState {
 
     /**
      * 
-     * @param {keyof import("../../controller/protocol").ControllStateType} key 
+     * @param {keyof import("../controller/protocol").ControllStateType} key 
      * @param {*} value 
      */
     setControll(key, value) {
@@ -46,16 +46,16 @@ class ControllState {
     }
     /**
      * 
-     * @template {keyof import("../../controller/protocol").ControllStateType} KeyType
+     * @template {keyof import("../controller/protocol").ControllStateType} KeyType
      * 
      * @overload
      * @param {KeyType} key
      * @param {true | undefined} [isStrict=True]
-     * @returns {Required<import("../../controller/protocol").ControllStateType>[KeyType]}     
+     * @returns {Required<import("../controller/protocol").ControllStateType>[KeyType]}     
      * @overload
     *  @param {KeyType} key
      * @param {false} isStrict
-     * @returns {import("../../controller/protocol").ControllStateType[KeyType] | undefined}     
+     * @returns {import("../controller/protocol").ControllStateType[KeyType] | undefined}     
      * */
     // @ts-ignore
     getControll(key, isStrict = true) {
@@ -90,7 +90,7 @@ class ControllState {
     }
 
     /**
-     * @param {import("../../sequence/protocol").ExecuteMode} executeMode
+     * @param {import("../sequence/protocol").ExecuteMode} executeMode
      */
     setExecuteMode(executeMode) {
         this.setControll('executeMode', executeMode)
@@ -114,6 +114,7 @@ class ControllState {
         this.setExecuteMode('goSub')
 
         this.setControll('subworkflowInit', subworkflowInit || {})
+
 
 
     }

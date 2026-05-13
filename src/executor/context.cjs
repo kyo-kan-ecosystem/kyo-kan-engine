@@ -126,6 +126,21 @@ class ExecutorsContext {
 
 
     }
+    /**
+     * @param {any} configureId
+     * @param {string | number} subworkflowName
+     */
+    getSubworkflowId(configureId, subworkflowName) {
+        const configure = this.getConfigure(configureId)
+        if (!configure.subworkflowMap || subworkflowName in configure.subworkflowMap === false) {
+
+            throw new SubworkflowNameDoesNotExistsError(subworkflowName)
+
+        }
+        return configure.subworkflowMap[subworkflowName]
+
+
+    }
 }
 module.exports = {
     ExecutorsContext

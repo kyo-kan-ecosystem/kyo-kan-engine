@@ -31,6 +31,10 @@ export type SubworkflowDefinition {
 
 }
 
-
+export type WorkflowContextInit = {
+    plugins: Object<any, any>,
+    configures: Object<any, WorkflowPluginConfigure>
+    plug
+}
 
 

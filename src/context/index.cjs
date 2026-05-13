@@ -52,7 +52,7 @@ const DEFUALT_CLASSES = {
  */
 class Context {
     /**
-     * @type {import("../states/states.cjs").StatesType}
+     * @type {import("../states/states.cjs").States}
      */
     states
 

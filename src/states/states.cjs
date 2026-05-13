@@ -1,5 +1,5 @@
 
-const { StackTree } = require('../../util/stack/stack.cjs');
+const { StackTree } = require('../util/stack/stack.cjs');
 const { StateBranch } = require('./branch.cjs');
 const { ControllState } = require('./controll_state.cjs')
 
