@@ -1,3 +1,8 @@
+const { IdIsVoidError } = require("./errors.cjs")
+
+const { WorkflowConfiguresRepositry } = require("./repositry/configures.cjs")
+
+const { WorkflowPluginRepositry } = require("./repositry/plugins.cjs")
 
 
 
@@ -6,63 +11,93 @@
 class WorkflowsContext {
 
     /**
-     * @type {}
+     * @type {WorkflowPluginRepositry}
      */
     plugins
-    configures
-
-    constructor(initData) {
-        this.repositries = initData.repositries
-
-
-
-
-    }
-
-    getCurrentWorkflow() {
-
-
-        /**
-         * @type {import("../controller/protocol").StateType}
-         */
-        const state = this.states.now.get()
-        return this._getWorkflow(state.workflow?.id)
-    }
     /**
-     * @param {any} id
+     * @type {WorkflowConfiguresRepositry} 
      */
-    _getWorkflow(id) {
+    configures
+    /**
+     * 
+     * @param {import("./protocol").WorkflowContextInit} param0 
+     * 
+     */
+    constructor({ plugins = null, configures = null, pluginsClass = WorkflowPluginRepositry, configuresClass = WorkflowConfiguresRepositry } = {}) {
+        this.plugins = new pluginsClass(plugins)
+        this.configures = new configuresClass(configures)
+
+
+
+
+
+    }
+
+    /**
+     * @param {import("../controller/protocol").StateType} state
+    */
+    getWorkflow(state) {
+
+
+
+
+        const id = state.workflow?.id
+        if (id === null || typeof id === 'undefined') {
+            throw new IdIsVoidError(id)
+
+
+        }
+
         /**
          * @type { import("./protocol").WorkflowPluginConfigure}
          */
 
-        const configure = this.repositries.configures.workflows.get(id)
+        const configure = this.configures.get(id)
         /**
          * @type {import("./protocol").WorkflowPlugin}
          */
-        const workflow = this.repositries.plugins.workflows.get(configure.plugin)
+        const workflow = this.plugins.get(configure.plugin)
 
         return { workflow, configure }
 
 
     }
 
-    go() {
+    /**
+     * 
+     * @param {any} context
+     * @param {import("../controller/protocol").StateType} state
+     * @param {import("../context/index.cjs").Context<any, any>} request
+     * */
+    go(context, state, request) {
 
-        const { workflow, configure } = this.getCurrentWorkflow()
-        return workflow.go(this.context, configure)
+        const { workflow, configure } = this.getWorkflow(state)
+        return workflow.go(context, configure, request)
 
     }
-    now() {
-        const { workflow, configure } = this.getCurrentWorkflow()
-        return workflow.now(this.context, configure)
+    /**
+     * 
+     * @param {import("../context/index.cjs").Context<any, any>} context
+     * @param {import("../controller/protocol").StateType} state
+     * @param {undefined} request
+     */
+    now(context, state, request) {
+        const { workflow, configure } = this.getWorkflow(state)
+        return workflow.now(context, configure, request)
     }
-    start() {
+    /**
+     * 
+     * @param {import("../context/index.cjs").Context<any, any>} context
+     * @param {import("../controller/protocol").StateType} state
+     * @param {undefined} request
+     */
+    start(context, state, request) {
 
-        const workflowId = this.repositries.configures.engine.get().root.workflow.id
-        const { workflow, configure } = this._getWorkflow(workflowId)
-        this.states.now.update({ 'workflow': { id: workflowId } })
-        return workflow.enterWorkflow(this.context, configure)
+
+        const { workflow, configure } = this.getWorkflow(state)
+
+
+        return workflow.enterWorkflow(context, configure, request)
 
 
 
@@ -75,7 +110,7 @@ class WorkflowsContext {
 
 
     goSub() {
-        const { configure: currentConfigure } = this.getCurrentWorkflow()
+        const { configure: currentConfigure } = this.getWorkflow()
 
         const subworkflowId = this.states.controll.getSubworkflowId()
         const { workflow, configure } = this._getWorkflow(subworkflowId)
@@ -104,9 +139,9 @@ class WorkflowsContext {
      * @returns {import("./plugin/protocol").MaybeWorkflowSteps} 
      */
     returnFromSub(context, request) {
-        const { workflow, configure } = this.getCurrentWorkflow()
+        const { workflow, configure } = this.getWorkflow()
         workflow.exitFromSubworkflow(context, request, configure)
-        const { workflow: superWorkflow, configure: superConfigure } = this.getCurrentWorkflow()
+        const { workflow: superWorkflow, configure: superConfigure } = this.getWorkflow()
 
         return superWorkflow.returnFromSubworkflow(context, request, superConfigure)
 

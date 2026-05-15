@@ -72,7 +72,7 @@ class Cursor {
  */
 async function executeWorkflow(request, context) {
 
-    const { workflow: firstWorkflow, configure: firstConfigure } = context.workflows.getCurrentWorkflow();
+    const { workflow: firstWorkflow, configure: firstConfigure } = context.workflows.getWorkflow();
     const firstFunc = firstWorkflow.getExecuteFunction(context);
     /** @type {Array<[ExecuteFunction, *]>} */
     const funcsArray = [[firstFunc, firstConfigure]];
@@ -100,14 +100,14 @@ async function executeWorkflow(request, context) {
                 return { state, responses };
 
             case 'go':
-                const { plugin, configure } = context.workflows.getCurrentWorkflow();
+                const { plugin, configure } = context.workflows.getWorkflow();
                 const goExecuteFunc = plugin.getExecuteFunction(configure, context);
                 funcsArray.push(goExecuteFunc);
                 break;
 
             case 'goSub':
                 context.goSub();
-                const subExecuteFunc = context.workflows.getCurrentWorkflow().enterWorkflow(context);
+                const subExecuteFunc = context.workflows.getWorkflow().enterWorkflow(context);
 
 
                 funcsArray.push(subExecuteFunc);
@@ -118,21 +118,21 @@ async function executeWorkflow(request, context) {
                 if (!isTopOnEnd) {
                     return { state, responses };
                 }
-                const superWorkflowOnEnd = context.workflows.getCurrentWorkflow();
+                const superWorkflowOnEnd = context.workflows.getWorkflow();
                 const superExecuteFuncOnEnd = superWorkflowOnEnd.returnFromSubworkflow(context);
                 funcsArray.push(superExecuteFuncOnEnd);
                 break;
 
             case 'back':
                 _request = context.back()
-                const backWorkflow = context.workflows.getCurrentWorkflow();
+                const backWorkflow = context.workflows.getWorkflow();
                 const backExecuteFunc = backWorkflow.back(context);
                 funcsArray.push(backExecuteFunc);
                 break;
 
             case 'rewindWorkflow':
                 _request = context.reset();
-                const resetWorkflow = context.workflows.getCurrentWorkflow();
+                const resetWorkflow = context.workflows.getWorkflow();
                 const resetExecuteFunc = resetWorkflow.resetBack(context);
                 funcsArray.push(resetExecuteFunc);
                 break;
@@ -141,7 +141,7 @@ async function executeWorkflow(request, context) {
                 if (!isTopOnRewindReturn) {
                     return { state, responses };
                 }
-                const superWorkflowOnResetReturn = context.workflows.getCurrentWorkflow();
+                const superWorkflowOnResetReturn = context.workflows.getWorkflow();
                 const executeFuncOnResetReturn = superWorkflowOnResetReturn.returnAsReset(context);
                 funcsArray.push(executeFuncOnResetReturn);
                 break;

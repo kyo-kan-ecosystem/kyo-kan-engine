@@ -7,47 +7,51 @@
  */
 class AbstractWorkflow {
     /**
-    * @abstract
-    * @param {import("../../controller/protocol").Context<any,any>} context 
-      
-    * @param {*} configure
-    * @returns {import("./protocol").MaybeWorkflowSteps}
-    */
-    enterWorkflow(context, configure) {
+     * @abstract
+     * @param {import("../../controller/protocol").Context<any, any>} context
+     * @param {*} configure
+     * @returns {import("./protocol").MaybeWorkflowSteps}
+     * @param {any} request
+     */
+    enterWorkflow(context, configure, request) {
         throw new Error('Method not implemented.')
 
     }
     /**
     * @abstract
     * @param {import("../../controller/protocol").Context<any,any>} context 
-      
     * @param {*} configure
+    * @param {*} request 
     * @returns {import("./protocol").MaybeWorkflowSteps}
+    * 
+    * 
     */
-    enterAsSubworkflow(context, configure) {
+    enterAsSubworkflow(context, configure, request) {
         throw new Error('Method not implemented.')
 
     }
 
+    /**
+     * @abstract
+     * @param {import("../../controller/protocol").Context<any, any>} context
+     * @param {*} configure
+     * @returns {import("./protocol").MaybeWorkflowSteps}
+     * @param {any} request
+     */
+    now(context, configure, request) {
+        throw new Error('Method not implemented.')
+
+    }
     /**
     * @abstract
     * @param {import("../../controller/protocol").Context<any,any>} context 
    
     * @param {*} configure
+    * @param {*} request 
     * @returns {import("./protocol").MaybeWorkflowSteps}
+    * 
     */
-    now(context, configure) {
-        throw new Error('Method not implemented.')
-
-    }
-    /**
-    * @abstract
-    * @param {import("../../controller/protocol").Context<any,any>} context 
-   
-    * @param {*} configure
-    * @returns {import("./protocol").MaybeWorkflowSteps}
-    */
-    go(context, configure) {
+    go(context, configure, request) {
         throw new Error('Method not implemented.')
 
     }
@@ -77,26 +81,7 @@ class AbstractWorkflow {
 
 
 
-    /**
-     * @param {import("../../controller/protocol").Context<any, any>} context
-     * @param {any} request
-     * @param {any} configure
-     */
-    _getExecutorPlugin(context, request, configure) {
-        const pluginId = this._getPluginId(context, request, configure)
-        return context.repositries.plugins.executors.get(pluginId)
-    }
-    /**
-     * @abstract
-     * @param {import("../../controller/protocol").Context<any, any>} context
-     * @param {any} request
-     * @param {any} configure
-     * @returns {any}
-     */
-    _getPluginId(context, request, configure) {
-        return ''
 
-    }
     /**
      * @abstract
      * @param {any} configure
