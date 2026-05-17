@@ -19,7 +19,6 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
  */
 /**
  * @typedef {{
- *       workflows: WorkflowConfiguresRepositry,
  *       engine: EngineConfigureRepositry,
  * }} ContextRepositryConfigures
  */
@@ -34,12 +33,10 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
 /**
  * @typedef {{
  *      configures:{
- *          workflows: typeof WorkflowConfiguresRepositry,           
- *          engine: typeof EngineConfigureRepositry         
- *      },     
- *      plugins: {
- *           workflows: typeof WorkflowPluginRepositry           
- *      }} } ContextRepositryClasses
+ *           engine: typeof EngineConfigureRepositry         
+ *     }
+ *  }
+ * } ContextRepositryClasses
     
  * 
  */
@@ -55,15 +52,11 @@ const { WorkflowConfiguresRepositry } = require("../workflow/repositry/configure
  */
 const DEFAULT_REPOSITRY_CLASSES = {
     configures: {
-        workflows: WorkflowConfiguresRepositry,
+
         engine: EngineConfigureRepositry
 
     },
 
-    plugins: {
-        workflows: WorkflowPluginRepositry,
-
-    }
 
 
 }
@@ -79,11 +72,6 @@ class Repositries {
      * @type {ContextRepositryConfigures}
      */
     configures
-    /**
-     * @type {ContextRepositryPlugins}
-     */
-    plugins
-
 
 
 
@@ -91,38 +79,25 @@ class Repositries {
      * 
      * @param {ContextRepositryArgs} args 
      */
-    constructor(args) {
-        const { configures = {}, plugins = null, classes = DEFAULT_REPOSITRY_CLASSES } = args || {}
+    constructor(args = {}) {
+        const { configures = {}, classes = DEFAULT_REPOSITRY_CLASSES } = args
 
 
 
         this.configures = {
 
-            workflows: new classes.configures.workflows(configures.workflows || {}),
+
 
             engine: new classes.configures.engine(configures.engine || {}),
 
         }
 
 
-        if (plugins) {
-            this.plugins = plugins
 
-
-        }
-        else {
-            this.plugins = {
-                workflows: new classes.plugins.workflows({}),
-
-            }
-
-        }
 
     }
 
-    getPluginRepositry() {
-        return this.plugins
-    }
+
     getConfiguresAsSerializeDatas() {
         const result = {}
         for (const [key, value] of Object.entries(this.configures)) {

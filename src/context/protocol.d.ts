@@ -29,6 +29,7 @@ export type ContextSerializableData = Partial<{
     executors: any,
     _countRef: { n: number }
     _linkMap: Object<any, any>
+    _branchId: number
 
 }>
 

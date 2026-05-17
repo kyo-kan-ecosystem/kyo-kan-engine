@@ -108,19 +108,23 @@ class WorkflowsContext {
 
     }
 
+    /**
+     * 
+     * @param {import("../context/index.cjs").Context<any, any>} context
+     * @param {import("../controller/protocol").StateType} state
+     * @param {undefined} request
+    */
+    goSub(context, state, request) {
 
-    goSub() {
-        const { configure: currentConfigure } = this.getWorkflow()
 
-        const subworkflowId = this.states.controll.getSubworkflowId()
-        const { workflow, configure } = this._getWorkflow(subworkflowId)
+
+        const { workflow, configure } = this.getWorkflow(state)
 
 
 
-        return {
-            workflowSteps: workflow.enterAsSubworkflow(this.context, configure),
-            workflowId: this.states.now.get()?.workflow?.id
-        }
+        return workflow.enterAsSubworkflow(context, configure, request),
+            
+    
 
 
 

@@ -88,6 +88,7 @@ class Context {
     /**
      * @type {number}
      */
+    // @ts-ignore
     _branchId
 
     /**
@@ -165,7 +166,7 @@ class Context {
 
         this.states = new classes.states(datas?.states)
 
-        this.workflows = this._constructWorkflows(datas?.workflows)
+        this.workflows = new classes.workflows(datas?.workflows)
         this.executors = new classes.executors(datas?.executors)
 
         /**
@@ -202,22 +203,6 @@ class Context {
 
 
     }
-    /**
-     * 
-     * @param {*} datas 
-     * @param {*} context 
-     * @returns 
-     */
-    _constructWorkflows(datas = null, context = null) {
-        /**
-         * @type {ConstructorParameters<typeof WorkflowsContext>[0]}
-         */
-        const workflowsInit = Object.assign({ state: this.states, repositries: this.repositries, context: context || this }, datas || {})
-        /**
-         * @type {WorkflowsContext}
-         */
-        return new this._classes.workflows(workflowsInit)
-    }
 
 
     /**
@@ -228,13 +213,25 @@ class Context {
             bords: this.bords.getSerializableData(),
             states: this.states.getSerializableData(),
             histories: this.histories.getSerializableData(),
+            branches: this._branches,
+            _countRef: this._countRef,
+            _linkMap: this._linkMap,
+
 
         }
 
     }
-    getInitData() {
+    /**
+     * 
+     * @param {this} otherContext 
+     */
+    eq(otherContext) {
+        return this.getBranchId() === otherContext.getBranchId()
+
+
 
     }
+
 
     isRoot() {
         return this.states.isRoot()
