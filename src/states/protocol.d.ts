@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { WorkflowState } from "../workflow/protocol";
+import { WorkflowState, WorkflowStateember as WorkflowStateMember } from "../workflow/protocol";
 import { ExecuteMode } from "../sequence/protocol";
 
 
@@ -10,14 +10,14 @@ export type ControllStateType = {
     callback?: string,
     executeMode?: ExecuteMode
     subworkflowInit?: any
-    subworkflowId?: any
+    subworkflowName?: any
 
 }
 
 
-export type StateType = {
+export type StateType = WorkflowStateMember & {
 
-    workflow?: WorkflowState,
+
     controlls?: ControllStateType,
     isStart?: boolean,
     isBoot?: boolean
@@ -31,10 +31,10 @@ export type PartialSateType = Partial<StateType>
 
 
 
-export type State = StateType
+
 
 export type ExecutionResult = {
-    state: State;
+    state: StateType;
     results: any[];
 
 

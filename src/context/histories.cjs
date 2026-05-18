@@ -140,7 +140,7 @@ class Histories {
         }
         this._applyHistoryToTrees
         /**
-         * @type {{log?:{mode:import('../controller/protocol').ExecuteMode}, depth?:number}}
+         * @type {{log?:{mode:import('../states/protocol').ExecuteMode}, depth?:number}}
          */
         const headState = this.state.getBranchHead() || {}
         if (headState.log?.mode === 'wait') {

@@ -1,10 +1,4 @@
-
-
-
-
-
-
-
+const { ContextResolver } = require("./resolver/index.cjs")
 const { Bords } = require("../bords/bords.cjs")
 const { Histories } = require("./histories.cjs")
 const { Repositries } = require("./repositries.cjs")
@@ -25,7 +19,8 @@ const { ExecutorsContext } = require("../executor/context.cjs")
  *      states: typeof States,
  *      workflows: typeof WorkflowsContext,
  *      histories: typeof Histories,
- *      executors: typeof ExecutorsContext   
+ *      executors: typeof ExecutorsContext,
+ *      resolver: typeof ContextResolver   
  * }} ContextClasses
  */
 /**
@@ -37,24 +32,27 @@ const DEFUALT_CLASSES = {
     states: States,
     workflows: WorkflowsContext,
     histories: Histories,
-    executors: ExecutorsContext
+    executors: ExecutorsContext,
+    resolver: ContextResolver
 
 
 }
 
 
 
+/**
+ * @typedef {import("./protocol.d.ts").ContextDataInterFace} ContextDataInterFace
+ */
+
 
 /**
- *
- * @template  {import("./protocol").MaybeForkType} ReporterType
- * @template  {import("./protocol").MaybeForkTypeMap} ContextFunctionsType
+ * 
+ * @template  {import("./protocol").MaybeForkType} [ReporterType=any]
+ * @template  {import("./protocol").MaybeForkTypeMap} [ContextFunctionsType=any]
+ * @template  {ContextResolver}[ResolverType=ContextResolver]
+ * @implements {ContextDataInterFace}
  */
 class Context {
-    /**
-     * @type {import("../states/states.cjs").States}
-     */
-    states
 
     /**
      * @type {Repositries}
@@ -116,6 +114,11 @@ class Context {
      */
     _classes
 
+    /**
+     * @type {ResolverType}
+     */
+    resolver
+
 
     /**
      * @param {Object} param0 
@@ -126,6 +129,8 @@ class Context {
      */
     constructor({ datas = null, api = null, inheritance = null, classes = DEFUALT_CLASSES }) {
         this._classes = classes
+        // @ts-ignore
+        this.resolver = new classes.resolver(this)
 
         if (datas === false) {
 
@@ -337,14 +342,14 @@ class Context {
             workflows: this.workflows,
             _linkMap: this._linkMap,
             branchId,
-            executors: undefined
+            executors: this.executors
         }
 
         /**
          * @type {this}
          */
         // @ts-ignore
-        const forked = new this.constructor({ inheritance })
+        const forked = new this.constructor({ inheritance, classes: this._classes })
 
 
 

@@ -21,7 +21,7 @@ class ControllState {
 
     /**
      * 
-     * @param {keyof import("../controller/protocol").ControllStateType} key 
+     * @param {keyof import("./protocol").ControllStateType} key 
      * @param {*} value 
      */
     setControll(key, value) {
@@ -46,16 +46,16 @@ class ControllState {
     }
     /**
      * 
-     * @template {keyof import("../controller/protocol").ControllStateType} KeyType
+     * @template {keyof import("./protocol").ControllStateType} KeyType
      * 
      * @overload
      * @param {KeyType} key
      * @param {true | undefined} [isStrict=True]
-     * @returns {Required<import("../controller/protocol").ControllStateType>[KeyType]}     
+     * @returns {Required<import("./protocol").ControllStateType>[KeyType]}     
      * @overload
     *  @param {KeyType} key
      * @param {false} isStrict
-     * @returns {import("../controller/protocol").ControllStateType[KeyType] | undefined}     
+     * @returns {import("./protocol").ControllStateType[KeyType] | undefined}     
      * */
     // @ts-ignore
     getControll(key, isStrict = true) {
@@ -77,7 +77,9 @@ class ControllState {
         this.setControll('executorId', executorId)
 
     }
-
+    getExecutorId() {
+        return this.getControll('executorId')
+    }
     /**
      * @param {any} callback
      */
@@ -118,12 +120,14 @@ class ControllState {
 
 
     }
-    getSubworkflowId() {
-        return this.getControll('subworkflowId')
+    getSubworkflowName() {
+        return this.getControll('subworkflowName')
     }
     getSubworkflowInit() {
         return this.getControll('subworkflowInit', false)
     }
+
+
 
 
 

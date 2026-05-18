@@ -1,12 +1,28 @@
-import { States } from "./states/states.cjs"
-import { Bords } from "../bords/bords.cjs"
-import { Repositries } from "./repositries.cjs"
-import { Workflows } from "../workflow/context.cjs"
-import { Histories } from "./histories.cjs"
+import type { States } from "../states/states.cjs"
+import type { Bords } from "../bords/bords.cjs"
+import type { Repositries } from "./repositries.cjs"
+import type { WorkflowsContext } from "../workflow/context.cjs"
+import type { Histories } from "./histories.cjs"
+import type { ExecutorsContext } from "../executor/context.cjs"
 export type StackTrees = {
     states: States,
     bords: Bords
 }
+
+export type ImutableDataContexts = {
+    workflows: WorkflowsContext,
+    executors: ExecutorsContext,
+}
+
+export type MutableDataContexts = {
+    bords: Bords,
+    repositries: Repositries,
+    histories: Histories,
+    states: States,
+}
+
+export type ContextDataInterFace = ImutableDataContexts & MutableDataContexts
+
 
 export type ForkFunctionType = (id: number?, context: any) => any
 export interface MaybeForkInterface {

@@ -8,7 +8,7 @@
 class AbstractWorkflow {
     /**
      * @abstract
-     * @param {import("../../controller/protocol").Context<any, any>} context
+     * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} configure
      * @returns {import("./protocol").MaybeWorkflowSteps}
      * @param {any} request
@@ -19,7 +19,7 @@ class AbstractWorkflow {
     }
     /**
     * @abstract
-    * @param {import("../../controller/protocol").Context<any,any>} context 
+    * @param {import("../../states/protocol").Context<any,any>} context 
     * @param {*} configure
     * @param {*} request 
     * @returns {import("./protocol").MaybeWorkflowSteps}
@@ -33,7 +33,7 @@ class AbstractWorkflow {
 
     /**
      * @abstract
-     * @param {import("../../controller/protocol").Context<any, any>} context
+     * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} configure
      * @returns {import("./protocol").MaybeWorkflowSteps}
      * @param {any} request
@@ -44,7 +44,7 @@ class AbstractWorkflow {
     }
     /**
     * @abstract
-    * @param {import("../../controller/protocol").Context<any,any>} context 
+    * @param {import("../../states/protocol").Context<any,any>} context 
    
     * @param {*} configure
     * @param {*} request 
@@ -58,7 +58,7 @@ class AbstractWorkflow {
 
     /**
      * @abstract
-     * @param {import("../../controller/protocol").Context<any, any>} context
+     * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} request
      * @param {any} configure
      * @returns {import("./protocol").MaybeWorkflowSteps}
@@ -69,7 +69,7 @@ class AbstractWorkflow {
     }
     /**
      * @abstract
-     * @param {import("../../controller/protocol").Context<any, any>} context
+     * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} request    
      * @param {any} configure
      * @returns {import("./protocol").MaybeWorkflowSteps}

@@ -9,6 +9,11 @@ export type WorkflowState<StateType = any, InitDataType = any> = {
 
 }
 
+export type WorkflowStateember = {
+    workflow?: WorkflowState
+
+}
+
 
 export type WorkflowConfigureParseResult<ParamsType = any, ExecutorsType = any> = {
     params?: ParamsType

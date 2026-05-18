@@ -1,4 +1,4 @@
-import { Context } from "../../controller/protocol"
+import { Context } from "../../states/protocol"
 
 /**
  * Confingure which call on the flay configure

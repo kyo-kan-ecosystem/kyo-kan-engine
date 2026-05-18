@@ -1,17 +1,17 @@
-import { DEFAULT_WORKFLOW_REGISTRATION } from "../../engine/defaults/workflow.cjs"
+import { DEFAULT_WORKFLOW_REGISTRATION } from "../engine/defaults/workflow.cjs"
 
-const { DEFAULT_ENGINE_CONFIGURE } = require("../../engine/defaults/configure.cjs")
+const { DEFAULT_ENGINE_CONFIGURE } = require("../engine/defaults/configure.cjs")
 
 const deepmerge = require("deepmerge")
 
 
 
-const { ContextBuilder } = require("../../context/builder.cjs")
+const { ContextBuilder } = require("../context/builder.cjs")
 
 
 
 /**
- * @typedef {import("../../workflow/plugin/protocol.class.cjs").AbstractWorkflow} WorkFlowPluginType
+ * @typedef {import("../workflow/plugin/protocol.class.cjs").AbstractWorkflow} WorkFlowPluginType
  */
 
 class Registrater extends ContextBuilder {
@@ -40,7 +40,7 @@ class Registrater extends ContextBuilder {
     _workflowPlugins
 
     /**
-     * @type {Partial<import("../../engine/repositry/protocol.d.ts").EngineConfigure>?}
+     * @type {Partial<import("../engine/repositry/protocol.js").EngineConfigure>?}
      */
     _engineConfigure
 
@@ -49,7 +49,7 @@ class Registrater extends ContextBuilder {
     /**
      *@param {Object} param0 
      *
-     *@param {typeof import("../protocol.js").Context | null | undefined}[param0.contextClass=null]
+     *@param {typeof import("../states/protocol.js").Context | null | undefined}[param0.contextClass=null]
      *@param {any}[param0.defaultWorkflowPlugins=null]
      */
     constructor({ contextClass = null, defaultWorkflowPlugins = DEFAULT_WORKFLOW_REGISTRATION } = {}) {
@@ -84,7 +84,7 @@ class Registrater extends ContextBuilder {
 
     /**
      * 
-     * @param {Partial<import("../../engine/repositry/protocol.d.ts").EngineConfigure>} values 
+     * @param {Partial<import("../engine/repositry/protocol.js").EngineConfigure>} values 
      */
     registerEngineConfigueres(values) {
         this._engineConfigure = deepmerge(this._engineConfigure || {}, values)
@@ -108,7 +108,7 @@ class Registrater extends ContextBuilder {
         const rootConfigure = rootWorkFlowPlugin.getConfigureParams(configure)
         this.context.repositries.configures.workflows.set(rootWorkFlowPluginId, rootConfigure)
         /**
-         * @type {{workflow:string, executorConfig:import("../../../protocol/executor/protocol").ExecutorConfigure}[]}
+         * @type {{workflow:string, executorConfig:import("../../protocol/executor/protocol.js").ExecutorConfigure}[]}
          */
         const executorQueue = []
 
@@ -127,7 +127,7 @@ class Registrater extends ContextBuilder {
             const item = executorQueue[index]
             index += 1
             /**
-             * @type {import("../../workflow/protocol").WorkflowPluginConfigure}
+             * @type {import("../workflow/protocol.js").WorkflowPluginConfigure}
              */
             const workflowConfigure = this.context.repositries.configures.workflows.get(item.workflow)
             let workerObject = workerObjects.get(item.workflow)
@@ -140,7 +140,7 @@ class Registrater extends ContextBuilder {
             workerObject = workflowPlugin.addExecutor(workflowConfigure, executorId, item.executorConfig, workerObject)
             workerObjects.set(item.workflow, workerObject)
             /**
-             * @type {import("../../../protocol/executor/baic_class.cjs").AbstractExecutorPlugin}
+             * @type {import("../../protocol/executor/baic_class.cjs").AbstractExecutorPlugin}
              */
             const plugin = this.context.repositries.plugins.executors.get(item.executorConfig.plugin)
             if () { }

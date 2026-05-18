@@ -1,4 +1,4 @@
-import { executeMode } from "../../src/controller/protocol"
+import { executeMode } from "../../src/states/protocol"
 import { WorkflowConfigureFormatBase, WorkflowConfigureFormatUnion } from "../../src/workflow/plugin/protocol"
 import { Context } from "../context/protocol"
 

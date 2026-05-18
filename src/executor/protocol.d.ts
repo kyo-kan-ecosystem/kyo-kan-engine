@@ -9,20 +9,20 @@ export type SubworflowsConfigureOuterSettingFormat = {
     callback?: string
 }
 
-export type SubworflowsConfigureInnerSettingFormat<ConfigureType = any> = {
+export type SubworkflowsConfigureInnerSettingFormat<ConfigureType = any> = {
     plugin: any,
     configure: any,
     callback?: string
 
 }
 
-export type SubworflowsConfigureFormat<ConfigureType = any> = {
-    [name in any]: SubworflowsOuterSettingFormat | SubworflowsConfigureInnerSettingFormat<ConfigureType>
+export type SubworkflowsConfigureFormat<ConfigureType = any> = {
+    [name in any]: SubworflowsOuterSettingFormat | SubworkflowsConfigureInnerSettingFormat<ConfigureType>
 }
 
 export type ExecutorConfigureFormatType<ConfigureType = any> = ExecutorConfigureFormatBaseType<ConfigureType> & {
 
-    subWorkflows?: SubworflowsConfigureFormat,
+    subWorkflows?: SubworkflowsConfigureFormat,
     subworkflowMap?: { [name in any]: any }
 }
 
@@ -30,3 +30,4 @@ export type ExecutorConfigures = {
     boots?: any,
     plugins?: any
 }
+

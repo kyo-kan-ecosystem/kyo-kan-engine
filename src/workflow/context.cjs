@@ -34,7 +34,7 @@ class WorkflowsContext {
     }
 
     /**
-     * @param {import("../controller/protocol").StateType} state
+     * @param {import("../states/protocol").StateType} state
     */
     getWorkflow(state) {
 
@@ -66,7 +66,7 @@ class WorkflowsContext {
     /**
      * 
      * @param {any} context
-     * @param {import("../controller/protocol").StateType} state
+     * @param {import("../states/protocol").StateType} state
      * @param {import("../context/index.cjs").Context<any, any>} request
      * */
     go(context, state, request) {
@@ -78,7 +78,7 @@ class WorkflowsContext {
     /**
      * 
      * @param {import("../context/index.cjs").Context<any, any>} context
-     * @param {import("../controller/protocol").StateType} state
+     * @param {import("../states/protocol").StateType} state
      * @param {undefined} request
      */
     now(context, state, request) {
@@ -88,7 +88,7 @@ class WorkflowsContext {
     /**
      * 
      * @param {import("../context/index.cjs").Context<any, any>} context
-     * @param {import("../controller/protocol").StateType} state
+     * @param {import("../states/protocol").StateType} state
      * @param {undefined} request
      */
     start(context, state, request) {
@@ -111,7 +111,7 @@ class WorkflowsContext {
     /**
      * 
      * @param {import("../context/index.cjs").Context<any, any>} context
-     * @param {import("../controller/protocol").StateType} state
+     * @param {import("../states/protocol").StateType} state
      * @param {undefined} request
     */
     goSub(context, state, request) {
@@ -122,9 +122,9 @@ class WorkflowsContext {
 
 
 
-        return workflow.enterAsSubworkflow(context, configure, request),
-            
-    
+        return workflow.enterAsSubworkflow(context, configure, request)
+
+
 
 
 
@@ -137,15 +137,16 @@ class WorkflowsContext {
 
     }
     /**
-     * 
      * @param {*} context
-     * @param {*} request 
-     * @returns {import("./plugin/protocol").MaybeWorkflowSteps} 
+     * @param {*} request
+     * @returns {import("./plugin/protocol").MaybeWorkflowSteps}
+     * @param {import("../states/protocol").StateType} subworkflowState
+     * @param {import("../states/protocol").StateType} workflowState
      */
-    returnFromSub(context, request) {
-        const { workflow, configure } = this.getWorkflow()
+    returnFromSub(subworkflowState, workflowState, context, request) {
+        const { workflow, configure } = this.getWorkflow(subworkflowState)
         workflow.exitFromSubworkflow(context, request, configure)
-        const { workflow: superWorkflow, configure: superConfigure } = this.getWorkflow()
+        const { workflow: superWorkflow, configure: superConfigure } = this.getWorkflow(workflowState)
 
         return superWorkflow.returnFromSubworkflow(context, request, superConfigure)
 

@@ -10,7 +10,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
       * 
       * @param {*} request 
-      * @param {import("../controller/protocol").Context<any,any>} context 
+      * @param {import("../states/protocol").Context<any,any>} context 
       * @returns {Promise<Promise<import("./protocol").StepResult>[]>}
       * 
       */
@@ -30,7 +30,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
      * 
      * @param {*} request 
-     * @param {import("../controller/protocol").Context<any,any>} context  
+     * @param {import("../states/protocol").Context<any,any>} context  
      */
     _boot(request, context) {
         const bootExecutors = context.repositries.configures.boot.getAll()
@@ -70,7 +70,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
    * 
    * @param {*} request 
-   * @param {import("../controller/protocol").Context<any,any>} context 
+   * @param {import("../states/protocol").Context<any,any>} context 
    * @returns {Promise<Promise<import("./protocol").StepResult>[]>}
    * 
    */
@@ -94,7 +94,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
      * 
      * @param {*} request 
-     * @param {import("../controller/protocol").Context<any, any>} context 
+     * @param {import("../states/protocol").Context<any, any>} context 
      * @returns {Promise<import("./protocol").StepResult>[]}
      * 
     */
@@ -107,7 +107,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
     * 
     * @param {*} request 
-    * @param {import("../controller/protocol").Context<any, any>} context 
+    * @param {import("../states/protocol").Context<any, any>} context 
     * @returns {Promise<import("./protocol").StepResult>[]}
     * 
    */
@@ -127,7 +127,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
     * 
     * @param {*} request 
-    * @param {import("../controller/protocol").Context<any, any>} context 
+    * @param {import("../states/protocol").Context<any, any>} context 
     * @returns {Promise<import("./protocol").StepResult>[]}
     * 
    */
@@ -167,7 +167,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
     * 
     * @param {*} request 
-    * @param {import("../controller/protocol").Context<any, any>} context 
+    * @param {import("../states/protocol").Context<any, any>} context 
     * @returns {Promise<import("./protocol").StepResult>[]}
     * 
    */
@@ -214,7 +214,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
     * 
     * @param {*} request
-    * @param { import("../controller/protocol").Context < any, any >} context
+    * @param { import("../states/protocol").Context < any, any >} context
     * @returns { Promise < import("./protocol").StepResult >[] }
     * 
    */
