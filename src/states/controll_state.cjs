@@ -101,7 +101,7 @@ class ControllState {
     /**
      * 
      * @param {boolean} isStrict 
-     * 
+     * @throws {ControllStateValueNotExistError}
      */
     getExecuteMode(isStrict = true) {
 

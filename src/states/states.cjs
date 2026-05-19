@@ -30,8 +30,7 @@ class States extends StackTree {
 
     }
     goSub() {
-        const subworkflowId = this.controll.getSubworkflowId()
-        this.now.push({ workflow: { id: subworkflowId } })
+
 
 
     }

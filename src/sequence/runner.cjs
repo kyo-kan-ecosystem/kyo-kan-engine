@@ -79,7 +79,7 @@ class SequenceRunner {
                 else {
                     executeMode = this._context.repositries.configures.engine.get().sequence.start
                 }
-                // 次にやること　BootをDispatcher側で実装。 Boot用のプラグインリポジトリを追加
+
             }
             else {
 
@@ -90,8 +90,8 @@ class SequenceRunner {
 
 
 
-            if (context === this._context) {
-                this._processPathCounter.n++
+            if (context.eq(this._context) === true) {
+
 
                 // @ts-ignore
                 const proms = this.dispatcher[executeMode].call(this.dispatcher, this._request, this._context)
@@ -105,6 +105,7 @@ class SequenceRunner {
 
             }
             else {
+                this._processPathCounter.n++
                 this._contexts.push(context)
                 // @ts-ignore
                 const runner = new this.constructor(this.dispatcher, context, this._request, this._processEndEvent, this._contexts, this._processPathCounter, this.startMode, this.resumeMode)

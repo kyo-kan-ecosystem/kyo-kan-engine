@@ -70,7 +70,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
    * 
    * @param {*} request 
-   * @param {import("../states/protocol").Context<any,any>} context 
+   * @param {import("../states/protocol").Context} context 
    * @returns {Promise<Promise<import("./protocol").StepResult>[]>}
    * 
    */
@@ -82,7 +82,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
             await this._boot(request, context)
             context.states.setNotBoot()
         }
-        const workflowSteps = context.workflows.now()
+        const workflowSteps = context.workflows.now(context, context.states.now.get(), request)
         const defaultCallback = context.repositries.configures.engine.get().executor.enterFunc
         return this._runExecutor(workflowSteps, request, defaultCallback)
 
@@ -300,9 +300,9 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         if (typeof executorId === 'undefined' || executorId === null) {
             return { context }
         }
-        const executerConfigure = context.repositries.configures.executors.get(executorId)
+        const { configure, plugin } = context.executors.getConfigureAndPlugin(executorId)
 
-        await context.repositries.plugins.executors.get(executerConfigure.plugin)[callback].call(request, context, executerConfigure.configure)
+        await plugin[callback].call(request, context, configure)
         return { context }
 
     }

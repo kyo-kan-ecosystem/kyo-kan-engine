@@ -53,7 +53,10 @@ const DEFUALT_CLASSES = {
  * @implements {ContextDataInterFace}
  */
 class Context {
-
+    /**
+     * @type {States}
+     */
+    states
     /**
      * @type {Repositries}
      */
