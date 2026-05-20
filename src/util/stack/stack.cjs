@@ -7,15 +7,15 @@ const { StackTreeRootPopError, StackTreeRootSuperGetError, StackTreeBranchDoesNo
  * A stack data structure that follows the LIFO (Last-In, First-Out) principle.
  * Intended for use in state history management and similar applications.
  * 
- * @template DataType
+ * @template [DataType=any]
  */
 class Stack {
     /**
-     * @param {any[]?} [items] - Initial items to populate the stack with.
+     * @param {DataType[]?} [items] - Initial items to populate the stack with.
      */
     constructor(items) {
         /**
-         * @type {any[]}
+         * @type {DataType[]}
          */
         this._items = this._cloneItems(items || [])
     }
@@ -53,7 +53,7 @@ class Stack {
 
     /**
      * Removes the top element from the stack and returns it.
-     * @returns {any} The removed element.
+     * 
      * @throws {Error} Thrown if the stack is empty.
      */
     pop() {
@@ -128,7 +128,7 @@ class Stack {
 
 /**
 
- * @template {Stack<any>} BranchClass
+ * @template {Stack} BranchClass
  * 
  *
  */
@@ -407,10 +407,10 @@ class StackTree {
      * @param {Object} [param0={}] 
      * @param {boolean} [param0.checkIsTop=true] 
      * @param {boolean} [param0.autoreturn=true] 
-     * @returns {any}
+     * 
      */
     pop(checkIsTop = true) {
-        const ret = this._branches[this._branchId].pop()
+        const ret = this._branches[this._branchId].pop() || {}
 
         if (this.isEmptyNow() === true) {
             if (this.isRoot() === true) {

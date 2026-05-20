@@ -8,7 +8,7 @@ export type StepResult = {
 
 export type StepResults = StepResult[]
 
-export type DispatchFunction = (request: any, context: any) => Promise<any>[]
+export type DispatchFunction = (context: any, request: any) => Promise<any>[] | Promise<Promise<any>[]>
 
 
 export type ProcessCounter = {

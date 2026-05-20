@@ -1,10 +1,10 @@
-export type ExecutorConfigureFormatBaseType<ConfigureType = any> = {
+export type ExecutorConfigureFormatBaseType<OptionsType = any> = {
     plugin: any,
-    configure: ConfigureType
+    options: OptionsType
 
 }
 
-export type SubworflowsConfigureOuterSettingFormat = {
+export type SubworkflowsConfigureOuterSettingFormat = {
     workflow: any,
     callback?: string
 }
@@ -30,4 +30,5 @@ export type ExecutorConfigures = {
     boots?: any,
     plugins?: any
 }
+
 

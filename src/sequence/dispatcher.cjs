@@ -15,12 +15,12 @@ class SequenceDispatcherBase extends AbstractDispatcher {
       * 
       */
 
-    async start(request, context) {
+    async start(context, request) {
 
-        await this._boot(request, context)
+        await this._boot(context, request)
         context.histories.forword(request)
-        const workflowSteps = context.workflows.start()
-        const results = this._runEnterFunction(request, context, workflowSteps)
+        const workflowSteps = context.workflows.start(context, context.states.now.get(), request)
+        const results = this._runEnterFunction(context, request, workflowSteps)
         context.states.setNotStart()
         return results
 
@@ -32,18 +32,18 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * @param {*} request 
      * @param {import("../states/protocol").Context<any,any>} context  
      */
-    _boot(request, context) {
-        const bootExecutors = context.repositries.configures.boot.getAll()
+    _boot(context, request) {
+        const bootExecutors = context.executors.getBootPlugins()
         const bootPromies = []
         const bootCallbackName = context.repositries.configures.engine.get().boot.callback
-        for (const { plugin, configure } of bootExecutors) {
-            const executor = context.repositries.plugins.executors.get(plugin)
+        for (const { executor, options } of bootExecutors) {
+
             if (bootCallbackName in executor === false) {
-                throw new BootCallbackDoesNotExistsError(plugin, bootCallbackName)
+                throw new BootCallbackDoesNotExistsError(executor, bootCallbackName)
 
             }
 
-            bootPromies.push(executor[bootCallbackName].call(configure, request, context))
+            bootPromies.push(executor[bootCallbackName].call(options, context, request))
 
 
 
@@ -58,7 +58,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * @param {*} workflowSteps 
      * @returns 
      */
-    _runEnterFunction(request, context, workflowSteps) {
+    _runEnterFunction(context, request, workflowSteps) {
         const defaultCallback = context.repositries.configures.engine.get().executor.enterFunc
 
 
@@ -75,11 +75,11 @@ class SequenceDispatcherBase extends AbstractDispatcher {
    * 
    */
 
-    async resume(request, context) {
+    async resume(context, request) {
 
 
         if (context.states.isBoot() === true) {
-            await this._boot(request, context)
+            await this._boot(context, request)
             context.states.setNotBoot()
         }
         const workflowSteps = context.workflows.now(context, context.states.now.get(), request)
@@ -98,7 +98,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * @returns {Promise<import("./protocol").StepResult>[]}
      * 
     */
-    wait(request, context) {
+    wait(context, request) {
         context.histories.forword(request)
 
 
@@ -111,7 +111,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     * @returns {Promise<import("./protocol").StepResult>[]}
     * 
    */
-    end(request, context) {
+    end(context, request) {
         context.histories.forword(request)
         if (context.states.isRoot() === false) {
             context.states.controll.setExecuteMode('returnFromSub')
@@ -131,7 +131,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     * @returns {Promise<import("./protocol").StepResult>[]}
     * 
    */
-    go(request, context) {
+    go(context, request) {
         context.histories.forword(request)
         /**
          * @type {Promise<import("./protocol").StepResult>[]}
@@ -140,7 +140,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         /**
          * @type { import("../workflow/plugin/protocol").WorkflowSteps }
          */
-        const workflowSteps = ensureArray(context.workflows.go())
+        const workflowSteps = ensureArray(context.workflows.go(context, context.states.now.get(), request))
         /**
          * @type { import("../workflow/plugin/protocol").WorkflowSteps }
          */
@@ -171,24 +171,36 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     * @returns {Promise<import("./protocol").StepResult>[]}
     * 
    */
-    goSub(request, context) {
+    goSub(context, request) {
 
         context.histories.forword(request)
-        context.states.goSub()
 
-        const { workflowSteps, workflowId } = context.workflows.goSub()
-        return this._startWorkflow(workflowSteps, workflowId)
+        context.resolver.resolveGoSubworkflowProcess()
+
+        const workflowSteps = ensureArray(context.workflows.goSub(context, context.states.now.get(), request))
+        const results = []
+        for (const workflowStep of workflowSteps) {
+            if (!workflowStep.context.states.controll.getExecuteMode(false)) {
+                workflowStep.context.states.controll.setExecuteMode('go')
+
+            }
+            results.push(Promise.resolve({ context: workflowStep.context }))
+
+        }
+        return results
+
     }
     /**
      * @param {any} workflowSteps
      * @param {any} workflowId
      */
-    _startWorkflow(workflowSteps, workflowId) {
+    _startWorkflow(workflowSteps, workflowId = undefined) {
         /**
        * @type { import("../workflow/plugin/protocol").WorkflowSteps }
        */
         const ensuredWorkfloSteps = ensureArray(workflowSteps)
         const results = []
+
 
         for (const workflowStep of ensuredWorkfloSteps) {
             workflowStep.context.states.now.update({ workflow: { id: workflowId } })
@@ -211,28 +223,45 @@ class SequenceDispatcherBase extends AbstractDispatcher {
 
 
     }
+
     /**
     * 
     * @param {*} request
-    * @param { import("../states/protocol").Context < any, any >} context
+    * @param { import("../states/protocol").Context} context
     * @returns { Promise < import("./protocol").StepResult >[] }
     * 
    */
 
-    returnFromSub(request, context) {
+    returnFromSub(context, request) {
         context.histories.forword(request)
-        const ensuredSteps = ensureArray(context.workflows.returnFromSub(context, request))
-        const workflowSteps = []
-        for (const workflowStep of ensuredSteps) {
-            workflowStep.callback = context.states.controll.getCallback()
-            workflowSteps.push(workflowStep)
+        const { workflowState, subworkflowState } = context.resolver.resolveReturnFromSubworkflowProcess()
+        const workflowSteps = ensureArray(context.workflows.returnFromSub(workflowState, subworkflowState, context, request))
+        const results = []
+        for (const workflowStep of workflowSteps) {
+            if (!workflowStep.context.states.controll.getExecuteMode(false)) {
+                workflowStep.context.states.controll.setExecuteMode('callback')
+
+            }
+            results.push(Promise.resolve({ context: workflowStep.context }))
 
         }
-        return this._runExecutor(workflowSteps, request, null, true)
+        return results
+
+
+
 
 
 
     }
+
+    /**
+     * @param {any} context
+     * @param {any} request
+     */
+    callback(context, request) {
+        context.histories.forword(request)
+    }
+
 
 
 
@@ -290,19 +319,19 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         return proms
     }
     /**
-     * @param {{[k in string]:import("../../protocol/executor/protocol").ExecutorFunction}} executorId
+     * @param {any} executorId
      * @param {string} callback
      * @param {any} request
      * @param {import("../context/index.cjs").Context<any, any>} context
      * @returns {Promise<import("./protocol").StepResult>}
      */
-    async _call(executorId, callback, request, context) {
+    async _call(executorId, callback, context, request) {
         if (typeof executorId === 'undefined' || executorId === null) {
             return { context }
         }
-        const { configure, plugin } = context.executors.getConfigureAndPlugin(executorId)
+        const { options: configure, executor } = context.executors.getOptionsAndExecutor(executorId)
 
-        await plugin[callback].call(request, context, configure)
+        await executor[callback].call(context, request, configure)
         return { context }
 
     }

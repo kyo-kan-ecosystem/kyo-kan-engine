@@ -34,7 +34,7 @@ class WorkflowsContext {
     }
 
     /**
-     * @param {import("../states/protocol").StateType} state
+     * @param {import("./protocol").WorkflowStateMember} state
     */
     getWorkflow(state) {
 

@@ -12,7 +12,7 @@ class AbstractDispatcher {
      * @param {*} context
      * @param {any} request
      */
-    start(request, context) {
+    start(context, request) {
 
     }
 
@@ -21,7 +21,7 @@ class AbstractDispatcher {
      * @param {*} context
      * @param {any} request
      */
-    resume(request, context) {
+    resume(context, request) {
 
     }
 
@@ -31,7 +31,7 @@ class AbstractDispatcher {
      * @param {any} request
      * @param {any} context
      */
-    wait(request, context) {
+    wait(context, request) {
 
     }
 
@@ -41,7 +41,7 @@ class AbstractDispatcher {
      * @param {any} request
      * @param {any} context
      */
-    go(request, context) {
+    go(context, request) {
 
     }
 
@@ -50,7 +50,7 @@ class AbstractDispatcher {
      * @param {any} request
      * @param {any} context
      */
-    goSub(request, context) {
+    goSub(context, request) {
 
     }
     /**
@@ -58,7 +58,16 @@ class AbstractDispatcher {
      * @param {any} request
      * @param {any} context
      */
-    returnFromSub(request, context) {
+    returnFromSub(context, request) {
+
+    }
+
+    /**
+     * @abstract
+     * @param {any} context
+     * @param {any} request
+     */
+    callback(context, request) {
 
     }
     /**
@@ -66,7 +75,7 @@ class AbstractDispatcher {
      * @param {any} request
      * @param {any} context
      */
-    end(request, context) {
+    end(context, request) {
 
     }
     /**
@@ -74,27 +83,16 @@ class AbstractDispatcher {
      * @param {any} request
      * @param {any} context
      */
-    back(request, context) {
+    back(context, request) {
 
     }
     /**
      * @param {any} request
      * @param {any} context
      */
-    reset(request, context) {
+    reset(context, request) {
 
     }
-
-
-    /**
-     * @abstract
-     * @param {any} request
-     * @param {any} context
-     */
-    rewindWorkflow(request, context) {
-
-    }
-
 
 
     /**
@@ -102,7 +100,18 @@ class AbstractDispatcher {
      * @param {any} request
      * @param {any} context
      */
-    rewindReturn(request, context) {
+    rewindWorkflow(context, request) {
+
+    }
+
+
+
+    /**
+     * @abstract
+     * @param {any} request
+     * @param {any} context
+     */
+    rewindReturn(context, request) {
 
     }
 

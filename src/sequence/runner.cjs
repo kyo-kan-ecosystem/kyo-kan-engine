@@ -63,8 +63,8 @@ class SequenceRunner {
         }
 
         else {
-            /**
-          
+
+
             /**
              * @type {import("../context/index.cjs").Context<any, any>}
              */
@@ -90,11 +90,11 @@ class SequenceRunner {
 
 
 
-            if (context.eq(this._context) === true) {
+            if (context === this._context) {
 
 
                 // @ts-ignore
-                const proms = this.dispatcher[executeMode].call(this.dispatcher, this._request, this._context)
+                const proms = this.dispatcher[executeMode].call(this.dispatcher, this._context, this._request)
                 if (proms instanceof Promise) {
                     proms.then(this._processPromises)
                 }
@@ -131,6 +131,7 @@ class SequenceRunner {
      * @param {Promise<any>[]} proms 
      */
     _processPromises(proms) {
+
 
         for (const prom of proms) {
             prom.then(this.run)

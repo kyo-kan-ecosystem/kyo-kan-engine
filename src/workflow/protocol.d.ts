@@ -9,7 +9,7 @@ export type WorkflowState<StateType = any, InitDataType = any> = {
 
 }
 
-export type WorkflowStateember = {
+export type WorkflowStateMember = {
     workflow?: WorkflowState
 
 }

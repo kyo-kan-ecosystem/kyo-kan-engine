@@ -21,6 +21,24 @@ class ContextResolver {
 
 
     }
+    /**
+     * 
+     * @param {*} workflowId
+     * @param {*} subworkflowInit  
+     */
+    resolveGoSubworkflowProcess(workflowId = undefined, subworkflowInit = undefined) {
+        const id = workflowId || this.resolveSubworkflowId()
+        this._context.states.now.push({ workflow: { id } })
+        this._context.bords.push(subworkflowInit || this._context.states.controll.getSubworkflowInit())
+
+    }
+    resolveReturnFromSubworkflowProcess() {
+        const subworkflowState = this._context.states.pop()
+        const workflowState = this._context.states.pop()
+        return { workflowState, subworkflowState }
+
+
+    }
 
 
 }

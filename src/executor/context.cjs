@@ -51,7 +51,7 @@ class ExecutorsContext {
         if (name === null || typeof name === 'undefined') {
             throw new SubworkflowNameIsInvalidError(name)
         }
-        const subWorkflowMap = this.getConfigure(configureId).subworkflowMap || {}
+        const subWorkflowMap = this.getOptions(configureId).subworkflowMap || {}
         if (name in subWorkflowMap === false) {
             throw new SubworkflowNameDoesNotExistsError(name)
         }
@@ -66,7 +66,7 @@ class ExecutorsContext {
      * @param {any} configureId
      * @returns {import("./protocol").ExecutorConfigureFormatType}
      */
-    getConfigure(configureId) {
+    getOptions(configureId) {
         const configure = this._pluginConfiguresRepositry.get(configureId)
         if (configure === null || typeof configure === 'undefined') {
             throw new ConfigureDoesNotExistsError(configureId)
@@ -77,7 +77,7 @@ class ExecutorsContext {
      * @param {any} pluginId
      * @returns
      */
-    getPlugin(pluginId) {
+    getExecutorPlugin(pluginId) {
         const plugin = this._pluginsRepositry.get(pluginId)
         if (plugin === null || typeof plugin === 'undefined') {
             throw new PluginDoesNotExistsError(pluginId)
@@ -87,16 +87,16 @@ class ExecutorsContext {
     /**
      * @param {any} configureId
      */
-    getConfigureAndPlugin(configureId) {
+    getOptionsAndExecutor(configureId) {
 
-        const configure = this.getConfigure(configureId) || {}
-        if ('plugin' in configure.plugin === false || configure.plugin === null) {
-            throw new PlugidDoesNotSetInConfigureError(configureId, configure)
+        const options = this.getOptions(configureId) || {}
+        if ('plugin' in options.plugin === false || options.plugin === null) {
+            throw new PlugidDoesNotSetInConfigureError(configureId, options)
 
         }
 
-        const plugin = this.getPlugin(configure.plugin)
-        return { configure, plugin }
+        const executor = this.getExecutorPlugin(options.plugin)
+        return { options, executor }
 
 
 
@@ -114,13 +114,13 @@ class ExecutorsContext {
     }
     getBootPlugins() {
         /**
-         * @type {{configure:any, plugin:any}[]}
+         * @type {{options:any, executor:any}[]}
          */
         const results = []
         const bootPluginConfigures = this._bootConfigureRepositry.getDatas()
         for (const configure of bootPluginConfigures) {
-            const plugin = this.getPlugin(configure.plugin)
-            results.push({ configure, plugin })
+            const executor = this.getExecutorPlugin(configure.plugin)
+            results.push({ options: configure.options, executor })
         }
         return results
 
@@ -131,7 +131,7 @@ class ExecutorsContext {
      * @param {string | number} subworkflowName
      */
     getSubworkflowId(configureId, subworkflowName) {
-        const configure = this.getConfigure(configureId)
+        const configure = this.getOptions(configureId)
         if (!configure.subworkflowMap || subworkflowName in configure.subworkflowMap === false) {
 
             throw new SubworkflowNameDoesNotExistsError(subworkflowName)
