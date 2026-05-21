@@ -1,4 +1,4 @@
-const { ContextResolver } = require("./resolver/index.cjs")
+const { ContextBridgeResolver } = require("./resolver/index.cjs")
 const { Bords } = require("../bords/bords.cjs")
 const { Histories } = require("./histories.cjs")
 const { Repositries } = require("./repositries.cjs")
@@ -20,7 +20,7 @@ const { ExecutorsContext } = require("../executor/context.cjs")
  *      workflows: typeof WorkflowsContext,
  *      histories: typeof Histories,
  *      executors: typeof ExecutorsContext,
- *      resolver: typeof ContextResolver   
+ *      resolver: typeof ContextBridgeResolver   
  * }} ContextClasses
  */
 /**
@@ -33,7 +33,7 @@ const DEFUALT_CLASSES = {
     workflows: WorkflowsContext,
     histories: Histories,
     executors: ExecutorsContext,
-    resolver: ContextResolver
+    resolver: ContextBridgeResolver
 
 
 }
@@ -49,8 +49,8 @@ const DEFUALT_CLASSES = {
  * 
  * @template  {import("./protocol").MaybeForkType} [ReporterType=any]
  * @template  {import("./protocol").MaybeForkTypeMap} [ContextFunctionsType=any]
- * @template  {ContextResolver}[ResolverType=ContextResolver]
- * @implements {ContextDataInterFace}
+ * @template  {ContextBridgeResolver}[ResolverType=ContextBridgeResolver]
+ * @implements ContextDataInterFace
  */
 class Context {
     /**

@@ -1,6 +1,6 @@
 
 
-class ContextResolver {
+class ContextBridgeResolver {
     /**
      * @type {import("../protocol").ContextDataInterFace}
      */
@@ -26,15 +26,20 @@ class ContextResolver {
      * @param {*} workflowId
      * @param {*} subworkflowInit  
      */
-    resolveGoSubworkflowProcess(workflowId = undefined, subworkflowInit = undefined) {
+    resolveGoSubProcess(workflowId = undefined, subworkflowInit = undefined) {
         const id = workflowId || this.resolveSubworkflowId()
         this._context.states.now.push({ workflow: { id } })
         this._context.bords.push(subworkflowInit || this._context.states.controll.getSubworkflowInit())
 
     }
-    resolveReturnFromSubworkflowProcess() {
-        const subworkflowState = this._context.states.pop()
-        const workflowState = this._context.states.pop()
+    resolveReturnFromSubProcess() {
+
+
+        const subworkflowState = this._context.states.pop().get()
+        const workflowState = this._context.states.now.get()
+
+        this._context.bords.returnFromSub()
+
         return { workflowState, subworkflowState }
 
 
@@ -43,4 +48,4 @@ class ContextResolver {
 
 }
 
-module.exports = { ContextResolver }
+module.exports = { ContextBridgeResolver }

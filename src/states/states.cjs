@@ -32,9 +32,8 @@ class States extends StackTree {
     }
 
 
-    returnFromSub() {
-        return this.pop()
-    }
+
+
     isStart() {
         return this.now.get()?.isStart === true
 

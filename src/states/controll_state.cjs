@@ -114,6 +114,7 @@ class ControllState {
      */
     goSub(subworkflowName, subworkflowInit = null) {
         this.setExecuteMode('goSub')
+        this.setControll('subworkflowName', subworkflowName)
 
         this.setControll('subworkflowInit', subworkflowInit || {})
 

@@ -92,13 +92,11 @@ class Bords extends StackTree {
         const item = this.now.get()
         return item.subworkflow
     }
-    pop() {
+    returnFromSub() {
         const nowId = this.getBranchId()
         const name = this._nameMap[nowId]
-        /**
-         * @type {{workflow:any}}
-         */
-        const item = super.pop()
+
+        const item = this.now.pop() || {}
 
 
         /**

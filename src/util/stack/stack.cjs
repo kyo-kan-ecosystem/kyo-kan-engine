@@ -85,6 +85,7 @@ class Stack {
         }
         if (isFullOverWrite === true) {
 
+            // @ts-ignore
             this._items[this._items.length - 1] = upData
         }
         else {
@@ -129,8 +130,7 @@ class Stack {
 /**
 
  * @template {Stack} BranchClass
- * 
- *
+ *  
  */
 class StackTree {
     /**
@@ -407,7 +407,7 @@ class StackTree {
      * @param {Object} [param0={}] 
      * @param {boolean} [param0.checkIsTop=true] 
      * @param {boolean} [param0.autoreturn=true] 
-     * 
+     * @returns {BranchClass}
      */
     pop(checkIsTop = true) {
         const ret = this._branches[this._branchId].pop() || {}
