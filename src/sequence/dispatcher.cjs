@@ -201,8 +201,8 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     /**
     * 
     * @param {*} request
-    * @param { import("../states/protocol").Context} context
-    * @returns { Promise < import("./protocol").StepResult >[] }
+    * @param {import("../states/protocol").Context} context
+    * @returns {Promise <import("./protocol").StepResult>[]}
     * 
    */
 
@@ -238,11 +238,42 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         return results
     }
     /**
-     * @param {any} context
+     * 
+    *  @param {import("../states/protocol").Context} context
      * @param {any} request
      */
     callback(context, request) {
         context.histories.forword(request)
+        const workflowSteps = context.workflows.now(context, context.states.now.get(), request)
+        const proms = this._runExecutor(workflowSteps, request, true)
+        const results = []
+        for (const prom of proms) {
+            prom.then(this._updateExecuteMode)
+            results.push(prom)
+
+        }
+        return results
+
+
+
+    }
+    /**
+     * 
+     * @param {import("./protocol").StepResult} stepresult 
+     */
+    _updateExecuteMode(stepresult) {
+        if (stepresult === false) {
+            return stepresult
+        }
+        if (stepresult.context.states.controll.getExecuteMode() === 'callback') {
+
+            stepresult.context.states.controll.setExecuteMode('go')
+
+
+        }
+        return stepresult
+
+
     }
 
 
@@ -294,7 +325,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         const _workflowSteps = isEnsured === true ? workflowSteps : ensureArray(workflowSteps)
         for (const workflowStep of _workflowSteps) {
 
-            const _callback = workflowStep.callback || defaultCallback
+            const _callback = workflowStep.context.states.controll.getCallback() || defaultCallback
 
             const prom = this._call(workflowStep.executor, _callback, request, workflowStep.context)
             proms.push(prom)

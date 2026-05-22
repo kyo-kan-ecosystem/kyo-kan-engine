@@ -45,7 +45,7 @@ export type WorflowConcurrentPluginCnfigure = {
 export type WorkflowStep<ContextType = Context<any, any>> = {
     context: ContextType,
     executor?: any,
-    callback?: any
+
 }
 
 export type WorkflowSteps<ContextType = Context<any, any>> = WorkflowStep<ContextType>[]
