@@ -18,15 +18,18 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     async start(context, request) {
 
         await this._boot(context, request)
+        context.states.setNotStart()
         context.histories.forword(request)
+
         const workflowSteps = context.workflows.start(context, context.states.now.get(), request)
         const results = this._runEnterFunction(context, request, workflowSteps)
-        context.states.setNotStart()
+
         return results
 
 
 
     }
+
     /**
      * 
      * @param {*} request 
@@ -248,7 +251,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         const proms = this._runExecutor(workflowSteps, request, true)
         const results = []
         for (const prom of proms) {
-            prom.then(this._updateExecuteMode)
+            prom.then(this._afterCallbackMode)
             results.push(prom)
 
         }
@@ -261,7 +264,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * 
      * @param {import("./protocol").StepResult} stepresult 
      */
-    _updateExecuteMode(stepresult) {
+    _afterCallbackMode(stepresult) {
         if (stepresult === false) {
             return stepresult
         }
@@ -278,13 +281,14 @@ class SequenceDispatcherBase extends AbstractDispatcher {
 
 
 
+    /**
+     * 
+     * @param {import("../states/protocol").Context} context
+     * @param {any} request
+    */
 
-
-    back(context, state, repsponse) {
-        const _request = context.back()
-        const backWorkflow = context.workflows.getCurrentWorkflow();
-        const backExecuteFunc = backWorkflow.back(context);
-        funcsArray.push(backExecuteFunc);
+    back(context, request) {
+        context.histories.back()
 
     }
     rewindWorkflow() {
