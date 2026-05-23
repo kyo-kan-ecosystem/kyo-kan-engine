@@ -18,13 +18,12 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     async start(context, request) {
 
         await this._boot(context, request)
-        context.states.setNotStart()
         context.histories.forword(request)
 
         const workflowSteps = context.workflows.start(context, context.states.now.get(), request)
-        const results = this._runEnterFunction(context, request, workflowSteps)
+        return this._workflowStepsToPromise(workflowSteps, 'go')
 
-        return results
+
 
 
 
@@ -85,9 +84,15 @@ class SequenceDispatcherBase extends AbstractDispatcher {
             await this._boot(context, request)
             context.states.setNotBoot()
         }
-        const workflowSteps = context.workflows.now(context, context.states.now.get(), request)
-        const defaultCallback = context.repositries.configures.engine.get().executor.enterFunc
-        return this._runExecutor(workflowSteps, request, defaultCallback)
+        context.states.controll.setExecuteMode('callback')
+        if (context.states.controll.checkCallback() === false) {
+            context.states.controll.setCallback(context.repositries.configures.engine.get().executor.enterFunc)
+
+        }
+        return [Promise.resolve({ context })]
+
+
+
 
 
 
@@ -103,6 +108,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     */
     wait(context, request) {
         context.histories.forword(request)
+        context.resolver.resolvePassToResumeProcess()
 
 
         return [Promise.resolve(false)]

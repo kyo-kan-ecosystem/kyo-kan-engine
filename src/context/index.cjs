@@ -184,13 +184,13 @@ class Context {
         this._branches = datas?.branches || {}
 
 
-        this._countRef = datas?._countRef || { n: 0 };
+        this._countRef = datas?._countRef || { n: 0 }
         this._linkMap = datas?._linkMap || {}
 
         if (datas === null || !datas.states) {
             this._branchId = this._createIdMap()
 
-            this.states.now.push({ isStart: true })
+            this.resolver.resolveStartProcess()
 
 
 

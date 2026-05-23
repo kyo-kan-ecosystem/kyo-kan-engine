@@ -69,22 +69,8 @@ class SequenceRunner {
              * @type {import("../context/index.cjs").Context<any, any>}
              */
             const context = stepResult?.context || this._context
-            let executeMode
-            if (stepResult === null) {
-                if (this._context.states.isStart() === false) {
+            const executeMode = context.states.controll.getExecuteMode()
 
-                    executeMode = this._context.repositries.configures.engine.get().sequence.resume
-
-                }
-                else {
-                    executeMode = this._context.repositries.configures.engine.get().sequence.start
-                }
-
-            }
-            else {
-
-                executeMode = context.states.controll.getExecuteMode()
-            }
 
 
 

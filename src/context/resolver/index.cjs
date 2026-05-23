@@ -44,6 +44,24 @@ class ContextBridgeResolver {
 
 
     }
+    resolveStartProcess() {
+        const rootWorkflow = this._context.repositries.configures.engine.get().root.workflow
+        this._context.states.now.update({ workflow: { id: rootWorkflow } })
+        this._context.states.controll.setExecuteMode('start')
+
+
+    }
+    resolvePassToResumeProcess() {
+        this._context.states.controll.setExecuteMode('resume')
+
+
+
+    }
+    resolveFromeResumeToPassProcess() {
+        const callbackMode = this._context.repositries.configures.engine.get().sequence.resume
+
+    }
+
 
 
 }

@@ -87,8 +87,15 @@ class ControllState {
         this.setControll('callback', callback)
 
     }
+
     getCallback() {
-        return this.getControll('callback', false)
+
+        return this.getControll('callback')
+    }
+    checkCallback() {
+        const callback = this.getControll('callback', false)
+        return callback !== null && typeof callback !== 'undefined'
+
     }
 
     /**

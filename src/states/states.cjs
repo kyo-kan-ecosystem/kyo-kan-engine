@@ -14,10 +14,7 @@ class States extends StackTree {
      * @type {ControllStateType}
      */
     controll
-    /**
-     * @type {boolean}
-     */
-    _isStart
+
 
     /**
      * @type {boolean}
@@ -34,10 +31,6 @@ class States extends StackTree {
     constructor(initData = null, id = null, branchClass = StateBranch, controllClass = ControllState) {
         super(initData, id, branchClass)
         this.controll = new controllClass(this)
-        const isInitDataVoid = initData === null || typeof initData === 'undefined'
-        const isIdVoid = id == null || typeof id === 'undefined'
-
-        this._isStart = isInitDataVoid && isIdVoid
 
         this._isBoot = false
 
@@ -45,10 +38,6 @@ class States extends StackTree {
 
 
     }
-
-
-
-
     isStart() {
         return this._isStart
 
@@ -57,17 +46,17 @@ class States extends StackTree {
         this._isStart = false
     }
     setBoot() {
-        this.now.update({ isBoot: true })
-    }
-    setIsBoot() {
-        this.now.update({ isBoot: true })
+        this._isBoot = true
     }
     isBoot() {
-        return this.now.get()?.isBoot === true
+        return this._isBoot
     }
+
     setNotBoot() {
-        this.now.update({ isBoot: false })
+        this._isBoot = false
     }
+
+
 
 
 }
