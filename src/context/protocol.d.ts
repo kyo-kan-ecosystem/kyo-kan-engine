@@ -2,7 +2,7 @@ import type { States } from "../states/states.cjs"
 import type { Bords } from "../bords/bords.cjs"
 import type { Repositries } from "./repositries.cjs"
 import type { WorkflowsContext } from "../workflow/context.cjs"
-import type { Histories } from "./histories.cjs"
+import type { Histories } from "../history/context.cjs"
 import type { ExecutorsContext } from "../executor/context.cjs"
 export type StackTrees = {
     states: States,

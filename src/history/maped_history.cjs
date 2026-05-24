@@ -96,7 +96,10 @@ class MapedHistory {
 
 
     }
+    getNowLength() {
+        return this._branchLogs[this._branchId].length
 
+    }
     /**
      * Creates a new log entry with a unique ID and a reference count of 1.
      * This is an internal method used by `addNewLog`.
@@ -332,6 +335,20 @@ class MapedHistory {
         }
 
         return result
+    }
+    /**
+     * 
+     * @param {number} backStep 
+     * @returns 
+     */
+    getBackLog(backStep = 0) {
+        const length = this.getNowLength()
+
+        if (length <= backStep) {
+            return false
+
+        }
+        return this._branchLogs[this._branchId][length - backStep - 1]
     }
     /**
      * Creates a new `MapedHistory` instance with forked history.

@@ -1,6 +1,6 @@
 const { ContextBridgeResolver } = require("./resolver/index.cjs")
 const { Bords } = require("../bords/bords.cjs")
-const { Histories } = require("./histories.cjs")
+const { HistoriesContext: Histories } = require("../history/context.cjs")
 const { Repositries } = require("./repositries.cjs")
 const { States } = require("../states/states.cjs")
 const { WorkflowsContext } = require("../workflow/context.cjs")
@@ -253,21 +253,7 @@ class Context {
 
 
 
-    returnFromSub() {
 
-        this.bords.pop()
-        this.states.pop()
-        const nowBranch = this._branches[this._branchId]
-
-        if (this.bords.getBranchId() !== nowBranch.bords || this.states.getBranchId() !== nowBranch.states) {
-            const linkedBranchId = this._linkMap[this._branchId]
-            this.setBranchId(linkedBranchId)
-            this.histories.setBranchId(this._branches[this._branchId].histories)
-
-
-        }
-
-    }
     /**
      * 
      * @param {*} branchId 

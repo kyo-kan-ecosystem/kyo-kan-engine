@@ -409,7 +409,7 @@ class StackTree {
      * @param {boolean} [param0.autoreturn=true] 
      * @returns {BranchClass}
      */
-    pop(checkIsTop = true) {
+    returnFromSub(checkIsTop = true) {
         const ret = this._branches[this._branchId].pop() || {}
 
         if (this.isEmptyNow() === true) {

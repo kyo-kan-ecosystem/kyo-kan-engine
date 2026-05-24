@@ -1,8 +1,8 @@
-const { RequestHistory } = require('../history/request.cjs');
-const { StateHistory } = require('../history/state.cjs');
-const { BordGlobalHistory } = require('../history/bords/global.cjs');
-const { BordCurrentWorkflowHistory } = require('../history/bords/current_workflow.cjs');
-const { BordSubWorkflowHistory } = require('../history/bords/sub_workflow.cjs');
+const { RequestHistory } = require('./request.cjs');
+const { StateHistory } = require('./state.cjs');
+const { BordGlobalHistory } = require('./bords/global.cjs');
+const { BordCurrentWorkflowHistory } = require('./bords/current_workflow.cjs');
+const { BordSubWorkflowHistory } = require('./bords/sub_workflow.cjs');
 
 /**
  * @typedef {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} BranchIdMapType
@@ -28,18 +28,27 @@ const DEFAULT_HISTORY_CLASSES = {
         currentWorkflow: BordCurrentWorkflowHistory
     }
 }
-
 /**
- * @typedef {{state?:any, request?:any, bords?:{global?:any, subWorkflow?:any, currentWorkflow:any}}} HistoryInit
+ * @typedef {{n:number}} CountRef
+ */
+/**
+ * @typedef {{
+ *      state?:any, 
+ *      request?:any, 
+ *      bords?:{global:any, subWorkflow:any, currentWorkflow:any},
+ *      countRef?:CountRef
+ * }} HistoryInits
  */
 
 
 /**
- * @typedef {import('./states/states.cjs').StatesType} States 
+ * @typedef {Required<HistoryInits>} HistoryInheritance
+ */
+/**
+ * @typedef {import('../states/states.cjs').StatesType} States 
  * @typedef {import("../bords/bords.cjs").Bords} Bords 
  */
-
-class Histories {
+class HistoriesContext {
 
 
     /**
@@ -64,7 +73,7 @@ class Histories {
 
 
     /**
-     * @type {import('./states/states.cjs').StatesType}
+     * @type {import('../states/states.cjs').StatesType}
      * 
      */
     _statesTree
@@ -76,28 +85,46 @@ class Histories {
 
 
     /**
+     * @type {CountRef}
+     */
+    _countRef
+
+    /**
+     * @type {HistoryClasses}
+     */
+    _historyClasses
+
+    /**
      * 
-     * @param {import('./protocol').StackTrees} stackTrees     * 
-     * @param {HistoryInit | false | null} historyInit
+     * @param {import('../context/protocol').StackTrees} stackTrees  
+     * @param {HistoryInits?} historyInit
+     * @param {HistoryInheritance?} historyInheritance 
      * @param {HistoryClasses?} historyClasses  
      */
-    constructor(stackTrees, historyInit = null, historyClasses = null) {
-        this._statesTree = stackTrees.states;
-        this._bordsTree = stackTrees.bords;
+    constructor(stackTrees, historyInit = null, historyInheritance = null, historyClasses = null) {
+        this._statesTree = stackTrees.states
+        this._bordsTree = stackTrees.bords
+        this._historyClasses = historyClasses || DEFAULT_HISTORY_CLASSES
 
-        if (historyInit === false) {
+        if (historyInheritance != null) {
+            this.state = historyInheritance.state
+            this.request = historyInheritance.request
+            this.bords = historyInheritance.bords
+            this._countRef = historyInheritance.countRef
             return
 
         }
-        const _historyInit = historyInit || {}
+
+
         const _historyClasses = historyClasses || DEFAULT_HISTORY_CLASSES
-        this.state = new _historyClasses.state(_historyInit.state)
-        this.request = new _historyClasses.request(_historyInit.request)
+        this.state = new _historyClasses.state(historyInit?.state)
+        this.request = new _historyClasses.request(historyInit?.request)
+        this._countRef = { n: 0 }
 
         this.bords = {
-            global: new _historyClasses.bords.global(_historyInit.bords?.global),
-            currentWorkflow: new _historyClasses.bords.currentWorkflow(_historyInit.bords?.currentWorkflow),
-            subWorkflow: new _historyClasses.bords.subWorkflow(_historyInit.bords?.subWorkflow)
+            global: new _historyClasses.bords.global(historyInit?.bords?.global),
+            currentWorkflow: new _historyClasses.bords.currentWorkflow(historyInit?.bords?.currentWorkflow),
+            subWorkflow: new _historyClasses.bords.subWorkflow(historyInit?.bords?.subWorkflow)
         }
 
 
@@ -140,7 +167,7 @@ class Histories {
         }
         this._applyHistoryToTrees
         /**
-         * @type {{log?:{mode:import('../states/protocol').ExecuteMode}, depth?:number}}
+         * @type {{log?:{mode:import('../sequence/protocol').ExecuteMode}, depth?:number}}
          */
         const headState = this.state.getBranchHead() || {}
         if (headState.log?.mode === 'wait') {
@@ -224,37 +251,40 @@ class Histories {
 
     /**
      * @param {{state?:any, request?:any, bords?:{global?:any, currentWorkflow?:any,subWorkflow?:any}}?} ids 
-     * @param {import('./protocol').StackTrees?} stackTrees
+     * @param {import('../context/protocol').StackTrees?} stackTrees
      * @param {null | true | number} [step=null]  
-     * 
+     * @returns {this}
      */
     fork(ids = null, stackTrees = null, step = null) {
 
         const _ids = ids || {}
         /**
-         * @type {import('./protocol').StackTrees}
+         * @type {import('../context/protocol').StackTrees}
          */
         const _stackTrees = stackTrees || { bords: this._bordsTree, states: this._statesTree }
+
+
+
         /**
-         * @type {Histories}
+         * @type {HistoryInheritance}
          */
-        // @ts-ignore
-        const newHistories = new this.constructor(_stackTrees, false)
-        /**
-         * @type {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}}
-         */
-        const histories = {
+        const inheritance = {
             state: this.state.fork(_ids.state, step),
             request: this.request.fork(_ids.request, step),
             bords: {
                 global: this.bords.global.fork(_ids.bords?.global, step),
                 currentWorkflow: this.bords.currentWorkflow.fork(_ids.bords?.currentWorkflow, step),
                 subWorkflow: this.bords.subWorkflow.fork(_ids.bords?.subWorkflow, step)
-            }
+            },
+            countRef: this._countRef
         }
+        /**
+         * @type {this}
+         */
+        // @ts-ignore
+        const newHistories = new this.constructor(_stackTrees, null, inheritance, this._historyClasses)
 
 
-        newHistories.setHistories(histories)
         return newHistories
 
     }
@@ -271,19 +301,7 @@ class Histories {
         this.bords.subWorkflow.setBranchId(branchIdMap.bords.subWorkflow)
 
     }
-    /**
-     * 
-     * @param {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} histories 
-     */
-    setHistories(histories) {
-        this.state = histories.state
-        this.request = histories.request
 
-        this.bords.global = histories.bords.global
-        this.bords.currentWorkflow = histories.bords.currentWorkflow
-        this.bords.subWorkflow = histories.bords.subWorkflow
-
-    }
     getBranchId() {
         const historyIds = {
             state: this.state.getBranchId(),
@@ -315,4 +333,4 @@ class Histories {
 
     }
 }
-module.exports = { Histories }
+module.exports = { HistoriesContext }
