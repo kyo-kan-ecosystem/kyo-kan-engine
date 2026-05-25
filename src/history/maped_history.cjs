@@ -2,31 +2,39 @@ const deepmerge = require("deepmerge")
 const equal = require('fast-deep-equal');
 
 /**
- * @typedef {{log:any, count:number}} Log
- * @typedef {{[k in any]:Log}} Logs
- * @typedef {{id:any, depth:number}} BranchLogItem
- * @typedef {BranchLogItem[]} BranchLog
- * @typedef {{[key in any]:BranchLog}} BranchLogs
- * @typedef {{history:number, branch:number}} CountRef
- * @typedef {{[k in any]:{branchId:any, step:number}}} LinkMap
- * @typedef {{[k in any]:{branchId:any, branchOutStep:any}}} BranchOutMap
- * @typedef {{[k in any]:number}} LinkedCounts
- * @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, linkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap}} SerializedHistoryData
- * @typedef {{log:any, depth:number}} BranchHead
- * 
- */
+ * @template [LogT=any]
+ * @typedef {{log:LogT, count:number}} Log
+ * */
+/**
+  @template [LogT=any] 
+* @typedef {{[k in any]:Log<LogT>}} Logs
+* /
+/** 
+* @typedef {{id:any, depth:number}} BranchLogItem
+* @typedef {BranchLogItem[]} BranchLog
+* @typedef {{[key in any]:BranchLog}} BranchLogs
+* @typedef {{history:number, branch:number}} CountRef
+* @typedef {{[k in any]:{branchId:any, step:number}}} LinkMap
+* @typedef {{[k in any]:{branchId:any, branchOutStep:any}}} BranchOutMap
+* @typedef {{[k in any]:number}} LinkedCounts
+* @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, linkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap}} SerializedHistoryData
+* @typedef {{log:any, depth:number}} BranchHead
+* 
+*/
 
 /**
  * Manages a history of states organized into branches, similar to a version control system.
  * It stores logs (states) in a map and tracks which log belongs to which step in a branch's history.
  * This allows for efficient storage by reusing identical states across different branches or history points.
  * Multiple instances can share the same underlying data store, allowing for lightweight branching ('forking').
+ * 
+ * @template [LogType=any]
  */
 class MapedHistory {
     /**
      * A map storing the actual log data and its reference count.
      * @protected
-     * @type {Logs} 
+     * @type {Logs<LogType>} 
      */
     _logs;
 
@@ -338,6 +346,14 @@ class MapedHistory {
     }
     /**
      * 
+     * @param {*} id 
+     * @returns 
+     */
+    _getLog(id) {
+        return this._logs[id]
+    }
+    /**
+     * 
      * @param {number} backStep 
      * @returns 
      */
@@ -348,7 +364,10 @@ class MapedHistory {
             return false
 
         }
-        return this._branchLogs[this._branchId][length - backStep - 1]
+        const { id, depth } = this._branchLogs[this._branchId][length - backStep - 1]
+        const log = this._getLog(id)
+        return { log, depth }
+
     }
     /**
      * Creates a new `MapedHistory` instance with forked history.
@@ -460,7 +479,7 @@ class MapedHistory {
      * @param {any} [branchId] - The ID of the sub branch. Defaults to the current instance's branch ID.
      * @returns {any | undefined} The super branch ID, or undefined if it's a root branch.
      */
-    getsuperBranchId(branchId) {
+    getSuperBranchId(branchId) {
         const _branchId = branchId || this._branchId
         return this._linkMap[_branchId]
     }
@@ -491,6 +510,8 @@ class MapedHistory {
  * An extension of `MapedHistory` that uses deep equality to compare log states.
  * It also ensures that all added logs are deep-cloned to prevent external mutations
  * from affecting the history.
+ * @template [LogType=any]
+ * @extends MapedHistory<LogType> 
  */
 class MapedHistoryDeepEqual extends MapedHistory {
     /**

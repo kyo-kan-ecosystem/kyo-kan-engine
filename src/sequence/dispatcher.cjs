@@ -84,7 +84,9 @@ class SequenceDispatcherBase extends AbstractDispatcher {
             await this._boot(context, request)
             context.states.setNotBoot()
         }
-        context.states.controll.setExecuteMode('callback')
+        context.resolver.resolvePassToResumeProcess()
+        context.histories.forword(request)
+
         if (context.states.controll.checkCallback() === false) {
             context.states.controll.setCallback(context.repositries.configures.engine.get().executor.enterFunc)
 

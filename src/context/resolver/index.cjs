@@ -35,7 +35,7 @@ class ContextBridgeResolver {
     resolveReturnFromSubProcess() {
 
 
-        const subworkflowState = this._context.states.pop().get()
+        const subworkflowState = this._context.states.now.pop()
         const workflowState = this._context.states.now.get()
 
         this._context.bords.returnFromSub()
@@ -52,13 +52,27 @@ class ContextBridgeResolver {
 
     }
     resolvePassToResumeProcess() {
-        this._context.states.controll.setExecuteMode('resume')
+        const callbackMode = this._context.repositries.configures.engine.get().sequence.resume
+        this._context.states.controll.setExecuteMode(callbackMode)
 
 
 
     }
-    resolveFromeResumeToPassProcess() {
-        const callbackMode = this._context.repositries.configures.engine.get().sequence.resume
+    resolveResumeToPassProcess() {
+        const callbackMode = this._context.repositries.configures.engine.get().sequence.callback
+        this._context.states.controll.setExecuteMode(callbackMode)
+
+
+    }
+    resolveBackForWait() {
+        let backStep = 0
+        let log = this._context.histories.state.getBackLog(backStep)
+        while (log !== false) {
+            backStep++
+            log.
+                log = this._context.histories.state.getBackLog(backStep)
+
+        }
 
     }
 
