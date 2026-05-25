@@ -1,4 +1,4 @@
-const { MapedHistoryDeepEqual } = require("../maped_history.cjs");
+const { MapedHistoryDeepEqual } = require("../../history/maped_history.cjs");
 
 class BordSubWorkflowHistory extends MapedHistoryDeepEqual { }
 

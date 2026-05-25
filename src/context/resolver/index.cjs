@@ -64,17 +64,7 @@ class ContextBridgeResolver {
 
 
     }
-    resolveBackForWait() {
-        let backStep = 0
-        let log = this._context.histories.state.getBackLog(backStep)
-        while (log !== false) {
-            backStep++
-            log.
-                log = this._context.histories.state.getBackLog(backStep)
 
-        }
-
-    }
 
 
 

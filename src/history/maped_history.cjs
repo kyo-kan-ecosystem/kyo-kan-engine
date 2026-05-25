@@ -365,8 +365,8 @@ class MapedHistory {
 
         }
         const { id, depth } = this._branchLogs[this._branchId][length - backStep - 1]
-        const log = this._getLog(id)
-        return { log, depth }
+        const item = this._getLog(id)
+        return { log: item.log, depth }
 
     }
     /**

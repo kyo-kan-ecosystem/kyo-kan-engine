@@ -1,8 +1,8 @@
 const { RequestHistory } = require('./request.cjs');
-const { StateHistory } = require('./state.cjs');
-const { BordGlobalHistory } = require('./bords/global.cjs');
-const { BordCurrentWorkflowHistory } = require('./bords/current_workflow.cjs');
-const { BordSubWorkflowHistory } = require('./bords/sub_workflow.cjs');
+const { StateHistory } = require('../states/history.cjs');
+const { BordGlobalHistory } = require('../bords/history/global.cjs');
+const { BordCurrentWorkflowHistory } = require('../bords/history/current_workflow.cjs');
+const { BordSubWorkflowHistory } = require('../bords/history/sub_workflow.cjs');
 
 /**
  * @typedef {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} BranchIdMapType
