@@ -3,7 +3,9 @@ const { MapedHistoryDeepEqual } = require("../history/maped_history.cjs");
  * @extends MapedHistoryDeepEqual<import("./protocol").StateType>
  */
 class StateHistory extends MapedHistoryDeepEqual {
-    backToWait() {
+
+
+    getStepNearestWait() {
 
         let backStep = 0
         let entry = this.getBackLog(backStep)
@@ -27,6 +29,42 @@ class StateHistory extends MapedHistoryDeepEqual {
 
 
     }
+    getStepOfStart() {
+
+        let backStep = 0
+        let entry = this.getBackLog(backStep)
+        let waitStep = -1
+
+
+        while (entry !== false) {
+
+            if (entry.log.controlls?.executeMode === 'goSub' || entry.log.controlls?.executeMode === 'start') {
+
+                if (waitStep < 0) {
+                    return false
+                }
+                return waitStep
+
+
+            }
+
+            if (entry.log.controlls?.executeMode === 'wait') {
+                waitStep = backStep
+
+            }
+
+            backStep++
+            entry = this.getBackLog(backStep)
+
+
+
+        }
+
+        return false
+
+
+    }
+
 
 }
 
