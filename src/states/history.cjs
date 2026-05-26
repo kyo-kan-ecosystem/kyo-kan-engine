@@ -9,10 +9,16 @@ class StateHistory extends MapedHistoryDeepEqual {
 
         let backStep = 0
         let entry = this.getBackLog(backStep)
+        if (entry === false) {
+            return false
+        }
+        const targetDepth = entry.depth
+
+
         while (entry !== false) {
             backStep++
 
-            if (entry.log.controlls?.executeMode === 'wait') {
+            if (entry.log.controlls?.executeMode === 'wait' && backStep > 1 && entry.depth <= targetDepth) {
                 entry = this.getBackLog(backStep)
                 if (entry === false) {
                     return false

@@ -568,4 +568,4 @@ class MapedHistoryDeepEqual extends MapedHistory {
 
 
 
-module.exports = { MapedHistory, MapedHistoryDeepEqual };
+module.exports = { MapedHistory, MapedHistoryDeepEqual }
