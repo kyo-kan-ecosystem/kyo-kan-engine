@@ -240,5 +240,13 @@ class HistoriesContext {
         }
 
     }
+    switchHistory(step) {
+        const stateIds = this.state.switchHistory(step)
+        const requestIds = this.request.switchHistory(step)
+        const globslBordIds = this.bords.global.switchHistory(step)
+        const currentWorkflowBordIds = this.bords.currentWorkflow.switchHistory(step)
+        const subWorkflowBordIds = this.bords.subWorkflow.switchHistory(step)
+
+    }
 }
 module.exports = { HistoriesContext }

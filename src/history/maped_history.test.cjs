@@ -42,7 +42,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(h._countRef).to.deep.equal(initData.countRef);
             // @ts-ignore
-            expect(h._linkMap).to.deep.equal(initData.linkMap);
+            expect(h._reverseLinkMap).to.deep.equal(initData.linkMap);
             // @ts-ignore
             expect(h._linkedCounts).to.deep.equal(initData.linkedCounts);
         });
@@ -258,7 +258,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(serialized.countRef).to.not.equal(history._countRef);
             // @ts-ignore
-            expect(serialized.linkMap).to.not.equal(history._linkMap);
+            expect(serialized.reverseLinkMap).to.not.equal(history._reverseLinkMap);
             // @ts-ignore
             expect(serialized.linkedCounts).to.not.equal(history._linkedCounts);
 
@@ -270,7 +270,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(serialized.countRef).to.deep.equal(history._countRef);
             // @ts-ignore
-            expect(serialized.linkMap).to.deep.equal(history._linkMap);
+            expect(serialized.reverseLinkMap).to.deep.equal(history._reverseLinkMap);
             // @ts-ignore
             expect(serialized.linkedCounts).to.deep.equal(history._linkedCounts);
 
@@ -279,7 +279,7 @@ describe('MapedHistory', () => {
             serialized.branchLogs[0][0].id = 99;
             serialized.countRef.n = 99;
             // @ts-ignore
-            serialized.linkMap[forked._branchId] = 99;
+            serialized.reverseLinkMap[forked._branchId] = 99;
             serialized.linkedCounts[0] = 99;
 
             // @ts-ignore
@@ -289,7 +289,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(history._countRef.history).to.equal(2); // 1 for log, 1 for branch
             // @ts-ignore
-            expect(history._linkMap[forked._branchId]).to.equal(0);
+            expect(history._reverseLinkMap[forked._branchId]).to.equal(0);
             // @ts-ignore
             expect(history._linkedCounts[0]).to.equal(1);
         });
@@ -326,7 +326,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(history._branchLogs[forkedBranchId]).to.exist;
             // @ts-ignore
-            expect(history._linkMap[forkedBranchId]).to.exist;
+            expect(history._reverseLinkMap[forkedBranchId]).to.exist;
 
             history.removeBranch(forkedBranchId);
 
@@ -334,7 +334,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(history._branchLogs[forkedBranchId]).to.not.exist;
             // @ts-ignore
-            expect(history._linkMap[forkedBranchId]).to.not.exist;
+            expect(history._reverseLinkMap[forkedBranchId]).to.not.exist;
         });
 
         it('getLinkedCount() should return 0 for branches with no children or non-existent branches', () => {

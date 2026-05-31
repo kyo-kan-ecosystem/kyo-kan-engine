@@ -42,9 +42,14 @@ class StateHistory extends MapedHistoryDeepEqual {
         let waitStep = -1
 
 
+        if (entry === false) {
+            return false
+        }
+        const targetDepth = entry.depth
+
         while (entry !== false) {
 
-            if (entry.log.controlls?.executeMode === 'goSub' || entry.log.controlls?.executeMode === 'start') {
+            if ((entry.log.controlls?.executeMode === 'goSub' && entry.depth < targetDepth) || (entry.log.controlls?.executeMode === 'start' && entry.depth === 0)) {
 
                 if (waitStep < 0) {
                     return false
@@ -70,6 +75,7 @@ class StateHistory extends MapedHistoryDeepEqual {
 
 
     }
+
 
 
 }

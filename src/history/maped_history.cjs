@@ -9,6 +9,8 @@ const equal = require('fast-deep-equal');
   @template [LogT=any] 
 * @typedef {{[k in any]:Log<LogT>}} Logs
 * /
+
+
 /** 
 * @typedef {{id:any, depth:number}} BranchLogItem
 * @typedef {BranchLogItem[]} BranchLog
@@ -17,7 +19,7 @@ const equal = require('fast-deep-equal');
 * @typedef {{[k in any]:{branchId:any, step:number}}} LinkMap
 * @typedef {{[k in any]:{branchId:any, branchOutStep:any}}} BranchOutMap
 * @typedef {{[k in any]:number}} LinkedCounts
-* @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, linkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap}} SerializedHistoryData
+* @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, reverseLinkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap}} SerializedHistoryData
 * @typedef {{log:any, depth:number}} BranchHead
 * 
 */
@@ -66,7 +68,7 @@ class MapedHistory {
      * @protected
      * @type {LinkMap}
     */
-    _linkMap
+    _reverseLinkMap
 
     /**
      * A map to count the number of sub branches for a given branch.
@@ -96,7 +98,7 @@ class MapedHistory {
         this._logs = _initData.logs || {}
         this._branchLogs = _initData.branchLogs || {}
         this._countRef = _initData.countRef || { history: 0, branch: 0 }
-        this._linkMap = _initData.linkMap || {}
+        this._reverseLinkMap = _initData.reverseLinkMap || {}
         this._linkedCounts = _initData.linkedCounts || {}
         this._branchOutMap = _initData.branchOutMap || {}
         this._branchId = 0;
@@ -338,7 +340,7 @@ class MapedHistory {
             logs: deepmerge({}, this._logs),
             branchLogs: deepmerge({}, this._branchLogs),
             countRef: Object.assign({}, this._countRef),
-            linkMap: Object.assign({}, this._linkMap),
+            reverseLinkMap: Object.assign({}, this._reverseLinkMap),
             linkedCounts: Object.assign({}, this._linkedCounts)
         }
 
@@ -359,14 +361,42 @@ class MapedHistory {
      */
     getBackLog(backStep = 0) {
         const length = this.getNowLength()
+        /**
+         * @type{BranchLogItem}
+         */
+        let logItem
+        let branchId = this._branchId
+        let step
+
 
         if (length <= backStep) {
-            return false
+
+            if (this._branchId in this._reverseLinkMap === false) {
+                return false
+            }
+            const { branchId: _branchId, step: _step } = this._reverseLinkMap[this._branchId]
+            step = this._branchLogs[_branchId].length - _step - 1 - backStep + length
+            if (step < 0) {
+                return false
+            }
+            logItem = this._branchLogs[_branchId][step]
+            branchId = _branchId
+
+
+
+
+
 
         }
-        const { id, depth } = this._branchLogs[this._branchId][length - backStep - 1]
-        const item = this._getLog(id)
-        return { log: item.log, depth }
+        else {
+            step = length - backStep - 1
+            logItem = this._branchLogs[this._branchId][step]
+
+        }
+
+        const { id, depth } = logItem
+        const logEntity = this._getLog(id)
+        return { log: logEntity.log, depth, branchId }
 
     }
     /**
@@ -382,11 +412,10 @@ class MapedHistory {
 
         let _branchId = branchId;
         if (!branchId && branchId !== 0) {
-            _branchId = this._countRef.branch;
-            initData.countRef.branch += 1;
+            _branchId = this._getId()
             if (step == null) {
 
-                initData.linkMap[_branchId] = { branchId: this._branchId, step: this.getStep() }
+                initData.reverseLinkMap[_branchId] = { branchId: this._branchId, step: this.getStep() }
                 initData.linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
             }
             else {
@@ -407,7 +436,7 @@ class MapedHistory {
                     }
 
                 }
-                initData.linkMap[_branchId] = { branchId: this._branchId, step: _step }
+                initData.reverseLinkMap[_branchId] = { branchId: this._branchId, step: _step }
 
 
 
@@ -421,6 +450,28 @@ class MapedHistory {
         result.setBranchId(_branchId)
         return result;
 
+    }
+    /**
+     * 
+     * @param {*} fromId 
+     * @param {*} step 
+     */
+    switchHistory(fromId, step) {
+        const prevHistories = this._branchLogs[fromId].slice(0, step)
+        const newId = this._getId()
+        this._branchLogs[newId] = prevHistories
+        this._reverseLinkMap[newId] = { branchId: fromId, step }
+        this.setBranchId(newId)
+        return newId
+
+
+
+
+    }
+    _getId() {
+        const id = this._countRef.branch;
+        this._countRef.branch += 1;
+        return id
     }
     /**
      * Branch out history.     
@@ -450,12 +501,12 @@ class MapedHistory {
             throw new Error(`branchId ${_branchId} is not found`);
 
         }
-        const superId = this._linkMap[_branchId].branchId;
+        const superId = this._reverseLinkMap[_branchId].branchId;
         if (superId in this._linkedCounts) {
             this._linkedCounts[superId] -= 1
         }
         delete this._branchLogs[_branchId]
-        delete this._linkMap[_branchId]
+        delete this._reverseLinkMap[_branchId]
     }
     /**
      * Gets the number of sub branches forked from a given branch.
@@ -481,7 +532,7 @@ class MapedHistory {
      */
     getSuperBranchId(branchId) {
         const _branchId = branchId || this._branchId
-        return this._linkMap[_branchId]
+        return this._reverseLinkMap[_branchId]
     }
     /**
      * 
@@ -495,15 +546,12 @@ class MapedHistory {
      * @returns {Required<SerializedHistoryData>}
      */
     getReferenceData() {
-        return { logs: this._logs, branchLogs: this._branchLogs, countRef: this._countRef, linkedCounts: this._linkedCounts, linkMap: this._linkMap, branchOutMap: this._branchOutMap }
+        return { logs: this._logs, branchLogs: this._branchLogs, countRef: this._countRef, linkedCounts: this._linkedCounts, reverseLinkMap: this._reverseLinkMap, branchOutMap: this._branchOutMap }
     }
 
-    /**
-     * 
-     */
-    clone() {
 
-    }
+
+
 
 }
 /**
