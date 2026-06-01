@@ -362,11 +362,12 @@ class MapedHistory {
     getBackLog(backStep = 0) {
         const length = this.getNowLength()
         /**
-         * @type{BranchLogItem}
+         * @type {BranchLogItem}
          */
         let logItem
         let branchId = this._branchId
         let step
+
 
 
         if (length <= backStep) {
@@ -374,18 +375,13 @@ class MapedHistory {
             if (this._branchId in this._reverseLinkMap === false) {
                 return false
             }
-            const { branchId: _branchId, step: _step } = this._reverseLinkMap[this._branchId]
-            step = this._branchLogs[_branchId].length - _step - 1 - backStep + length
+            const { branchId: _branchId, step: branchOutStep } = this._reverseLinkMap[this._branchId]
+            step = branchOutStep - (backStep - (length - 1))
             if (step < 0) {
                 return false
             }
             logItem = this._branchLogs[_branchId][step]
             branchId = _branchId
-
-
-
-
-
 
         }
         else {

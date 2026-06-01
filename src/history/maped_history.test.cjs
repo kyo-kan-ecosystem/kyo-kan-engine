@@ -1,39 +1,49 @@
 // @ts-ignore
 const { expect } = require('chai');
 // @ts-ignore
+// @ts-ignore
 const sinon = require('sinon');
 const { MapedHistory, MapedHistoryDeepEqual } = require('./maped_history.cjs');
 
+// @ts-ignore
 describe('MapedHistory', () => {
     /**
      * @type {MapedHistory}
      */
     let history;
 
+    // @ts-ignore
     beforeEach(() => {
         history = new MapedHistory();
     });
 
+    // @ts-ignore
     describe('Constructor', () => {
+        // @ts-ignore
         it('should initialize with empty logs and default branchId 0', () => {
             // @ts-ignore
             expect(history._logs).to.deep.equal({});
             // @ts-ignore
             expect(history._branchLogs).to.deep.equal({});
             // @ts-ignore
-            expect(history._countRef).to.deep.equal({ n: 0 });
+            expect(history._countRef).to.deep.equal({ branch: 0, history: 0 });
             // @ts-ignore
             expect(history._branchId).to.equal(0);
         });
 
+        // @ts-ignore
         it('should initialize with provided data', () => {
+            /**
+             * @type {import('./maped_history.cjs').SerializedHistoryData}
+             */
             const initData = {
                 logs: { '0': { log: { a: 1 }, count: 1 } },
                 branchLogs: { '0': [{ id: 0, depth: 0 }] },
-                countRef: { n: 1 },
-                linkMap: { '1': 0 },
+                countRef: { branch: 1, history: 1 },
+                reverseLinkMap: { 1: { branchId: 1, step: 1 } },
                 linkedCounts: { '0': 1 }
             };
+            // @ts-ignore
             const h = new MapedHistory(initData);
             // @ts-ignore
             expect(h._logs).to.deep.equal(initData.logs);
@@ -42,13 +52,15 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(h._countRef).to.deep.equal(initData.countRef);
             // @ts-ignore
-            expect(h._reverseLinkMap).to.deep.equal(initData.linkMap);
+            expect(h._reverseLinkMap).to.deep.equal(initData.reverseLinkMap);
             // @ts-ignore
             expect(h._linkedCounts).to.deep.equal(initData.linkedCounts);
         });
     });
 
+    // @ts-ignore
     describe('add / addNewLog', () => {
+        // @ts-ignore
         it('should add a new log and update branch history', () => {
             const data = { message: 'hello' };
             const id = history.addNewLog(data, 0, 0);
@@ -62,13 +74,16 @@ describe('MapedHistory', () => {
             expect(history._branchLogs[0]).to.deep.equal([{ id: 0, depth: 0 }]);
         });
 
+        // @ts-ignore
         it('should throw an error if branchId is not provided and not set', () => {
             history.setBranchId(null);
             expect(() => history.addNewLog({ a: 1 }, 0)).to.throw('branchId  is not defined');
         });
     });
 
+    // @ts-ignore
     describe('addNonUpdateLog', () => {
+        // @ts-ignore
         it('should add a reference to an existing log', () => {
             const data = { message: 'initial' };
             const id = history.addNewLog(data, 0, 0);
@@ -86,21 +101,27 @@ describe('MapedHistory', () => {
             ]);
         });
 
+        // @ts-ignore
         it('should throw an error if branch does not exist', () => {
             expect(() => history.addNonUpdateLog(0, 0, 99)).to.throw('branchId 99 is not found');
         });
     });
 
+    // @ts-ignore
     describe('forward', () => {
+        // @ts-ignore
         it('should add a new log if branch is empty', () => {
             const data = { a: 1 };
             const id = history.forward(data, 0, 0);
             expect(id).to.equal(0);
             const head = history.getBranchHead(0);
+            // @ts-ignore
             expect(head.log).to.deep.equal(data);
+            // @ts-ignore
             expect(head.depth).to.equal(0);
         });
 
+        // @ts-ignore
         it('should add a new log if data is different (reference check)', () => {
             const data1 = 'hello';
             const data2 = 'world';
@@ -109,12 +130,15 @@ describe('MapedHistory', () => {
 
             expect(id2).to.equal(1);
             const head = history.getBranchHead(0);
+            // @ts-ignore
             expect(head.log).to.equal('world');
+            // @ts-ignore
             expect(head.depth).to.equal(1);
             // @ts-ignore
             expect(history._branchLogs[0].length).to.equal(2);
         });
 
+        // @ts-ignore
         it('should add a non-update log if data is the same (reference check)', () => {
             const data1 = 'hello';
             history.forward(data1, 0, 0);
@@ -128,15 +152,20 @@ describe('MapedHistory', () => {
         });
     });
 
+    // @ts-ignore
     describe('back', () => {
+        // @ts-ignore
         beforeEach(() => {
             history.forward('step 1', 0, 0);
             history.forward('step 2', 1, 0);
         });
 
+        // @ts-ignore
         it('should go back one step and decrement log count', () => {
             let head = history.getBranchHead(0);
+            // @ts-ignore
             expect(head.log).to.equal('step 2');
+            // @ts-ignore
             expect(head.depth).to.equal(1);
 
             const { removedLogItem, logExist } = history.back(0);
@@ -144,12 +173,15 @@ describe('MapedHistory', () => {
             expect(removedLogItem).to.deep.equal({ id: 1, depth: 1 });
             expect(logExist).to.be.true;
             head = history.getBranchHead(0);
+            // @ts-ignore
             expect(head.log).to.equal('step 1');
+            // @ts-ignore
             expect(head.depth).to.equal(0);
             // @ts-ignore
             expect(history._logs[1].count).to.equal(0); // count is decremented
         });
 
+        // @ts-ignore
         it('should delete log from _logs if count becomes 0', () => {
             // @ts-ignore
             expect(history._logs[1]).to.exist;
@@ -158,6 +190,7 @@ describe('MapedHistory', () => {
             expect(history._logs[1]).to.not.exist;
         });
 
+        // @ts-ignore
         it('should handle multiple references correctly', () => {
             // Add a reference to 'step 1'
             history.forward('step 1', 2, 0);
@@ -182,6 +215,7 @@ describe('MapedHistory', () => {
             expect(history._logs[0]).to.not.exist; // Now it should be deleted
         });
 
+        // @ts-ignore
         it('should throw an error if trying to back on an empty branch', () => {
             history.back(0);
             history.back(0);
@@ -189,21 +223,28 @@ describe('MapedHistory', () => {
         });
     });
 
+    // @ts-ignore
     describe('fork', () => {
+        // @ts-ignore
         let forkedHistory;
 
+        // @ts-ignore
         beforeEach(() => {
             history.forward({ data: 'original' }, 0, 0);
             forkedHistory = history.fork(1); // Fork to new branch '1'
         });
 
+        // @ts-ignore
         it('should create a new instance with a different branchId', () => {
+            // @ts-ignore
             expect(forkedHistory).to.be.an.instanceof(MapedHistory);
+            // @ts-ignore
             expect(forkedHistory._branchId).to.equal(1);
             // @ts-ignore
             expect(history._branchId).to.equal(0);
         });
 
+        // @ts-ignore
         it('should share internal data structures by reference', () => {
             // @ts-ignore
             expect(forkedHistory._logs).to.equal(history._logs);
@@ -213,8 +254,10 @@ describe('MapedHistory', () => {
             expect(forkedHistory._countRef).to.equal(history._countRef);
         });
 
+        // @ts-ignore
         it('should reflect changes from the forked instance in the original', () => {
             // Add a log in the forked history
+            // @ts-ignore
             forkedHistory.forward({ data: 'forked' }, 0); // Uses its branchId '1'
 
             // Check both histories
@@ -227,24 +270,32 @@ describe('MapedHistory', () => {
 
             // The original branch should be unaffected
             const head = history.getBranchHead(0);
+            // @ts-ignore
             expect(head.log).to.deep.equal({ data: 'original' });
+            // @ts-ignore
             expect(head.depth).to.equal(0);
         });
 
+        // @ts-ignore
         it('should reflect changes from the original instance in the forked one', () => {
             // Add a log in the original history
             history.forward({ data: 'original_new' }, 1); // Uses its branchId '0'
 
             // Check both histories
+            // @ts-ignore
             expect(forkedHistory._countRef.n).to.equal(2);
+            // @ts-ignore
             expect(forkedHistory._logs[1]).to.deep.equal({ log: { data: 'original_new' }, count: 1 });
 
             // The forked branch should not exist yet in the shared logs
+            // @ts-ignore
             expect(forkedHistory.getBranchHead(1, false)).to.be.null;
         });
     });
 
+    // @ts-ignore
     describe('getSerializedData', () => {
+        // @ts-ignore
         it('should return a deep copy of the data including branch links', () => {
             history.forward({ a: { b: 1 } }, 0, 0);
             const forked = history.fork(); // creates branch 1 from 0
@@ -275,11 +326,15 @@ describe('MapedHistory', () => {
             expect(serialized.linkedCounts).to.deep.equal(history._linkedCounts);
 
             // Modify the copy and check if the original is unchanged
+            // @ts-ignore
             serialized.logs[0].log.a.b = 99;
+            // @ts-ignore
             serialized.branchLogs[0][0].id = 99;
+            // @ts-ignore
             serialized.countRef.n = 99;
             // @ts-ignore
             serialized.reverseLinkMap[forked._branchId] = 99;
+            // @ts-ignore
             serialized.linkedCounts[0] = 99;
 
             // @ts-ignore
@@ -295,12 +350,15 @@ describe('MapedHistory', () => {
         });
     });
 
+    // @ts-ignore
     describe('Branching (fork, remove, counts)', () => {
+        // @ts-ignore
         beforeEach(() => {
             history.setBranchId(0);
             history.forward('data 0', 0);
         });
 
+        // @ts-ignore
         it('fork() should create a new branch linked to the parent', () => {
             // @ts-ignore
             const parentBranchId = history._branchId;
@@ -311,10 +369,12 @@ describe('MapedHistory', () => {
             const newBranchId = forkedHistory._branchId;
 
             expect(newBranchId).to.not.equal(parentBranchId);
+            // @ts-ignore
             expect(history.getParentBranchId(newBranchId)).to.equal(parentBranchId);
             expect(history.getLinkedCount(parentBranchId)).to.equal(1);
         });
 
+        // @ts-ignore
         it('removeBranch() should delete a branch and update parent link count', () => {
             // @ts-ignore
             const parentBranchId = history._branchId;
@@ -337,6 +397,7 @@ describe('MapedHistory', () => {
             expect(history._reverseLinkMap[forkedBranchId]).to.not.exist;
         });
 
+        // @ts-ignore
         it('getLinkedCount() should return 0 for branches with no children or non-existent branches', () => {
             expect(history.getLinkedCount(0)).to.equal(0); // No children yet
             const forked = history.fork();
@@ -346,25 +407,30 @@ describe('MapedHistory', () => {
             expect(history.getLinkedCount(999)).to.equal(0); // Non-existent branch
         });
 
+        // @ts-ignore
         it('getParentBranchId() should return the parent ID', () => {
             const forked = history.fork();
             // @ts-ignore
             expect(history.getParentBranchId(forked._branchId)).to.equal(0);
+            // @ts-ignore
             expect(history.getParentBranchId(0)).to.be.undefined; // Root branch
         });
     });
 });
 
+// @ts-ignore
 describe('MapedHistoryDeepEqual', () => {
     /**
      * @type {MapedHistoryDeepEqual}
      */
     let history;
 
+    // @ts-ignore
     beforeEach(() => {
         history = new MapedHistoryDeepEqual();
     });
 
+    // @ts-ignore
     it('addNewLog should return the new log ID', () => {
         const data = { message: 'test' };
         const id = history.addNewLog(data, 0, 0);
@@ -372,12 +438,15 @@ describe('MapedHistoryDeepEqual', () => {
         expect(history.getBranchHeadId(0)).to.equal(0);
     });
 
+    // @ts-ignore
     it('should correctly clone Date objects to prevent mutation', () => {
         const date = new Date();
         history.addNewLog({ time: date }, 0, 0);
 
         const head = history.getBranchHead(0);
+        // @ts-ignore
         expect(head.log.time).to.be.an.instanceof(Date);
+        // @ts-ignore
         expect(head.log.time.getTime()).to.equal(date.getTime());
 
         // Mutate original date
@@ -385,11 +454,15 @@ describe('MapedHistoryDeepEqual', () => {
 
         // The log in history should not be affected
         const newHead = history.getBranchHead(0);
+        // @ts-ignore
         expect(newHead.log.time.getFullYear()).to.not.equal(1999);
+        // @ts-ignore
         expect(newHead.log.time.getTime()).to.not.equal(date.getTime());
     });
 
+    // @ts-ignore
     describe('forward with _checkEqual override', () => {
+        // @ts-ignore
         it('should use deep equality for comparison', () => {
             const data1 = { user: { id: 1, name: 'A' } };
             const data2 = { user: { id: 1, name: 'A' } }; // Same value, different reference
@@ -411,7 +484,9 @@ describe('MapedHistoryDeepEqual', () => {
             // @ts-ignore
             expect(history._branchLogs[0].length).to.equal(2);
             let head = history.getBranchHead(0);
+            // @ts-ignore
             expect(head.log).to.deep.equal(data1);
+            // @ts-ignore
             expect(head.depth).to.equal(1);
 
             // 3. Forward with a different object
@@ -422,7 +497,9 @@ describe('MapedHistoryDeepEqual', () => {
             // @ts-ignore
             expect(history._branchLogs[0].length).to.equal(3);
             head = history.getBranchHead(0);
+            // @ts-ignore
             expect(head.log).to.deep.equal(data3);
+            // @ts-ignore
             expect(head.depth).to.equal(2);
         });
     });
