@@ -43,21 +43,18 @@ class MapedHistory {
     /**
      * A map where keys are branch IDs and values are arrays of log items,
      * representing the history of each branch.
-     * @protected
      * @type {BranchLogs}
      */
 
     _branchLogs;
     /**
      * The ID of the currently active branch for this instance.
-     * @protected
      * @type {any}
      */
     _branchId
     /**
      * A shared counter object to generate unique log IDs.
      * Shared across forked instances.
-     * @protected
      * @type {CountRef}
      */
     _countRef
@@ -65,7 +62,6 @@ class MapedHistory {
     /**
      * A map to track the super-sub relationship between branches.
      * Key: sub branch ID, Value: super branch ID.
-     * @protected
      * @type {LinkMap}
     */
     _reverseLinkMap
@@ -73,7 +69,6 @@ class MapedHistory {
     /**
      * A map to count the number of sub branches for a given branch.
      * Key: super branch ID, Value: number of subren.
-     * @protected
      * @type {LinkedCounts}
     */
     _linkedCounts
@@ -82,7 +77,7 @@ class MapedHistory {
     /**
      * A map to record history line branch.
      * Key: branch     
-     * @protected
+     
      * @type {BranchOutMap}
      */
     _branchOutMap
@@ -398,11 +393,11 @@ class MapedHistory {
     /**
      * Creates a new `MapedHistory` instance with forked history.
      *
-     * @param {any} [branchId] - The ID for the new branch. If not provided, a new unique ID is generated.
+     * @param {any} [branchId=null] - The ID for the new branch. If not provided, a new unique ID is generated.
      * @param {number| true?} [step=null] - Flag + Branch out step. if null, super-sub style branch out. if number, whole history branch out  
      * @returns {this} A new `MapedHistory` instance pointing to the new branch.
      */
-    fork(branchId, step = null) {
+    fork(branchId = null, step = null) {
 
         const initData = this.getReferenceData()
 

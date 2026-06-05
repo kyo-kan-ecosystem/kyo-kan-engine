@@ -76,7 +76,7 @@ describe('MapedHistory', () => {
 
         // @ts-ignore
         it('should throw an error if branchId is not provided and not set', () => {
-            history.setBranchId(null);
+            history._branchId = null
             expect(() => history.addNewLog({ a: 1 }, 0)).to.throw('branchId  is not defined');
         });
     });
@@ -123,15 +123,15 @@ describe('MapedHistory', () => {
 
         // @ts-ignore
         it('should add a new log if data is different (reference check)', () => {
-            const data1 = 'hello';
-            const data2 = 'world';
+            const data1 = { 1: 'hello' };
+            const data2 = { 2: 'world' };
             history.forward(data1, 0, 0);
             const id2 = history.forward(data2, 1, 0);
 
             expect(id2).to.equal(1);
             const head = history.getBranchHead(0);
             // @ts-ignore
-            expect(head.log).to.equal('world');
+            expect(head.log).to.deep.equal(data2);
             // @ts-ignore
             expect(head.depth).to.equal(1);
             // @ts-ignore
@@ -140,7 +140,7 @@ describe('MapedHistory', () => {
 
         // @ts-ignore
         it('should add a non-update log if data is the same (reference check)', () => {
-            const data1 = 'hello';
+            const data1 = { 1: 'hello' };
             history.forward(data1, 0, 0);
             const id2 = history.forward(data1, 1, 0);
 
@@ -156,15 +156,15 @@ describe('MapedHistory', () => {
     describe('back', () => {
         // @ts-ignore
         beforeEach(() => {
-            history.forward('step 1', 0, 0);
-            history.forward('step 2', 1, 0);
+            history.forward({ 'step': '1' }, 0, 0);
+            history.forward({ 'step': '2' }, 1, 0);
         });
 
         // @ts-ignore
         it('should go back one step and decrement log count', () => {
             let head = history.getBranchHead(0);
             // @ts-ignore
-            expect(head.log).to.equal('step 2');
+            expect(head.log).to.deep.equal({ 'step': '2' });
             // @ts-ignore
             expect(head.depth).to.equal(1);
 
@@ -174,7 +174,7 @@ describe('MapedHistory', () => {
             expect(logExist).to.be.true;
             head = history.getBranchHead(0);
             // @ts-ignore
-            expect(head.log).to.equal('step 1');
+            expect(head.log).to.deep.equal({ 'step': '1' });
             // @ts-ignore
             expect(head.depth).to.equal(0);
             // @ts-ignore
