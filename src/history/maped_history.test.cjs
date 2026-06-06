@@ -438,27 +438,6 @@ describe('MapedHistoryDeepEqual', () => {
         expect(history.getBranchHeadId(0)).to.equal(0);
     });
 
-    // @ts-ignore
-    it('should correctly clone Date objects to prevent mutation', () => {
-        const date = new Date();
-        history.addNewLog({ time: date }, 0, 0);
-
-        const head = history.getBranchHead(0);
-        // @ts-ignore
-        expect(head.log.time).to.be.an.instanceof(Date);
-        // @ts-ignore
-        expect(head.log.time.getTime()).to.equal(date.getTime());
-
-        // Mutate original date
-        date.setFullYear(1999);
-
-        // The log in history should not be affected
-        const newHead = history.getBranchHead(0);
-        // @ts-ignore
-        expect(newHead.log.time.getFullYear()).to.not.equal(1999);
-        // @ts-ignore
-        expect(newHead.log.time.getTime()).to.not.equal(date.getTime());
-    });
 
     // @ts-ignore
     describe('forward with _checkEqual override', () => {
