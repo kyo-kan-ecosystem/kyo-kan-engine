@@ -16,7 +16,8 @@ const equal = require('fast-deep-equal');
 * @typedef {BranchLogItem[]} BranchLog
 * @typedef {{[key in any]:BranchLog}} BranchLogs
 * @typedef {{history:number, branch:number}} CountRef
-* @typedef {{[k in any]:{branchId:any, step:number}}} LinkMap
+* @typedef {{branchId:any, step:number}} LinkItem
+* @typedef {{[k in any]:LinkItem}} LinkMap
 * @typedef {{[k in any]:{branchId:any, branchOutStep:any}}} BranchOutMap
 * @typedef {{[k in any]:number}} LinkedCounts
 * @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, reverseLinkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap}} SerializedHistoryData
@@ -30,7 +31,7 @@ const equal = require('fast-deep-equal');
  * This allows for efficient storage by reusing identical states across different branches or history points.
  * Multiple instances can share the same underlying data store, allowing for lightweight branching ('forking').
  * 
- * @template [LogType=any]
+ * @template {import('../../protocol/index').JSONSeriaraizable}[LogType=import('../../protocol/index').JSONSeriaraizable]
  */
 class MapedHistory {
     /**
@@ -517,11 +518,11 @@ class MapedHistory {
         return this._linkedCounts[_branchId]
     }
     /**
-     * Gets the ID of the super branch for a given branch.
+     * Gets the ID and separeate step of the super branch for a given branch.
      * @param {any} [branchId] - The ID of the sub branch. Defaults to the current instance's branch ID.
-     * @returns {any | undefined} The super branch ID, or undefined if it's a root branch.
+     * 
      */
-    getSuperBranchId(branchId) {
+    getReverseLinkedBranch(branchId) {
         const _branchId = branchId || this._branchId
         return this._reverseLinkMap[_branchId]
     }
@@ -549,7 +550,7 @@ class MapedHistory {
  * An extension of `MapedHistory` that uses deep equality to compare log states.
  * It also ensures that all added logs are deep-cloned to prevent external mutations
  * from affecting the history.
- * @template [LogType=any]
+ * @template {import("../../protocol/index").JSONSeriaraizable}[LogType=import("../../protocol/index").JSONSeriaraizable]
  * @extends MapedHistory<LogType> 
  */
 class MapedHistoryDeepEqual extends MapedHistory {

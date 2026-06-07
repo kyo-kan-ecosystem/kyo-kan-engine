@@ -408,12 +408,12 @@ describe('MapedHistory', () => {
         });
 
         // @ts-ignore
-        it('getParentBranchId() should return the parent ID', () => {
+        it('getReverseLinkedBranchId() should return the parent ID', () => {
             const forked = history.fork();
-            // @ts-ignore
-            expect(history.getParentBranchId(forked._branchId)).to.equal(0);
-            // @ts-ignore
-            expect(history.getParentBranchId(0)).to.be.undefined; // Root branch
+
+            expect(history.getReverseLinkedBranch(forked._branchId)).to.equal(0);
+
+            expect(history.getReverseLinkedBranch(0)).to.be.undefined; // Root branch
         });
     });
 });
