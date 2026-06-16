@@ -1,5 +1,9 @@
+const { deepcopy } = require("../util/deepcopy.cjs")
+
+const { isVoid } = require("../util/is_void.cjs")
+
 const deepmerge = require("deepmerge")
-const equal = require('fast-deep-equal');
+const equal = require('fast-deep-equal')
 
 /**
  * @template [LogT=any]
@@ -20,7 +24,7 @@ const equal = require('fast-deep-equal');
 * @typedef {{[k in any]:LinkItem}} LinkMap
 * @typedef {{[k in any]:{branchId:any, branchOutStep:any}}} BranchOutMap
 * @typedef {{[k in any]:number}} LinkedCounts
-* @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, reverseLinkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap}} SerializedHistoryData
+* @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, reverseLinkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap, branchId:number}} SerializedHistoryData
 * @typedef {{log:any, depth:number}} BranchHead
 * 
 */
@@ -89,15 +93,24 @@ class MapedHistory {
      * If provided, the new instance can either be a deserialized state or a fork sharing data with another instance.
      */
     constructor(initData) {
+        this._countRef = initData?.countRef || { history: 0, branch: 0 }
+        if (isVoid(initData)) {
+            this._branchId = this._generateId()
+        }
+        else {
 
-        const _initData = initData || {}
-        this._logs = _initData.logs || {}
-        this._branchLogs = _initData.branchLogs || {}
-        this._countRef = _initData.countRef || { history: 0, branch: 0 }
-        this._reverseLinkMap = _initData.reverseLinkMap || {}
-        this._linkedCounts = _initData.linkedCounts || {}
-        this._branchOutMap = _initData.branchOutMap || {}
-        this._branchId = 0;
+            this._branchId = initData?.branchId
+        }
+        this._logs = initData?.logs || {}
+        this._branchLogs = initData?.branchLogs || {}
+
+        this._reverseLinkMap = initData?.reverseLinkMap || {}
+        this._linkedCounts = initData?.linkedCounts || {}
+        this._branchOutMap = initData?.branchOutMap || {}
+
+
+
+
 
 
 
@@ -120,9 +133,15 @@ class MapedHistory {
         /**
          * @type {Log}
          */
-        const log = { log: deepmerge({}, data), count: 1 }
+        const log = { log: this._copy(data), count: 1 }
         this._logs[newId] = log;
         return newId;
+    }
+    /**
+     * @param {any} data
+     */
+    _copy(data) {
+        return deepcopy(data)
     }
     /**
      * Adds a new, unique log to the history of a specific branch.
@@ -133,8 +152,8 @@ class MapedHistory {
      */
     addNewLog(data, depth, branchId = null) {
         const _branchId = branchId || this._branchId;
-        if (_branchId == null) {
-            throw new Error(`branchId  is not defined`);
+        if (isVoid(_branchId) === true) {
+            throw new Error(`branchId  is not defined`)
         }
         const newId = this.add(data)
         const branchLog = this._branchLogs[_branchId] || []
@@ -337,7 +356,8 @@ class MapedHistory {
             branchLogs: deepmerge({}, this._branchLogs),
             countRef: Object.assign({}, this._countRef),
             reverseLinkMap: Object.assign({}, this._reverseLinkMap),
-            linkedCounts: Object.assign({}, this._linkedCounts)
+            linkedCounts: Object.assign({}, this._linkedCounts),
+            branchId: this._branchId
         }
 
         return result
@@ -395,40 +415,46 @@ class MapedHistory {
      * Creates a new `MapedHistory` instance with forked history.
      *
      * @param {any} [branchId=null] - The ID for the new branch. If not provided, a new unique ID is generated.
-     * @param {number| true?} [step=null] - Flag + Branch out step. if null, super-sub style branch out. if number, whole history branch out  
+     * @param {number| true | null} [step=null] - Flag + Branch out step. if null, super-sub style branch out. if number, whole history branch out  
      * @returns {this} A new `MapedHistory` instance pointing to the new branch.
      */
     fork(branchId = null, step = null) {
 
         const initData = this.getReferenceData()
 
-        let _branchId = branchId;
-        if (!branchId && branchId !== 0) {
-            _branchId = this._getId()
-            if (step == null) {
+        initData.branchId = branchId
+        if (isVoid(initData.branchId) === true) {
+            initData.branchId = this._generateId()
+            if (isVoid(step) === true) {
 
-                initData.reverseLinkMap[_branchId] = { branchId: this._branchId, step: this.getStep() }
+                initData.reverseLinkMap[initData.branchId] = { branchId: this._branchId, step: this.getStep() }
                 initData.linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
+                // @ts-ignore
+                initData.branchLogs[initData.branchId] = initData.branchLogs[this._branchId].slice()
             }
             else {
                 let _step = 0
                 if (step === true) {
-                    initData.branchLogs[_branchId] = initData.branchLogs[this._branchId].concat()
-                    _step = initData.branchLogs[_branchId].length - 1
+                    initData.branchLogs[initData.branchId] = initData.branchLogs[this._branchId].concat()
+                    _step = initData.branchLogs[initData.branchId].length - 1
 
 
                 }
                 else {
-                    initData.branchLogs[_branchId] = initData.branchLogs[this._branchId].slice(0, step)
+                    // @ts-ignore
+                    initData.branchLogs[initData.branchId] = initData.branchLogs[this._branchId].slice(0, step)
+                    // @ts-ignore
                     if (step >= 0) {
+                        // @ts-ignore
                         _step = step
                     }
                     else {
-                        _step = Math.max(0, initData.branchLogs[_branchId].length + step)
+                        // @ts-ignore
+                        _step = Math.max(0, initData.branchLogs[initData.branchId].length + step)
                     }
 
                 }
-                initData.reverseLinkMap[_branchId] = { branchId: this._branchId, step: _step }
+                initData.reverseLinkMap[initData.branchId] = { branchId: this._branchId, step: _step }
 
 
 
@@ -439,7 +465,7 @@ class MapedHistory {
         // @ts-ignore
         const result = new this.constructor(initData)
 
-        result.setBranchId(_branchId)
+
         return result;
 
     }
@@ -450,7 +476,7 @@ class MapedHistory {
      */
     switchHistory(fromId, step) {
         const prevHistories = this._branchLogs[fromId].slice(0, step)
-        const newId = this._getId()
+        const newId = this._generateId()
         this._branchLogs[newId] = prevHistories
         this._reverseLinkMap[newId] = { branchId: fromId, step }
         this.setBranchId(newId)
@@ -460,7 +486,7 @@ class MapedHistory {
 
 
     }
-    _getId() {
+    _generateId() {
         const id = this._countRef.branch;
         this._countRef.branch += 1;
         return id
@@ -506,16 +532,9 @@ class MapedHistory {
      * @returns {number} The number of sub branches.
      */
     getLinkedCount(branchId) {
-        let _branchId = branchId;
-        if (!_branchId && branchId !== 0) {
-            _branchId = this._branchId
-        }
-        if (_branchId in this._linkedCounts === false) {
-            throw new Error(`linked count for branchId ${_branchId} is not found`);
+        let _branchId = isVoid(branchId) ? this._branchId : branchId
 
-
-        }
-        return this._linkedCounts[_branchId]
+        return this._linkedCounts[_branchId] || 0
     }
     /**
      * Gets the ID and separeate step of the super branch for a given branch.
@@ -523,7 +542,7 @@ class MapedHistory {
      * 
      */
     getReverseLinkedBranch(branchId) {
-        const _branchId = branchId || this._branchId
+        const _branchId = isVoid(branchId) ? this._branchId : branchId
         return this._reverseLinkMap[_branchId]
     }
     /**
@@ -538,7 +557,7 @@ class MapedHistory {
      * @returns {Required<SerializedHistoryData>}
      */
     getReferenceData() {
-        return { logs: this._logs, branchLogs: this._branchLogs, countRef: this._countRef, linkedCounts: this._linkedCounts, reverseLinkMap: this._reverseLinkMap, branchOutMap: this._branchOutMap }
+        return { logs: this._logs, branchLogs: this._branchLogs, countRef: this._countRef, linkedCounts: this._linkedCounts, reverseLinkMap: this._reverseLinkMap, branchOutMap: this._branchOutMap, branchId: this._branchId }
     }
 
 

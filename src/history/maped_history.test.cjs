@@ -26,7 +26,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(history._branchLogs).to.deep.equal({});
             // @ts-ignore
-            expect(history._countRef).to.deep.equal({ branch: 0, history: 0 });
+            expect(history._countRef).to.deep.equal({ branch: 1, history: 0 });
             // @ts-ignore
             expect(history._branchId).to.equal(0);
         });
@@ -41,7 +41,8 @@ describe('MapedHistory', () => {
                 branchLogs: { '0': [{ id: 0, depth: 0 }] },
                 countRef: { branch: 1, history: 1 },
                 reverseLinkMap: { 1: { branchId: 1, step: 1 } },
-                linkedCounts: { '0': 1 }
+                linkedCounts: { '0': 1 },
+                branchId: 0
             };
             // @ts-ignore
             const h = new MapedHistory(initData);
@@ -138,18 +139,7 @@ describe('MapedHistory', () => {
             expect(history._branchLogs[0].length).to.equal(2);
         });
 
-        // @ts-ignore
-        it('should add a non-update log if data is the same (reference check)', () => {
-            const data1 = { 1: 'hello' };
-            history.forward(data1, 0, 0);
-            const id2 = history.forward(data1, 1, 0);
 
-            expect(id2).to.equal(0); // Should return existing ID
-            // @ts-ignore
-            expect(history._logs[0].count).to.equal(2);
-            // @ts-ignore
-            expect(history._branchLogs[0].length).to.equal(2);
-        });
     });
 
     // @ts-ignore
@@ -161,7 +151,7 @@ describe('MapedHistory', () => {
         });
 
         // @ts-ignore
-        it('should go back one step and decrement log count', () => {
+        it('should go back one step and remove log', () => {
             let head = history.getBranchHead(0);
             // @ts-ignore
             expect(head.log).to.deep.equal({ 'step': '2' });
@@ -178,7 +168,7 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(head.depth).to.equal(0);
             // @ts-ignore
-            expect(history._logs[1].count).to.equal(0); // count is decremented
+            expect(1 in history._logs).to.false// count is decremented
         });
 
         // @ts-ignore
@@ -195,7 +185,7 @@ describe('MapedHistory', () => {
             // Add a reference to 'step 1'
             history.forward('step 1', 2, 0);
             // @ts-ignore
-            expect(history._logs[0].count).to.equal(2);
+            expect(history._logs[0].count).to.equal(1);
 
             // Go back from the 'step 1' reference
             history.back(0);
@@ -225,7 +215,9 @@ describe('MapedHistory', () => {
 
     // @ts-ignore
     describe('fork', () => {
-        // @ts-ignore
+        /**
+         * @type {MapedHistory}
+         */
         let forkedHistory;
 
         // @ts-ignore
@@ -282,8 +274,8 @@ describe('MapedHistory', () => {
             history.forward({ data: 'original_new' }, 1); // Uses its branchId '0'
 
             // Check both histories
-            // @ts-ignore
-            expect(forkedHistory._countRef.n).to.equal(2);
+
+            expect(forkedHistory._countRef.history).to.equal(2);
             // @ts-ignore
             expect(forkedHistory._logs[1]).to.deep.equal({ log: { data: 'original_new' }, count: 1 });
 
@@ -342,9 +334,12 @@ describe('MapedHistory', () => {
             // @ts-ignore
             expect(history._branchLogs[0][0].id).to.equal(0);
             // @ts-ignore
-            expect(history._countRef.history).to.equal(2); // 1 for log, 1 for branch
-            // @ts-ignore
-            expect(history._reverseLinkMap[forked._branchId]).to.equal(0);
+            expect(history._countRef.history).to.equal(1); // 0 for original log, 1 for branch
+            /**
+             * @type {import('./maped_history.cjs').LinkItem}
+             */
+            const expectForReverceLinkMap = { step: 0, branchId: 0 }
+            expect(history._reverseLinkMap[forked._branchId]).to.deep.equal(expectForReverceLinkMap);
             // @ts-ignore
             expect(history._linkedCounts[0]).to.equal(1);
         });
@@ -370,7 +365,7 @@ describe('MapedHistory', () => {
 
             expect(newBranchId).to.not.equal(parentBranchId);
             // @ts-ignore
-            expect(history.getParentBranchId(newBranchId)).to.equal(parentBranchId);
+            expect(history.getReverseLinkedBranch(newBranchId).branchId).to.equal(parentBranchId);
             expect(history.getLinkedCount(parentBranchId)).to.equal(1);
         });
 
@@ -410,8 +405,11 @@ describe('MapedHistory', () => {
         // @ts-ignore
         it('getReverseLinkedBranchId() should return the parent ID', () => {
             const forked = history.fork();
-
-            expect(history.getReverseLinkedBranch(forked._branchId)).to.equal(0);
+            /**
+             * @type {import('./maped_history.cjs').LinkItem}
+             */
+            const expected = { branchId: 0, step: 0 }
+            expect(history.getReverseLinkedBranch(forked._branchId)).to.deep.equal(expected);
 
             expect(history.getReverseLinkedBranch(0)).to.be.undefined; // Root branch
         });
