@@ -5,29 +5,7 @@ const { isVoid } = require("../util/is_void.cjs")
 const deepmerge = require("deepmerge")
 const equal = require('fast-deep-equal')
 
-/**
- * @template [LogT=any]
- * @typedef {{log:LogT, count:number}} Log
- * */
-/**
-  @template [LogT=any] 
-* @typedef {{[k in any]:Log<LogT>}} Logs
-* /
 
-
-/** 
-* @typedef {{id:any, depth:number}} BranchLogItem
-* @typedef {BranchLogItem[]} BranchLog
-* @typedef {{[key in any]:BranchLog}} BranchLogs
-* @typedef {{history:number, branch:number}} CountRef
-* @typedef {{branchId:any, step:number}} LinkItem
-* @typedef {{[k in any]:LinkItem}} LinkMap
-* @typedef {{[k in any]:{branchId:any, branchOutStep:any}}} BranchOutMap
-* @typedef {{[k in any]:number}} LinkedCounts
-* @typedef {{logs?:Logs, branchLogs?:BranchLogs, countRef?:CountRef, reverseLinkMap?:LinkMap, linkedCounts?:LinkedCounts, branchOutMap?:BranchOutMap, branchId:number}} SerializedHistoryData
-* @typedef {{log:any, depth:number}} BranchHead
-* 
-*/
 
 /**
  * Manages a history of states organized into branches, similar to a version control system.
@@ -41,14 +19,14 @@ class MapedHistory {
     /**
      * A map storing the actual log data and its reference count.
      * @protected
-     * @type {Logs<LogType>} 
+     * @type {import("./protocol").Logs<LogType>} 
      */
     _logs;
 
     /**
      * A map where keys are branch IDs and values are arrays of log items,
      * representing the history of each branch.
-     * @type {BranchLogs}
+     * @type {import("./protocol").BranchLogs}
      */
 
     _branchLogs;
@@ -60,21 +38,21 @@ class MapedHistory {
     /**
      * A shared counter object to generate unique log IDs.
      * Shared across forked instances.
-     * @type {CountRef}
+     * @type {import("./protocol").CountRef}
      */
     _countRef
 
     /**
      * A map to track the super-sub relationship between branches.
      * Key: sub branch ID, Value: super branch ID.
-     * @type {LinkMap}
+     * @type {import("./protocol").LinkMap}
     */
     _reverseLinkMap
 
     /**
      * A map to count the number of sub branches for a given branch.
      * Key: super branch ID, Value: number of subren.
-     * @type {LinkedCounts}
+     * @type {import("./protocol").LinkedCounts}
     */
     _linkedCounts
 
@@ -83,13 +61,13 @@ class MapedHistory {
      * A map to record history line branch.
      * Key: branch     
      
-     * @type {BranchOutMap}
+     * @type {import("./protocol").BranchOutMap}
      */
     _branchOutMap
 
     /**
      * Initializes a new MapedHistory instance.
-     * @param {SerializedHistoryData?} [initData] - Optional data to initialize the history from.
+     * @param {import("./protocol").SerializedHistoryData<LogType>?} [initData] - Optional data to initialize the history from.
      * If provided, the new instance can either be a deserialized state or a fork sharing data with another instance.
      */
     constructor(initData) {
@@ -131,7 +109,7 @@ class MapedHistory {
         const newId = this._countRef.history;
         this._countRef.history += 1;
         /**
-         * @type {Log}
+         * @type {import("./protocol").Log<LogType>}
          */
         const log = { log: this._copy(data), count: 1 }
         this._logs[newId] = log;
@@ -145,7 +123,7 @@ class MapedHistory {
     }
     /**
      * Adds a new, unique log to the history of a specific branch.
-     * @param {any} data - The data for the new log.
+     * @param {LogType} data - The data for the new log.
      * @param {number} depth - The depth or step in the history for this log.
      * @param {any} [branchId=null] - The ID of the branch to add the log to. Defaults to the current instance's branch ID.
      * @returns {number} The ID of the new log.
@@ -158,7 +136,7 @@ class MapedHistory {
         const newId = this.add(data)
         const branchLog = this._branchLogs[_branchId] || []
         /**
-         * @type {BranchLogItem}
+         * @type {import("./protocol").BranchLogItem}
          */
         const branchLogItem = { id: newId, depth }
         branchLog.push(branchLogItem)
@@ -187,7 +165,7 @@ class MapedHistory {
         }
 
         /**
-         * @type {BranchLogItem}
+         * @type {import("./protocol").BranchLogItem}
          */
         const branchLogItem = { id, depth }
         branchLog.push(branchLogItem)
@@ -201,7 +179,7 @@ class MapedHistory {
      * Moves the history of a branch forward with new data.
      * If the new data is identical to the current head of the branch, it adds a non-updating reference.
      * Otherwise, it adds a new log entry.
-     * @param {any} data - The data for the next state.
+     * @param {LogType} data - The data for the next state.
      * @param {number} depth - The depth for the new history step.
      * @param {any?} branchId - The ID of the branch to move forward.
      * @returns {any} The ID of the log at the new head of the branch.
@@ -259,7 +237,7 @@ class MapedHistory {
      * Retrieves the head (most recent log and its depth) of a specific branch.
      * @param {any?} [branchId] - The ID of the branch. Defaults to the current instance's branch ID.
      * @param {boolean} [isStrict=true] - If true, throws an error if the branch is not found or is empty. If false, returns null.
-     * @returns {BranchHead | null} The head of the branch, or null if not found and not in strict mode.
+     * @returns {import("./protocol").BranchHead | null} The head of the branch, or null if not found and not in strict mode.
      */
     getBranchHead(branchId, isStrict = true) {
         const _branchId = branchId || this._branchId;
@@ -277,7 +255,7 @@ class MapedHistory {
         const branchLogItem = branchLogs[branchLogs.length - 1]
         const log = this._logs[branchLogItem.id].log
         /**
-         * @type {BranchHead}
+         * @type {import("./protocol").BranchHead}
          */
         const branchHead = { log, depth: branchLogItem.depth }
         return branchHead
@@ -313,7 +291,7 @@ class MapedHistory {
      * It removes the head log item from the branch and decrements the log's reference count.
      * If the reference count drops to zero, the log data is deleted.
      * @param {any?} [branchId] - The ID of the branch to go back on. Defaults to the current instance's branch ID.
-     * @returns {{removedLogItem: BranchLogItem, logExist: boolean}} An object containing the removed history item and a flag indicating if the branch still has history.
+     * @returns {{removedLogItem: import("./protocol").BranchLogItem, logExist: boolean}} An object containing the removed history item and a flag indicating if the branch still has history.
      */
     back(branchId) {
         const _branchId = branchId || this._branchId;
@@ -345,11 +323,11 @@ class MapedHistory {
     /**
      * Returns a serializable, deep copy of the entire history state.
      * This is useful for persisting the history or transferring it.
-     * @returns {SerializedHistoryData} A deep copy of the history data.
+     * @returns {import("./protocol").SerializedHistoryData} A deep copy of the history data.
      */
     getSerializedData() {
         /**
-         * @type {SerializedHistoryData}
+         * @type {import("./protocol").SerializedHistoryData}
          */
         const result = {
             logs: deepmerge({}, this._logs),
@@ -375,10 +353,10 @@ class MapedHistory {
      * @param {number} backStep 
      * @returns 
      */
-    getBackLog(backStep = 0) {
+    getBackLog(backStep = 1) {
         const length = this.getNowLength()
         /**
-         * @type {BranchLogItem}
+         * @type {import("./protocol").BranchLogItem}
          */
         let logItem
         let branchId = this._branchId
@@ -554,7 +532,7 @@ class MapedHistory {
     }
     /**
      * 
-     * @returns {Required<SerializedHistoryData>}
+     * @returns {Required<import("./protocol").SerializedHistoryData>}
      */
     getReferenceData() {
         return { logs: this._logs, branchLogs: this._branchLogs, countRef: this._countRef, linkedCounts: this._linkedCounts, reverseLinkMap: this._reverseLinkMap, branchOutMap: this._branchOutMap, branchId: this._branchId }

@@ -79,5 +79,6 @@ class StateHistory extends MapedHistoryDeepEqual {
 
 
 }
+const t = new StateHistory()
 
 module.exports = { StateHistory }    
