@@ -60,3 +60,8 @@ export type BranchHead = {
     depth: number
 }
 
+export type BackResult<LogT = any> = {
+    log: LogT;
+    depth: number;
+    branchId: any;
+}

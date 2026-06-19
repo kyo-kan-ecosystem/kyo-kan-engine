@@ -420,7 +420,7 @@ describe('MapedHistory', function () {
         // @ts-ignore
         describe('can back if past log exist', function () {
             // @ts-ignore
-            it('should work not branched', function () {
+            it('should work if not forked', function () {
 
 
                 history.forward('test1', 0)
@@ -428,11 +428,42 @@ describe('MapedHistory', function () {
                 history.forward('test3', 0)
                 const backResult = history.getBackLog()
                 /**
-                 * 
+                 * @type {import('./protocol').BackResult}
                  */
-
+                const expectedResult = { log: 'test2', branchId: history.getBranchId(), depth: 0 }
                 expect(backResult).not.false
-                expect(backResult)
+                expect(backResult).deep.equal(expectedResult)
+            })
+            // @ts-ignore
+            it('should work if specific step set', function () {
+
+
+                history.forward('test1', 0)
+                history.forward('test2', 0)
+                history.forward('test3', 0)
+                const backResult = history.getBackLog(2)
+                /**
+                 * @type {import('./protocol').BackResult}
+                 */
+                const expectedResult = { log: 'test1', branchId: history.getBranchId(), depth: 0 }
+                expect(backResult).not.to.be.false
+                expect(backResult).deep.equal(expectedResult)
+            })
+            // @ts-ignore
+            it('should handle forked', function () {
+
+
+                history.forward('test1', 0)
+                const forked = history.fork()
+                forked.forward('test2', 0)
+                forked.forward('test3', 0)
+                const backResult = forked.getBackLog(2)
+                /**
+                 * @type {import('./protocol').BackResult}
+                 */
+                const expectedResult = { log: 'test1', branchId: forked.getBranchId(), depth: 0 }
+                expect(backResult).not.to.be.false
+                expect(backResult).deep.equal(expectedResult)
             })
 
         })
@@ -505,4 +536,12 @@ describe('MapedHistoryDeepEqual', function () {
             expect(head.depth).to.equal(2);
         });
     });
+    // @ts-ignore
+    describe('branchOutHistory', function () {
+        // @ts-ignore
+        it('', function () {
+            history.branchOutHistory()
+        })
+
+    })
 });

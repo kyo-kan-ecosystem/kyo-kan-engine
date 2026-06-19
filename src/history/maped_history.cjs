@@ -1,3 +1,5 @@
+import { StepIsOverFlowError } from "./protocol.class.cjs";
+
 const { deepcopy } = require("../util/deepcopy.cjs")
 
 const { isVoid } = require("../util/is_void.cjs")
@@ -351,7 +353,7 @@ class MapedHistory {
     /**
      * 
      * @param {number} backStep 
-     * @returns 
+     * @returns {import("./protocol").BackResult | false}
      */
     getBackLog(backStep = 1) {
         const length = this.getNowLength()
@@ -393,34 +395,40 @@ class MapedHistory {
      * Creates a new `MapedHistory` instance with forked history.
      *
      * @param {any} [branchId=null] - The ID for the new branch. If not provided, a new unique ID is generated.
-     * @param {number| true | null} [step=null] - Flag + Branch out step. if null, super-sub style branch out. if number, whole history branch out  
+     * @param {number| true | null} [step=null] - Flag + Branch out step. if null, super-sub style branch out. if number or true, whole history branch out  
      * @returns {this} A new `MapedHistory` instance pointing to the new branch.
      */
     fork(branchId = null, step = null) {
 
         const initData = this.getReferenceData()
+        const baseTargetBranch = isVoid(branchId) ? this._branchId : branchId
 
-        initData.branchId = branchId
-        if (isVoid(initData.branchId) === true) {
+
+        if (isVoid(branchId) === false) {
+            initData.branchId = branchId
+        }
+        else {
             initData.branchId = this._generateId()
             if (isVoid(step) === true) {
 
-                initData.reverseLinkMap[initData.branchId] = { branchId: this._branchId, step: this.getStep() }
-                initData.linkedCounts[this._branchId] = (this._linkedCounts[this._branchId] || 0) + 1
+                initData.reverseLinkMap[initData.branchId] = { branchId: baseTargetBranch, step: this.getStep() }
+                initData.linkedCounts[this._branchId] = (this._linkedCounts[baseTargetBranch] || 0) + 1
                 // @ts-ignore
-                initData.branchLogs[initData.branchId] = initData.branchLogs[this._branchId].slice()
+                initData.branchLogs[initData.branchId] = []
             }
             else {
                 let _step = 0
+
+                let targetBranch = baseTargetBranch
                 if (step === true) {
-                    initData.branchLogs[initData.branchId] = initData.branchLogs[this._branchId].concat()
-                    _step = initData.branchLogs[initData.branchId].length - 1
+
+                    _step = this.getStep()
 
 
                 }
                 else {
-                    // @ts-ignore
-                    initData.branchLogs[initData.branchId] = initData.branchLogs[this._branchId].slice(0, step)
+
+
                     // @ts-ignore
                     if (step >= 0) {
                         // @ts-ignore
@@ -428,10 +436,22 @@ class MapedHistory {
                     }
                     else {
                         // @ts-ignore
-                        _step = Math.max(0, initData.branchLogs[initData.branchId].length + step)
+                        _step = this.getStep() + step
                     }
 
                 }
+                while (_step < 0) {
+                    if (targetBranch in this._reverseLinkMap[targetBranch] === false) {
+                        throw new StepIsOverFlowError(baseTargetBranch, step)
+                    }
+                    const reverceLink = this._reverseLinkMap[targetBranch]
+                    _step = reverceLink.step + _step
+                    targetBranch = reverceLink.branchId
+
+
+
+                }
+                initData.branchLogs[initData.branchId] = initData.branchLogs[targetBranch].slice(0, _step)
                 initData.reverseLinkMap[initData.branchId] = { branchId: this._branchId, step: _step }
 
 
