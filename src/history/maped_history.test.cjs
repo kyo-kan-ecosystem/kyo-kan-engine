@@ -40,7 +40,7 @@ describe('MapedHistory', function () {
                 logs: { '0': { log: { a: 1 }, count: 1 } },
                 branchLogs: { '0': [{ id: 0, depth: 0 }] },
                 countRef: { branch: 1, history: 1 },
-                reverseLinkMap: { 1: { branchId: 1, step: 1 } },
+                reverseLinkMap: { 1: { branchId: 1, step: 1, isBranchOut: false } },
                 linkedCounts: { '0': 1 },
                 branchId: 0
             };
@@ -104,7 +104,7 @@ describe('MapedHistory', function () {
 
         // @ts-ignore
         it('should throw an error if branch does not exist', function () {
-            expect(history.addNonUpdateLog(0, 0, 99)).to.throw('branchId 99 is not found');
+            expect(function () { history.addNonUpdateLog(0, 0, 99) }).to.throw('branchId 99 is not found');
         });
     });
 
@@ -209,7 +209,7 @@ describe('MapedHistory', function () {
         it('should throw an error if trying to back on an empty branch', function () {
             history.back(0);
             history.back(0);
-            expect(history.back(0)).to.throw('branchId 0 is not found');
+            expect(function () { history.back(0) }).to.throw('branchId 0 is not found');
         });
     });
 
@@ -338,7 +338,7 @@ describe('MapedHistory', function () {
             /**
              * @type {import('./protocol').LinkItem}
              */
-            const expectForReverceLinkMap = { step: 0, branchId: 0 }
+            const expectForReverceLinkMap = { step: 0, branchId: 0, isBranchOut: false }
             expect(history._reverseLinkMap[forked._branchId]).to.deep.equal(expectForReverceLinkMap);
             // @ts-ignore
             expect(history._linkedCounts[0]).to.equal(1);
@@ -408,7 +408,7 @@ describe('MapedHistory', function () {
             /**
              * @type {import('./protocol').LinkItem}
              */
-            const expected = { branchId: 0, step: 0 }
+            const expected = { branchId: 0, step: 0, isBranchOut: false }
             expect(history.getReverseLinkedBranch(forked._branchId)).to.deep.equal(expected);
 
             expect(history.getReverseLinkedBranch(0)).to.be.undefined; // Root branch
@@ -539,8 +539,8 @@ describe('MapedHistoryDeepEqual', function () {
     // @ts-ignore
     describe('branchOutHistory', function () {
         // @ts-ignore
-        it('', function () {
-            history.branchOutHistory()
+        it('is wip', function () {
+            //history.branchOutHistory()
         })
 
     })

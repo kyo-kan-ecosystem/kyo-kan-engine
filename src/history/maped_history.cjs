@@ -1,8 +1,8 @@
-import { StepIsOverFlowError } from "./protocol.class.cjs";
+const { StepIsOverFlowError } = require("./protocol.class.cjs")
 
 const { deepcopy } = require("../util/deepcopy.cjs")
 
-const { isVoid } = require("../util/is_void.cjs")
+const { isVoid, dynamicDefault } = require("../util/is_void.cjs")
 
 const deepmerge = require("deepmerge")
 const equal = require('fast-deep-equal')
@@ -20,7 +20,6 @@ const equal = require('fast-deep-equal')
 class MapedHistory {
     /**
      * A map storing the actual log data and its reference count.
-     * @protected
      * @type {import("./protocol").Logs<LogType>} 
      */
     _logs;
@@ -357,36 +356,18 @@ class MapedHistory {
      */
     getBackLog(backStep = 1) {
         const length = this.getNowLength()
-        /**
-         * @type {import("./protocol").BranchLogItem}
-         */
-        let logItem
+
         let branchId = this._branchId
-        let step
 
 
 
-        if (length <= backStep) {
 
-            if (this._branchId in this._reverseLinkMap === false) {
-                return false
-            }
-            const { branchId: _branchId, step: branchOutStep } = this._reverseLinkMap[this._branchId]
-            step = branchOutStep - (backStep - (length - 1))
-            if (step < 0) {
-                return false
-            }
-            logItem = this._branchLogs[_branchId][step]
-            branchId = _branchId
-
-        }
-        else {
-            step = length - backStep - 1
-            logItem = this._branchLogs[this._branchId][step]
-
+        const traverced = this._traverseBranchPath(backStep * -1)
+        if (traverced === false) {
+            return false
         }
 
-        const { id, depth } = logItem
+        const { id, depth } = traverced.log
         const logEntity = this._getLog(id)
         return { log: logEntity.log, depth, branchId }
 
@@ -401,17 +382,21 @@ class MapedHistory {
     fork(branchId = null, step = null) {
 
         const initData = this.getReferenceData()
-        const baseTargetBranch = isVoid(branchId) ? this._branchId : branchId
+
+        let baseTargetBranch
 
 
         if (isVoid(branchId) === false) {
+            baseTargetBranch = branchId
             initData.branchId = branchId
         }
         else {
+
+            baseTargetBranch = this._branchId
             initData.branchId = this._generateId()
             if (isVoid(step) === true) {
 
-                initData.reverseLinkMap[initData.branchId] = { branchId: baseTargetBranch, step: this.getStep() }
+                initData.reverseLinkMap[initData.branchId] = { branchId: baseTargetBranch, step: this.getStep(), isBranchOut: false }
                 initData.linkedCounts[this._branchId] = (this._linkedCounts[baseTargetBranch] || 0) + 1
                 // @ts-ignore
                 initData.branchLogs[initData.branchId] = []
@@ -445,14 +430,14 @@ class MapedHistory {
                         throw new StepIsOverFlowError(baseTargetBranch, step)
                     }
                     const reverceLink = this._reverseLinkMap[targetBranch]
-                    _step = reverceLink.step + _step
+                    _step = reverceLink.step + _step - (reverceLink.isBranchOut === true ? -1 : 0)
                     targetBranch = reverceLink.branchId
 
 
 
                 }
                 initData.branchLogs[initData.branchId] = initData.branchLogs[targetBranch].slice(0, _step)
-                initData.reverseLinkMap[initData.branchId] = { branchId: this._branchId, step: _step }
+                initData.reverseLinkMap[initData.branchId] = { branchId: this._branchId, step: _step, isBranchOut: true }
 
 
 
@@ -472,11 +457,16 @@ class MapedHistory {
      * @param {*} fromId 
      * @param {*} step 
      */
-    switchHistory(fromId, step) {
-        const prevHistories = this._branchLogs[fromId].slice(0, step)
+    switchHistory(step, fromId) {
+        const traverseResult = this._traverseBranchPath(step, fromId)
+        if (traverseResult === false) {
+            return false
+        }
+
+        const prevHistories = this._branchLogs[traverseResult.branchId].slice(0, traverseResult.step)
         const newId = this._generateId()
         this._branchLogs[newId] = prevHistories
-        this._reverseLinkMap[newId] = { branchId: fromId, step }
+        this._reverseLinkMap[newId] = { branchId: traverseResult.branchId, step: traverseResult.step, isBranchOut: true }
         this.setBranchId(newId)
         return newId
 
@@ -484,20 +474,45 @@ class MapedHistory {
 
 
     }
+    /**
+     * @param {number} step
+     * @param {*} targetBranch
+     * @returns {{branchId:any, log:import("./protocol").BranchLogItem, step:number}| false} 
+     */
+    _traverseBranchPath(step, targetBranch = undefined) {
+        let _targetBranchId = dynamicDefault(targetBranch, this._branchId)
+        if (step >= 0) {
+            if (step >= this._branchLogs[_targetBranchId].length) {
+                return false
+
+            }
+            return { branchId: _targetBranchId, log: this._branchLogs[_targetBranchId][step], step }
+
+        }
+        let reverseStep = this._branchLogs[_targetBranchId].length - 1 + step
+        while (reverseStep < 0) {
+
+            if (_targetBranchId in this._reverseLinkMap === false) {
+                return false
+            }
+            const reverseLink = this._reverseLinkMap[_targetBranchId]
+            _targetBranchId = reverseLink.branchId
+            reverseStep = reverseLink.step + reverseStep
+            if (reverseLink.isBranchOut === false) {
+                reverseStep += 1
+
+            }
+
+
+        }
+        return { branchId: _targetBranchId, log: this._branchLogs[_targetBranchId][reverseStep], step: reverseStep }
+    }
     _generateId() {
         const id = this._countRef.branch;
         this._countRef.branch += 1;
         return id
     }
-    /**
-     * Branch out history.     
-     * 
-     * @param {number | true} [step=true]  
-     * @returns
-     */
-    branchOutHistory(step = true) {
-        return this.fork(null, step)
-    }
+
     getStep(branchId = null) {
         const _branchId = branchId || this._branchId
         return this._branchLogs[_branchId].length - 1

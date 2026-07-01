@@ -35,8 +35,8 @@ export type CountRef = {
 
 export type LinkItem = {
     branchId: any,
-    step: number
-}
+    step: number,
+    isBranchOut: boolean
 
 export type LinkMap = {
     [k in any]: LinkItem

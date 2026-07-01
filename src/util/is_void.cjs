@@ -6,5 +6,13 @@ function isVoid(value) {
     return typeof value === 'undefined' || value === null
 
 }
-const t = isVoid(null)
-module.exports = { isVoid }
+/**
+ * 
+ * @param {*} value 
+ * @param {*} defaultValue 
+ * @returns 
+ */
+function dynamicDefault(value, defaultValue) {
+    return isVoid(value) === true ? defaultValue : value
+}
+module.exports = { isVoid, dynamicDefault }
