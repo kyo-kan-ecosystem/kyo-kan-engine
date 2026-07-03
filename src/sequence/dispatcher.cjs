@@ -296,25 +296,16 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     */
 
     back(context, request) {
-        context.histories.back()
+
 
     }
     rewindWorkflow() {
 
 
-        const _request = context.reset();
-        const resetWorkflow = context.workflows.getCurrentWorkflow();
-        const resetExecuteFunc = resetWorkflow.resetBack(context);
-        funcsArray.push(resetExecuteFunc);
+
     }
-    rewindReturn(context, state, response) {
-        const isTopOnRewindReturn = context.endSub();
-        if (!isTopOnRewindReturn) {
-            return { state, responses };
-        }
-        const superWorkflowOnResetReturn = context.workflows.getCurrentWorkflow();
-        const executeFuncOnResetReturn = superWorkflowOnResetReturn.returnAsReset(context);
-        funcsArray.push(executeFuncOnResetReturn);
+    rewindReturn() {
+
 
     }
     /**

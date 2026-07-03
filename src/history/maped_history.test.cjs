@@ -536,12 +536,5 @@ describe('MapedHistoryDeepEqual', function () {
             expect(head.depth).to.equal(2);
         });
     });
-    // @ts-ignore
-    describe('branchOutHistory', function () {
-        // @ts-ignore
-        it('is wip', function () {
-            //history.branchOutHistory()
-        })
 
-    })
 });

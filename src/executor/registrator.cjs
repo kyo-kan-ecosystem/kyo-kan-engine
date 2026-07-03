@@ -1,8 +1,8 @@
 const deepmerge = require("deepmerge")
 
-const { Registrater } = require("../util/registrater.cjs")
+const { Registrator } = require("../util/registrator.cjs")
 
-class ExecutorsRegistrator extends Registrater {
+class ExecutorsRegistrator extends Registrator {
     /**
      * @type {{[k in string]:any}}
      */

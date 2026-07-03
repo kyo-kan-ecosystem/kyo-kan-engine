@@ -55,12 +55,14 @@ class Stack {
      * Removes the top element from the stack and returns it.
      * 
      * @throws {Error} Thrown if the stack is empty.
+     * @returns {DataType}
      */
     pop() {
         if (this.isEmpty() === true) {
             throw new Error("Stack is empty")
         }
 
+        // @ts-ignore
         return this._items.pop();
     }
 

@@ -11,6 +11,10 @@
         "declaration": true,
         "emitDeclarationOnly": true,
         "incremental": true,
-        "checkJs": true
+        "checkJs": true,
+        "strict": false,
+        "types": [
+            "node"
+        ]
     },
 }

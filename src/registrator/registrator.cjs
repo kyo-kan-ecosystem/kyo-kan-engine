@@ -1,11 +1,7 @@
-import { DEFAULT_WORKFLOW_REGISTRATION } from "../engine/defaults/workflow.cjs"
-
+const path = require('node:path')
+const { DEFAULT_WORKFLOW_REGISTRATION } = require("../engine/defaults/workflow.cjs")
 const { DEFAULT_ENGINE_CONFIGURE } = require("../engine/defaults/configure.cjs")
-
 const deepmerge = require("deepmerge")
-
-
-
 const { ContextBuilder } = require("../context/builder.cjs")
 
 
@@ -14,7 +10,7 @@ const { ContextBuilder } = require("../context/builder.cjs")
  * @typedef {import("../workflow/plugin/protocol.class.cjs").AbstractWorkflow} WorkFlowPluginType
  */
 
-class Registrater extends ContextBuilder {
+class Registrator extends ContextBuilder {
 
     /**
      * @type {Object<any, any>?}
@@ -77,6 +73,7 @@ class Registrater extends ContextBuilder {
      */
     registerWorkflowPlugin(pluginName, plugin) {
 
+
         this._workflowPlugins[pluginName] = plugin
     }
 
@@ -94,9 +91,13 @@ class Registrater extends ContextBuilder {
      * 
      * @param {any} configure 
      */
-    parseConfigure(configure) {
+    async _parseConfigure(configure, basepath) {
 
         const engineConfigure = deepmerge(DEFAULT_ENGINE_CONFIGURE, this._engineConfigure || {})
+        /**
+         * @type {import("../workflow/protocol.js").WorkflowContextInit} workflows
+         */
+        const workflows = { plugins: this._workflowPlugins }
         const context = this._buildContext()
         const rootWorkFlowPluginId = engineConfigure.root.workflow.id
 
@@ -143,7 +144,7 @@ class Registrater extends ContextBuilder {
              * @type {import("../../protocol/executor/baic_class.cjs").AbstractExecutorPlugin}
              */
             const plugin = this.context.repositries.plugins.executors.get(item.executorConfig.plugin)
-            if () { }
+
             for (const [name, difinition] of Object.entries(plugin.getSubworkflows(item.executorConfig))) {
                 /**
                  * @type {WorkFlowPluginType}
@@ -173,6 +174,9 @@ class Registrater extends ContextBuilder {
 
 
     }
+
+
+
     getPluginRepositry() {
         return this.context.repositries.getPluginRepositry()
     }
@@ -183,5 +187,5 @@ class Registrater extends ContextBuilder {
 
 
 }
-
-module.exports = { Registrater }
+require('./')
+module.exports = { Registrator }
