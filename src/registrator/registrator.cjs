@@ -187,5 +187,5 @@ class Registrator extends ContextBuilder {
 
 
 }
-require('./')
+
 module.exports = { Registrator }
