@@ -51,8 +51,8 @@ export type ContextSerializableData = Partial<{
 
 
 export type ContextApi<FunctionsType = any, ReporterType = any> = {
-    functions: FunctionsType,
-    reporter: ReporterType,
+    functions?: FunctionsType,
+    reporter?: ReporterType,
 }
 
 

@@ -2,8 +2,8 @@ const { Repositry } = require("../../repositry/base.cjs")
 
 /**
  * Repositry for workflow configure
- * 
- * @extends {Repositry<import("../protocol").WorkflowPluginConfigure>}
+ * @typedef {import("../protocol").WorkflowPluginConfigure} WorkflowPluginConfigure
+ * @extends Repositry<WorkflowPluginConfigure>
  */
 class WorkflowConfiguresRepositry extends Repositry { }
 

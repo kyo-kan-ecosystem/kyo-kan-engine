@@ -25,9 +25,9 @@ export type ExecutorConfigureFormat = {
 
 }
 
-export type ConfigureFormat = {
+export type ConfigureFormat<ScenarioType = any> = {
     engine?: EngineConfigure,
-    root: any
+    scenario: ScenarioType,
     workflows?: {
         [workflowName in string]: any
     },

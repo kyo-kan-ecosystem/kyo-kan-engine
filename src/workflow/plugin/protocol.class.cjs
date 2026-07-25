@@ -85,11 +85,11 @@ class AbstractWorkflow {
     /**
      * @abstract
      * @param {any} configure
-     * @param {any} executorId 
+
      * @returns {import("../protocol").WorkflowConfigureParseResult}
      */
-    getConfigureParams(configure, executorId) {
-        return {}
+    getConfigureParams(configure) {
+        return configure
     }
     /**
      * @abstract

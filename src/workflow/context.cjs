@@ -42,12 +42,19 @@ class WorkflowsContext {
 
 
         const id = state.workflow?.id
+        return this.getWorkflowAndPlugin(id)
+
+    }
+
+    /**
+     * @param {any?} id
+     */
+    getWorkflowAndPlugin(id) {
         if (id === null || typeof id === 'undefined') {
             throw new IdIsVoidError(id)
 
 
         }
-
         /**
          * @type { import("./protocol").WorkflowPluginConfigure}
          */
@@ -151,6 +158,24 @@ class WorkflowsContext {
         return superWorkflow.returnFromSubworkflow(context, request, superConfigure)
 
     }
+    /**
+     * shorthand facade for configure set
+     * @param {*} id
+     * @param {any} configure
+     */
+    addConfigure(id, configure) {
+        this.configures.set(id, configure)
+
+    }
+    /**
+     * 
+     * @param {*} id 
+     * @returns 
+     */
+    getConfigure(id) {
+        return this.configures.get(id)
+    }
+
 
 
 

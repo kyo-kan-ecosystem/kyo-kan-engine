@@ -23,8 +23,9 @@ export type WorkflowConfigureParseResult<ParamsType = any, ExecutorsType = any> 
 
 
 export type WorkflowPluginConfigure<DataType = any> = {
-    plugin: any
-} & DataType
+    plugin: any,
+    data: DataType
+}
 
 
 

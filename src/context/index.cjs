@@ -199,7 +199,7 @@ class Context {
             this._branchId = 0
 
         }
-        const { functions, reporter } = this._forkApi(api?.reporter, api?.functions)
+        const { functions = {}, reporter = {} } = this._forkApi(api?.reporter, api?.functions)
         this.functions = functions
         this.reporter = reporter
 

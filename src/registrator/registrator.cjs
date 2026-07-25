@@ -1,5 +1,5 @@
 const path = require('node:path')
-const { DEFAULT_WORKFLOW_REGISTRATION } = require("../engine/defaults/workflow.cjs")
+const { DEFAULT_WORKFLOW_REGISTRATION: DEFAULT_WORKFLOW_PLUGINS } = require("../engine/defaults/workflow.cjs")
 const { DEFAULT_ENGINE_CONFIGURE } = require("../engine/defaults/configure.cjs")
 const deepmerge = require("deepmerge")
 const { ContextBuilder } = require("../context/builder.cjs")
@@ -31,12 +31,12 @@ class Registrator extends ContextBuilder {
 
 
     /**
-     * @type {Object<any, any>?}
+     * @type {Object<any, any>}
      */
     _workflowPlugins
-
+    _defaultWorkflowPlugins
     /**
-     * @type {Partial<import("../engine/repositry/protocol.js").EngineConfigure>?}
+     * @type {Partial<import("../engine/repositry/protocol.js").EngineConfigure>}
      */
     _engineConfigure
 
@@ -46,15 +46,17 @@ class Registrator extends ContextBuilder {
      *@param {Object} param0 
      *
      *@param {typeof import("../states/protocol.js").Context | null | undefined}[param0.contextClass=null]
+     *@param {any}[param0.defaultEngineConfigure=DEFAULT_ENGINE_CONFIGURE]
      *@param {any}[param0.defaultWorkflowPlugins=null]
      */
-    constructor({ contextClass = null, defaultWorkflowPlugins = DEFAULT_WORKFLOW_REGISTRATION } = {}) {
+    constructor({ contextClass = null, defaultWorkflowPlugins = DEFAULT_WORKFLOW_PLUGINS, defaultEngineConfigure = DEFAULT_ENGINE_CONFIGURE } = {}) {
         super(contextClass)
         this._functions = {}
         this._reporter = {}
         this._executorPlugins = {}
-        this._engineConfigure = {}
-        this._workflowPlugins = Object.assign({}, defaultWorkflowPlugins)
+        this._engineConfigure = deepmerge({}, defaultEngineConfigure)
+        this._workflowPlugins = defaultWorkflowPlugins
+        this._defaultWorkflowPlugins = defaultWorkflowPlugins
     }
 
 
@@ -88,34 +90,39 @@ class Registrator extends ContextBuilder {
 
     }
     /**
-     * 
-     * @param {any} configure 
+     * namedWorkflows ライブラリ的に呼び出しできる名前付きライブラリ
+     * namedExecutors ライブラリ的に呼び出しできる名前付き実行単位
+     * executorPlugins 実行プラグイン本体
+     * workflowPlugins ワークフロープラグイン本体
+     * @param {import('../../protocol/configure/protocol.d.ts').ConfigureFormat} rootConfigure 
      */
-    async _parseConfigure(configure, basepath) {
+    async _convert(rootConfigure, namedWorkflows, namedExecutors, executorPlugins, workflowPlugins) {
 
-        const engineConfigure = deepmerge(DEFAULT_ENGINE_CONFIGURE, this._engineConfigure || {})
+        const engineConfigure = this._engineConfigure
         /**
          * @type {import("../workflow/protocol.js").WorkflowContextInit} workflows
          */
-        const workflows = { plugins: this._workflowPlugins }
-        const context = this._buildContext()
-        const rootWorkFlowPluginId = engineConfigure.root.workflow.id
+        const workflows = { plugins: workflowPlugins }
 
+        const workingContext = this._buildContext({ workflows }, {})
+
+        const rootWorkFlowPluginId = engineConfigure.root?.workflow.plugin
         /**
          * @type {WorkFlowPluginType}
          */
-        const rootWorkFlowPlugin = this.context.repositries.plugins.workflows.get(rootWorkFlowPluginId)
+        const rootWorkFlowPlugin = workingContext.workflows.plugins.get(rootWorkFlowPluginId)
 
-        const rootConfigure = rootWorkFlowPlugin.getConfigureParams(configure)
-        this.context.repositries.configures.workflows.set(rootWorkFlowPluginId, rootConfigure)
+        const parsedRootConfigure = rootWorkFlowPlugin.getConfigureParams(rootConfigure)
+        workingContext.workflows.addConfigure(rootWorkFlowPluginId, parsedRootConfigure)
         /**
          * @type {{workflow:string, executorConfig:import("../../protocol/executor/protocol.js").ExecutorConfigure}[]}
          */
         const executorQueue = []
 
-        for (const executorConfig of rootConfigure.executors || []) {
+        for (const executorConfig of parsedRootConfigure.executors || []) {
 
-            const item = { workflow: engineConfigure.root.workflow.id, executorConfig }
+            const item = { workflow: engineConfigure.root?.workflow.id, executorConfig }
+            // @ts-ignore
             executorQueue.push(item)
         }
 
@@ -130,29 +137,29 @@ class Registrator extends ContextBuilder {
             /**
              * @type {import("../workflow/protocol.js").WorkflowPluginConfigure}
              */
-            const workflowConfigure = this.context.repositries.configures.workflows.get(item.workflow)
+            const workflowConfigure = workingContext.workflows.getWorkflowPlugin(item.workflow)
             let workerObject = workerObjects.get(item.workflow)
 
             /**
-             * @type {WorkFlowPluginType}
+             * @type {import('../workflow/protocol.js').WorkflowPluginConfigure}
              */
-            const workflowPlugin = this.context.repositries.plugins.workflows.get(workflowConfigure.plugin)
-            const executorId = this.context.repositries.configures.executors.add(item.executorConfig)
-            workerObject = workflowPlugin.addExecutor(workflowConfigure, executorId, item.executorConfig, workerObject)
+            const workflowPluginConfigure = workingContext.workflows.configures.get(workflowConfigure.plugin)
+            const executorId = workingContext.repositries.configures.executors.add(item.executorConfig)
+            workerObject = workflowPluginConfigure.addExecutor(workflowConfigure, executorId, item.executorConfig, workerObject)
             workerObjects.set(item.workflow, workerObject)
             /**
              * @type {import("../../protocol/executor/baic_class.cjs").AbstractExecutorPlugin}
              */
-            const plugin = this.context.repositries.plugins.executors.get(item.executorConfig.plugin)
+            const plugin = workingContext.repositries.plugins.executors.get(item.executorConfig.plugin)
 
             for (const [name, difinition] of Object.entries(plugin.getSubworkflows(item.executorConfig))) {
                 /**
                  * @type {WorkFlowPluginType}
                  */
-                const subWorkflowPlugin = this.context.repositries.plugins.workflows.get(difinition.plugin)
+                const subWorkflowPlugin = workingContext.repositries.plugins.workflows.get(difinition.plugin)
                 const configure = item.executorConfig.subworkflows[name]
                 const subWorkflowConfigure = subWorkflowPlugin.getConfigureParams(configure, executorId)
-                const subwWorkflowId = this.context.repositries.configures.workflows.add(executorId, name, subWorkflowConfigure.params)
+                const subwWorkflowId = workingContext.repositries.configures.workflows.add(executorId, name, subWorkflowConfigure.params)
 
 
                 for (const executor of subWorkflowConfigure.executors || []) {
@@ -174,14 +181,17 @@ class Registrator extends ContextBuilder {
 
 
     }
+    _getWorkflowPlugins() {
+        return Object.assign({}, this._defaultWorkflowPlugins, this._workflowPlugins)
+    }
 
 
 
     getPluginRepositry() {
-        return this.context.repositries.getPluginRepositry()
+        return workingContext.repositries.getPluginRepositry()
     }
     getConfiguresAsSerializeDatas() {
-        return this.context.repositries.getConfiguresAsSerializeDatas()
+        return workingContext.repositries.getConfiguresAsSerializeDatas()
     }
 
 

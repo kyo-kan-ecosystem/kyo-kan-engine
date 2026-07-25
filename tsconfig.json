@@ -12,9 +12,12 @@
         "emitDeclarationOnly": true,
         "incremental": true,
         "checkJs": true,
-        "strict": false,
+        "strict": true,
+        "module": "commonjs",
         "types": [
-            "node"
+            "node",
+            "mocha",
+            "chai"
         ]
     },
 }
