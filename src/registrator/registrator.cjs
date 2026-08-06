@@ -102,9 +102,11 @@ class Registrator extends ContextBuilder {
         /**
          * @type {import("../workflow/protocol.js").WorkflowContextInit} workflows
          */
-        const workflows = { plugins: workflowPlugins }
+        const workflows = { plugins: workflowPlugins, configures: namedWorkflows }
 
-        const workingContext = this._buildContext({ workflows }, {})
+        const executors = { configures: namedExecutors, plugins: executorPlugins }
+
+        const workingContext = this._buildContext({ workflows, executors }, {})
 
         const rootWorkFlowPluginId = engineConfigure.root?.workflow.plugin
         /**
@@ -117,22 +119,22 @@ class Registrator extends ContextBuilder {
         /**
          * @type {{workflow:string, executorConfig:import("../../protocol/executor/protocol.js").ExecutorConfigure}[]}
          */
-        const executorQueue = []
+        const nonNamedExecutorQueue = []
 
         for (const executorConfig of parsedRootConfigure.executors || []) {
 
             const item = { workflow: engineConfigure.root?.workflow.id, executorConfig }
             // @ts-ignore
-            executorQueue.push(item)
+            nonNamedExecutorQueue.push(item)
         }
 
 
         let index = 0
         const workerObjects = new Map()
 
-        while (executorQueue.length > index) {
+        while (nonNamedExecutorQueue.length > index) {
 
-            const item = executorQueue[index]
+            const item = nonNamedExecutorQueue[index]
             index += 1
             /**
              * @type {import("../workflow/protocol.js").WorkflowPluginConfigure}
@@ -164,7 +166,7 @@ class Registrator extends ContextBuilder {
 
                 for (const executor of subWorkflowConfigure.executors || []) {
                     const item = { workflow: subwWorkflowId, executorConfig: executor }
-                    executorQueue.push(item)
+                    nonNamedExecutorQueue.push(item)
                 }
 
 
