@@ -1,6 +1,6 @@
 import type { States } from "../states/states.cjs"
 import type { Bords } from "../bords/bords.cjs"
-import type { Repositries } from "./repositries.cjs"
+import type { Repositries } from "../configure/context.cjs"
 import type { WorkflowsContext } from "../workflow/context.cjs"
 import type { HistoriesContext } from "../history/context.cjs"
 import type { ExecutorsContext } from "../executor/context.cjs"

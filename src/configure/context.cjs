@@ -60,13 +60,7 @@ const DEFAULT_REPOSITRY_CLASSES = {
 
 
 }
-/**
- * @typedef {{
- *          configures?:ContextRepositry, 
- *          plugins?:ContextRepositryPlugins,
- *          classes?:ContextRepositryClasses
- * }} ContextRepositryArgs
- */
+
 class Repositries {
     /**
      * @type {ContextRepositryConfigures}

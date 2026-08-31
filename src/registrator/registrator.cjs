@@ -94,7 +94,11 @@ class Registrator extends ContextBuilder {
      * namedExecutors ライブラリ的に呼び出しできる名前付き実行単位
      * executorPlugins 実行プラグイン本体
      * workflowPlugins ワークフロープラグイン本体
-     * @param {import('../../protocol/configure/protocol.d.ts').ConfigureFormat} rootConfigure 
+     * @param {import('../../protocol/configure/protocol.d.ts').ConfigureFormat} rootConfigure
+     * @param {any} namedWorkflows
+     * @param {{ [s: string]: any; } | ArrayLike<any>} namedExecutors
+     * @param {any} executorPlugins
+     * @param {any} workflowPlugins
      */
     async _convert(rootConfigure, namedWorkflows, namedExecutors, executorPlugins, workflowPlugins) {
 
@@ -116,8 +120,29 @@ class Registrator extends ContextBuilder {
 
         const parsedRootConfigure = rootWorkFlowPlugin.getConfigureParams(rootConfigure)
         workingContext.workflows.addConfigure(rootWorkFlowPluginId, parsedRootConfigure)
+
+        //名前付きプラグインからワークフローの設定を取り出す
+        const workflowConfigures = []
+        for (const [id, config] of Object.entries(namedExecutors)) {
+
+            const plugin = workingContext.executors.getExecutorPlugin(config.plugin)
+            plugin.get()
+        }
+
+        // ワークフローのidからワークフローのコンフィグとプラグインを取り出す
+        //　ワークフローのプラグインから構成するえくぜきゅーた―の設定を取り出す
+        //　えくぜきゅーたを登録し、設定からプラグインを取り出す
+        //  えくぜきゅーたのプラグインと設定からサブワークフローを取り出す
+        //　サブワークフローを登録
+        // 　サブワークフローとえくぜきゅーたのプラグインの対応マップを登録する(じっそうすること)　
+        //　最初に戻る
+        for (const workflowId of workflowConfigureIds) {
+
+        }
+
+
         /**
-         * @type {{workflow:string, executorConfig:import("../../protocol/executor/protocol.js").ExecutorConfigure}[]}
+         * @type {{workflow:string, executorConfig:import("../../protocol/executor/protocol.js").ExecutorConfigure, id:any?}[]}
          */
         const nonNamedExecutorQueue = []
 
@@ -139,18 +164,18 @@ class Registrator extends ContextBuilder {
             /**
              * @type {import("../workflow/protocol.js").WorkflowPluginConfigure}
              */
-            const workflowConfigure = workingContext.workflows.getWorkflowPlugin(item.workflow)
+            const workflowConfigure = workingContext.workflows.getConfigure(item.workflow)
             let workerObject = workerObjects.get(item.workflow)
 
             /**
              * @type {import('../workflow/protocol.js').WorkflowPluginConfigure}
              */
             const workflowPluginConfigure = workingContext.workflows.configures.get(workflowConfigure.plugin)
-            const executorId = workingContext.repositries.configures.executors.add(item.executorConfig)
+            const executorId = workingContext.workflows.addConfigure(item.executorConfig)
             workerObject = workflowPluginConfigure.addExecutor(workflowConfigure, executorId, item.executorConfig, workerObject)
             workerObjects.set(item.workflow, workerObject)
             /**
-             * @type {import("../../protocol/executor/baic_class.cjs").AbstractExecutorPlugin}
+             * @type {import("../../protocol/executor/protocol.d.ts").MaybeWithGetSubworkflow}
              */
             const plugin = workingContext.repositries.plugins.executors.get(item.executorConfig.plugin)
 
@@ -181,6 +206,19 @@ class Registrator extends ContextBuilder {
 
 
 
+
+    }
+    /**
+     * 
+     * @param {import("../../protocol/executor/protocol.d.ts").MaybeWithGetSubworkflow} plugin 
+     * @param {*} configure
+     * @param {*} pluginid
+     * @param {*} workingContext   
+     */
+    _getSubWorkflow(plugin, configure, pluginid, workingContext) {
+        if ('getSubworkflow' in plugin === false) {
+            return false
+        }
 
     }
     _getWorkflowPlugins() {

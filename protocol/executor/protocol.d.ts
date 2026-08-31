@@ -26,6 +26,6 @@ export type WithGetSubworkflow = {
 
 }
 
-export type MabeWithGetSubworkflow = Partial<WithGetSubworkflow>
+export type MaybeWithGetSubworkflow = Partial<WithGetSubworkflow>
 
 

@@ -4,7 +4,7 @@ const { ExecutorConfigureRepositry } = require("./repositry/configure.cjs")
 const { ExecutorPluginRepositry } = require("./repositry/plugin.cjs")
 
 
-const { ConfigureIdIsInvalidError, SubworkflowNameIsInvalidError, SubworkflowNameDoesNotExistsError, ConfigureDoesNotExistsError, PluginDoesNotExistsError, PlugidDoesNotSetInConfigureError } = require("./errors.cjs")
+const { SubworkflowNameDoesNotExistsError, ConfigureDoesNotExistsError, PluginDoesNotExistsError, PlugidDoesNotSetInConfigureError } = require("./errors.cjs")
 
 class ExecutorsContext {
     /**
@@ -40,28 +40,7 @@ class ExecutorsContext {
 
 
     }
-    /**
-     * @param {any} configureId
-     * @param {any} name
-     */
-    resolveSubworkflowId(configureId, name) {
-        if (configureId === null || typeof configureId === 'undefined') {
-            throw new ConfigureIdIsInvalidError(configureId)
-        }
-        if (name === null || typeof name === 'undefined') {
-            throw new SubworkflowNameIsInvalidError(name)
-        }
-        const subWorkflowMap = this.getOptions(configureId).subworkflowMap || {}
-        if (name in subWorkflowMap === false) {
-            throw new SubworkflowNameDoesNotExistsError(name)
-        }
 
-        return subWorkflowMap[name]
-
-
-
-
-    }
     /**
      * @param {any} configureId
      * @returns {import("./protocol").ExecutorConfigureFormatType}
@@ -126,21 +105,7 @@ class ExecutorsContext {
 
 
     }
-    /**
-     * @param {any} configureId
-     * @param {string | number} subworkflowName
-     */
-    getSubworkflowId(configureId, subworkflowName) {
-        const configure = this.getOptions(configureId)
-        if (!configure.subworkflowMap || subworkflowName in configure.subworkflowMap === false) {
 
-            throw new SubworkflowNameDoesNotExistsError(subworkflowName)
-
-        }
-        return configure.subworkflowMap[subworkflowName]
-
-
-    }
 }
 module.exports = {
     ExecutorsContext

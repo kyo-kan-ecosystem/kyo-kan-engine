@@ -1,6 +1,8 @@
+
 import type { ExecuteMode } from "../../sequence/protocol"
 
-export type EngineConfigure<SequenceType = ExecuteMode> = {
+
+type EngineConfigure<SequenceType = ExecuteMode> = {
     root: {
         workflow: {
             plugin: string,
@@ -19,7 +21,9 @@ export type EngineConfigure<SequenceType = ExecuteMode> = {
     },
     boot: {
         callback: string
+
     }
 }
 
 
+export type Repositry = { EngineConfigure }

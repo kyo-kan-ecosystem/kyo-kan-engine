@@ -1,40 +1,18 @@
-const deepmerge = require("deepmerge")
+const { KeyValueRepositry } = require("../../repositry/key_value.cjs")
 
-const { DEFAULT_ENGINE_CONFIGURE } = require("../defaults/configure.cjs")
-
-const { Repositry } = require("../../repositry/base.cjs")
-
-
+const { DEFAULT_ENGINE_CONFIGURE } = require('../defaults/configure.cjs')
 /**
- * @extends {Repositry<import("./protocol").EngineConfigure>}
+ * @extends {KeyValueRepositry<import("./protocol").EngineConfigure>}
  */
-class EngineConfigureRepositry extends Repositry {
-
-    _key = 'engine'
-
+class EngineConfigureRepositry extends KeyValueRepositry {
     /**
      * 
-     * @param {Partial<import("./protocol").EngineConfigure>?} datas 
+     * @param {import("./protocol").EngineConfigure} [defaults = DEFAULT_ENGINE_CONFIGURE]
      */
-    constructor(datas, key = 'engine') {
-
-        const configure = deepmerge(DEFAULT_ENGINE_CONFIGURE, datas || {})
-        super({ [key]: configure })
-        this._key = key
-
+    constructor(defaults = DEFAULT_ENGINE_CONFIGURE) {
+        super(defaults)
 
     }
-    /**
-     * 
-     * @param {import("./protocol").EngineConfigure} datas 
-     */
-    set(datas) {
-        super.set(this._key, datas)
-    }
-    get() {
-        return super.get(this._key)
-    }
-
 }
 
-module.exports = { EngineConfigureRepositry, DEFAULT_ENGINE_CONFIGURE }
+module.exports = { EngineConfigureRepositry }

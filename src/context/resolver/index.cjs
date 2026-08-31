@@ -1,3 +1,4 @@
+const { ConfigureIdIsInvalidError, SubworkflowNameIsInvalidError, SubworkflowNameDoesNotExistsError } = require("./errors.cjs")
 
 
 class ContextBridgeResolver {
@@ -13,11 +14,30 @@ class ContextBridgeResolver {
 
 
     }
-    resolveSubworkflowId() {
+    resolveInContextSubworkflowId() {
         const subworkflowName = this._context.states.controll.getSubworkflowName()
         const configureId = this._context.states.controll.getExecutorId()
-        const subworkflowId = this._context.executors.resolveSubworkflowId(configureId, subworkflowName)
+        const subworkflowId = this.resolveSubworkflowId(configureId, subworkflowName)
         return subworkflowId
+
+
+    }
+    /**
+     * @param {any} configureId
+     * @param {any} name
+     */
+    resolveSubworkflowId(configureId, name) {
+        if (configureId === null || typeof configureId === 'undefined') {
+            throw new ConfigureIdIsInvalidError(configureId)
+        }
+        if (name === null || typeof name === 'undefined') {
+            throw new SubworkflowNameIsInvalidError(name)
+        }
+
+
+        return
+
+
 
 
     }
@@ -27,7 +47,7 @@ class ContextBridgeResolver {
      * @param {*} subworkflowInit  
      */
     resolveGoSubProcess(workflowId = undefined, subworkflowInit = undefined) {
-        const id = workflowId || this.resolveSubworkflowId()
+        const id = workflowId || this.resolveInContextSubworkflowId()
         this._context.states.now.push({ workflow: { id } })
         this._context.bords.push(subworkflowInit || this._context.states.controll.getSubworkflowInit())
 
