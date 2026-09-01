@@ -1,19 +1,27 @@
 const { EngineConfigureRepositry } = require("./repositry/configure.cjs")
-
+/**
+ * 
+ * 
+ * @template {{getSerializableData:any}} [EngineConfigureRepositryType=EngineConfigureRepositry]
+ */
 class EngineContext {
     /**
-     * @type {EngineConfigureRepositry}
+     * @type {EngineConfigureRepositryType}
      */
     configure
     /**
+     * @param {import("./protocol").EngineContextInit} param0 
      * 
-    
      */
-    constructor({ configureClass = EngineConfigureRepositry, configureInit = undefined }) {
+    constructor({ configureClass = EngineConfigureRepositry, configureInit = undefined } = {}) {
         this.configure = new configureClass(configureInit)
 
 
     }
+    getSerializableData() {
+        return { configureInit: this.configure.getSerializableData() }
+    }
 
 }
+
 module.exports = { EngineContext }

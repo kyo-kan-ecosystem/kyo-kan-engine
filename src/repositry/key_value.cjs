@@ -32,6 +32,9 @@ class KeyValueRepositry {
         this._data = deepmerge(this._data, value)
 
     }
+    getSerializableData() {
+        return this._data
+    }
 }
 
 module.exports = { KeyValueRepositry }

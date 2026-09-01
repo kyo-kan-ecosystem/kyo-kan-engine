@@ -5,6 +5,7 @@ const { Repositries } = require("../configure/context.cjs")
 const { States } = require("../states/states.cjs")
 const { WorkflowsContext } = require("../workflow/context.cjs")
 const { ExecutorsContext } = require("../executor/context.cjs")
+const { EngineContext } = require("../engine/context.cjs")
 
 
 
@@ -15,7 +16,7 @@ const { ExecutorsContext } = require("../executor/context.cjs")
 /**
  * @typedef {{
  *      bords:typeof Bords,
- *      repositries:typeof Repositries,
+ *      engine:typeof EngineContext
  *      states: typeof States,
  *      workflows: typeof WorkflowsContext,
  *      histories: typeof Histories,
@@ -28,7 +29,7 @@ const { ExecutorsContext } = require("../executor/context.cjs")
  */
 const DEFUALT_CLASSES = {
     bords: Bords,
-    repositries: Repositries,
+    engine: EngineContext,
     states: States,
     workflows: WorkflowsContext,
     histories: Histories,
@@ -81,6 +82,10 @@ class Context {
      * @type {Histories}
      */
     histories
+    /**
+     * @type {EngineContext}
+     */
+    engine
     /**
      * @type {Object<any, {bords:any, histories:any, states:any}>}
      */
@@ -150,7 +155,7 @@ class Context {
 
 
 
-            this.repositries = inheritance?.repositries
+            this.engine = inheritance?.engine
             this.workflows = inheritance?.workflows
             this.executors = inheritance?.executors
 
@@ -166,7 +171,7 @@ class Context {
 
 
 
-        this.repositries = new classes.repositries(datas?.repositries)
+        this.engine = new classes.engine(datas?.engine)
 
 
         this.bords = new classes.bords(datas?.bords)
@@ -222,8 +227,10 @@ class Context {
             states: this.states.getSerializableData(),
             histories: this.histories.getSerializableData(),
             branches: this._branches,
+            engine: this.engine.getSerializableData(),
             _countRef: this._countRef,
             _linkMap: this._linkMap,
+
 
 
         }
@@ -327,7 +334,7 @@ class Context {
             branches: this._branches,
             functions: this.functions,
             reporter: this.reporter,
-            repositries: this.repositries,
+            engine: this.engine,
             workflows: this.workflows,
             _linkMap: this._linkMap,
             branchId,

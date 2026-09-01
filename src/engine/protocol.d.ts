@@ -1,8 +1,8 @@
 
 export type { EngineConfigure } from "./repositry/protocol"
 
-expoty type EngineContextInit = {
+export type EngineContextInit = {
 
-    configureClass: any,
+    configureClass?: any,
     configureInit?: any
 }
