@@ -1,17 +1,32 @@
-const path = require('node:path')
-const { DEFAULT_WORKFLOW_REGISTRATION: DEFAULT_WORKFLOW_PLUGINS } = require("../engine/defaults/workflow.cjs")
-const { DEFAULT_ENGINE_CONFIGURE } = require("../engine/defaults/configure.cjs")
+
+
+
 const deepmerge = require("deepmerge")
-const { ContextBuilder } = require("../context/builder.cjs")
+const { Context } = require("../../src/context/index.cjs")
+const { DEFAULT_ENGINE_CONFIGURE } = require("../../src/engine/defaults/configure.cjs")
 
 
 
-/**
- * @typedef {import("../workflow/plugin/protocol.class.cjs").AbstractWorkflow} WorkFlowPluginType
- */
 
-class Registrator extends ContextBuilder {
 
+
+
+class Registrator {
+
+    /**
+     * @type {typeof Context}
+     */
+    _contextClass
+
+
+    /**
+     * @param {import("../../src/context/protocol").ContextSerializableData} datas
+     * @returns {Context>}
+     */
+    _buildContext(datas, api) {
+        // @ts-ignore
+        return new this._contextClass({ datas: datas, api: api })
+    }
     /**
      * @type {Object<any, any>?}
      */
@@ -31,7 +46,7 @@ class Registrator extends ContextBuilder {
 
 
     /**
-     * @type {Object<any, any>}
+     * @type {Object<string, import('../workflow/protocol.js').WorkflowPluginConfigure >}
      */
     _workflowPlugins
     _defaultWorkflowPlugins
@@ -40,16 +55,19 @@ class Registrator extends ContextBuilder {
      */
     _engineConfigure
 
+    /**
+     * @type {Partial<import('../workflow/protocol.js').WorkflowPluginConfigure>}
+     */
+    _rootWorkflow
 
 
     /**
      *@param {Object} param0 
-     *
-     *@param {typeof import("../states/protocol.js").Context | null | undefined}[param0.contextClass=null]
+     *@param {Context?} [param0.contextClass=Context]
      *@param {any}[param0.defaultEngineConfigure=DEFAULT_ENGINE_CONFIGURE]
      *@param {any}[param0.defaultWorkflowPlugins=null]
      */
-    constructor({ contextClass = null, defaultWorkflowPlugins = DEFAULT_WORKFLOW_PLUGINS, defaultEngineConfigure = DEFAULT_ENGINE_CONFIGURE } = {}) {
+    constructor({ contextClass = Context, defaultWorkflowPlugins, defaultEngineConfigure = DEFAULT_ENGINE_CONFIGURE } = {}) {
         super(contextClass)
         this._functions = {}
         this._reporter = {}
@@ -57,7 +75,18 @@ class Registrator extends ContextBuilder {
         this._engineConfigure = deepmerge({}, defaultEngineConfigure)
         this._workflowPlugins = defaultWorkflowPlugins
         this._defaultWorkflowPlugins = defaultWorkflowPlugins
+
     }
+    /**
+     * @param {Object} param0 
+     * @param {string} param0.pluginName 
+     * @param {*} param0.params 
+     */
+    registerRootWorkflow({ pluginName, params }) {
+        this._rootWorkflow = { pluginName, params }
+
+    }
+
 
 
     /**
@@ -71,12 +100,13 @@ class Registrator extends ContextBuilder {
 
     /**
      * @param {string | number} pluginName
-     * @param {any} plugin
+     * @param {string} plugin
+     * @param {*} data
      */
-    registerWorkflowPlugin(pluginName, plugin) {
+    registerWorkflowPlugin(pluginName, plugin, data) {
 
 
-        this._workflowPlugins[pluginName] = plugin
+        this._workflowPlugins[pluginName] = { plugin, data }
     }
 
 
@@ -94,39 +124,48 @@ class Registrator extends ContextBuilder {
      * namedExecutors ライブラリ的に呼び出しできる名前付き実行単位
      * executorPlugins 実行プラグイン本体
      * workflowPlugins ワークフロープラグイン本体
-     * @param {import('../../protocol/configure/protocol.d.ts').ConfigureFormat} rootConfigure
+     * @param {import('../../protocol/configure/protocol.d.ts').ConfigureFormat} rootWorkflowConfigure
      * @param {any} namedWorkflows
      * @param {{ [s: string]: any; } | ArrayLike<any>} namedExecutors
      * @param {any} executorPlugins
      * @param {any} workflowPlugins
+     * 
      */
-    async _convert(rootConfigure, namedWorkflows, namedExecutors, executorPlugins, workflowPlugins) {
+    async _convert(rootWorkflowConfigure, namedWorkflows, namedExecutors, executorPlugins, workflowPlugins, engine) {
 
-        const engineConfigure = this._engineConfigure
+
         /**
-         * @type {import("../workflow/protocol.js").WorkflowContextInit} workflows
+         * @type {import("../../src/workflow/protocol").WorkflowContextInit}
          */
-        const workflows = { plugins: workflowPlugins, configures: namedWorkflows }
-
-        const executors = { configures: namedExecutors, plugins: executorPlugins }
+        const workflows = { plugins: workflowPlugins }
+        /**
+         * @type {import("../../src/executor/protocol").ExecutorsContextInit}
+         */
+        const executors = { plugins: executorPlugins }
 
         const workingContext = this._buildContext({ workflows, executors }, {})
 
-        const rootWorkFlowPluginId = engineConfigure.root?.workflow.plugin
-        /**
-         * @type {WorkFlowPluginType}
-         */
-        const rootWorkFlowPlugin = workingContext.workflows.plugins.get(rootWorkFlowPluginId)
+        const rootWorkFlowPluginId = workingContext.engine.configure.get().root.workflow.id
 
-        const parsedRootConfigure = rootWorkFlowPlugin.getConfigureParams(rootConfigure)
-        workingContext.workflows.addConfigure(rootWorkFlowPluginId, parsedRootConfigure)
+        workingContext.workflows.addConfigure(rootWorkFlowPluginId, rootWorkflowConfigure)
 
         //名前付きプラグインからワークフローの設定を取り出す
-        const workflowConfigures = []
-        for (const [id, config] of Object.entries(namedExecutors)) {
+        const workflowConfigureChunks = []
+        let workflowConfigureChunk = new Map()
+
+        for (const [pluginid, config] of namedExecutors) {
 
             const plugin = workingContext.executors.getExecutorPlugin(config.plugin)
-            plugin.get()
+            const workflowConfigureMap = this._getSubWorkflow(plugin, config, pluginid, workingContext)
+            if (workflowConfigureMap == false) {
+                continue
+            }
+            for (const [workflowName, workflowConfigure] of Object.entries(workflowConfigureMap)) {
+                //ワークフローIDをworkflowNameから作る
+                //ワークフローから
+
+
+            }
         }
 
         // ワークフローのidからワークフローのコンフィグとプラグインを取り出す
@@ -213,12 +252,19 @@ class Registrator extends ContextBuilder {
      * @param {import("../../protocol/executor/protocol.d.ts").MaybeWithGetSubworkflow} plugin 
      * @param {*} configure
      * @param {*} pluginid
-     * @param {*} workingContext   
+     * @param {InstanceType<ContextType>} workingContext   
      */
     _getSubWorkflow(plugin, configure, pluginid, workingContext) {
         if ('getSubworkflow' in plugin === false) {
             return false
         }
+
+        // @ts-ignore
+        return plugin.getSubworkflow(configure)
+
+
+
+
 
     }
     _getWorkflowPlugins() {

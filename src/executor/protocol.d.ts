@@ -1,3 +1,5 @@
+import type { ExecutorsContext } from "./context.cjs"
+
 export type ExecutorConfigureFormatBaseType<OptionsType = any> = {
     plugin: any,
     options: OptionsType
@@ -31,4 +33,4 @@ export type ExecutorConfigures = {
     plugins?: any
 }
 
-
+export type ExecutorsContextInit = ConstructorParameters<typeof ExecutorsContext>[0]

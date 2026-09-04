@@ -8,8 +8,9 @@ const merge = require("deepmerge")
 class BasicWithGetSubworkflowClass {
 
 
-    // @ts-ignore
+
     /**
+     * @abstract
      * @type {import("./protocol").SubWorkflowConfigures}
      */
     _subworkflows

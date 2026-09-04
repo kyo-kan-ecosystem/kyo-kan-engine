@@ -45,7 +45,7 @@ class ExecutorsContext {
      * @param {any} configureId
      * @returns {import("./protocol").ExecutorConfigureFormatType}
      */
-    getOptions(configureId) {
+    getConfigure(configureId) {
         const configure = this._pluginConfiguresRepositry.get(configureId)
         if (configure === null || typeof configure === 'undefined') {
             throw new ConfigureDoesNotExistsError(configureId)
@@ -68,14 +68,14 @@ class ExecutorsContext {
      */
     getOptionsAndExecutor(configureId) {
 
-        const options = this.getOptions(configureId) || {}
-        if ('plugin' in options.plugin === false || options.plugin === null) {
-            throw new PlugidDoesNotSetInConfigureError(configureId, options)
+        const configure = this.getConfigure(configureId) || {}
+        if ('plugin' in configure.plugin === false || configure.plugin === null) {
+            throw new PlugidDoesNotSetInConfigureError(configureId, configure)
 
         }
 
-        const executor = this.getExecutorPlugin(options.plugin)
-        return { options, executor }
+        const executor = this.getExecutorPlugin(configure.plugin)
+        return { configure, executor }
 
 
 
