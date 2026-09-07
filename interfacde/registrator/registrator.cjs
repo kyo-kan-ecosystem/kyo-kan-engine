@@ -131,7 +131,7 @@ class Registrator {
      * @param {any} workflowPlugins
      * 
      */
-    async _convert(rootWorkflowConfigure, namedWorkflows, namedExecutors, executorPlugins, workflowPlugins, engine) {
+    async _parse(rootWorkflowConfigure, namedWorkflows, namedExecutors, executorPlugins, workflowPlugins, engine) {
 
 
         /**

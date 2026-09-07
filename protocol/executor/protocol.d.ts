@@ -2,21 +2,21 @@ import { executeMode } from "../../src/states/protocol"
 import { WorkflowConfigureFormatBase, WorkflowConfigureFormatUnion } from "../../src/workflow/plugin/protocol"
 import { Context } from "../context/protocol"
 
-export type ExecutorConfigure<ParamsType = any> = {
-    params: ParamsType,
+export type ExecutorConfigure<DatasType = any> = {
+    datas: DatasType,
     plugin: string
     subworkflows?: { [k in string]: WorkflowConfigureFormatBase }
     enterFunction?: string
 }
-export type ExecutorFunctionResponse<WorkflowParamsType = any> = {
+export type ExecutorFunctionResponse<WorkflowDatasType = any> = {
     mode: executeMode,
     workflow?: string,
-    workflowParams?: WorkflowParamsType,
+    workflowDatas?: WorkflowDatasType,
     callback?: string,
 
 }
 export type SubWorkflowConfigures = { [k in string]: Partial<WorkflowConfigureFormatUnion> }
-export type BasicConfigure = { subworkflows?: SubWorkflowConfigures, params: any }
+export type BasicConfigure = { subworkflows?: SubWorkflowConfigures, datas: any }
 export type ExecutorFunctionBaseType<ConfiguresType = any, RequestType = any, ContextType = Context> = (configures: ConfiguresType, request: RequestType, context: ContextType) => void
 export type ExecuterFunction<ConfiguresType = any, RequestType = any> = ExecutorFunctionBaseType<ConfiguresType, RequestType, Context>
 export type GetSubworkflowFunctionType<ConfiguresType = any> = (configure: ConfiguresType) => { [k in string]: WorkflowConfigureFormatUnion }

@@ -14,7 +14,7 @@ export type PluginFormat = {
 }
 export type SubWorkflowConfigureFormat = {
 
-    params: any
+    datas: any
 
 }
 export type ExecutorConfigureFormat = {

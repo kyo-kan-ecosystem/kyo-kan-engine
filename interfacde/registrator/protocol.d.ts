@@ -1,6 +1,6 @@
-export type WorkflowInterStep<executorConfigureType = any, workflowParamsType = any> = {
+export type WorkflowInterStep<workflowDatasType = any, executorConfigureType = any,> = {
     plugin: string;
-    id?: string;
+    executorId?: string;
     executorConfigure?: executorConfigureType;
-    workflowParams?: workflowParamsType;
+    workflowDatas?: workflowDatasType;
 }

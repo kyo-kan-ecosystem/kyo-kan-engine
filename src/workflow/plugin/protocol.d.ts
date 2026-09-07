@@ -5,19 +5,19 @@ import { Context } from "../../states/protocol"
  
  */
 
-export type WorkflowConfigureFormatBase<ExecutorsType = any, ParamsType = any> = {
+export type WorkflowConfigureFormatBase<ExecutorsType = any, DatasType = any> = {
     plugin: string;
     executors: ExecutorsType;
-    params?: ParamsType;
+    datas?: DatasType;
 }
 
 /**
  * Confingure which Call Registered Workflow
  * 
  */
-export type WorkflowConfigureFormatIdType<ParamsType = any> = {
+export type WorkflowConfigureFormatIdType<DatasType = any> = {
     id: string
-    params?: ParamsType
+    datas?: DatasType
 
 
 }

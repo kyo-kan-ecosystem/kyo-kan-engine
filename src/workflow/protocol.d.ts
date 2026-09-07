@@ -15,16 +15,16 @@ export type WorkflowStateMember = {
 }
 
 
-export type WorkflowConfigureParseResult<ParamsType = any, ExecutorsType = any> = {
-    params?: ParamsType
+export type WorkflowConfigureParseResult<DatasType = any, ExecutorsType = any> = {
+    datas?: DatasType
     executors?: ExecutorsType
 }
 
 
 
-export type WorkflowPluginConfigure<DataType = any> = {
+export type WorkflowPluginConfigure<DatasType = any> = {
     plugin: any,
-    data: DataType
+    datas: DatasType
 }
 
 
