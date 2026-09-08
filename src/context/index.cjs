@@ -57,11 +57,7 @@ class Context {
      * @type {States}
      */
     states
-    /**
-     * @type {Repositries}
-     */
-    // @ts-ignore
-    repositries
+
 
     /**
      * @type {Bords}

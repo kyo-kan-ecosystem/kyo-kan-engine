@@ -37,7 +37,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     _boot(context, request) {
         const bootExecutors = context.executors.getBootPlugins()
         const bootPromies = []
-        const bootCallbackName = context.repositries.configures.engine.get().boot.callback
+        const bootCallbackName = context.engine.configure.get().boot.callback
         for (const { executor, options } of bootExecutors) {
 
             if (bootCallbackName in executor === false) {
@@ -88,7 +88,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         context.histories.forword(request)
 
         if (context.states.controll.checkCallback() === false) {
-            context.states.controll.setCallback(context.repositries.configures.engine.get().executor.enterFunc)
+            context.states.controll.setCallback(context.engine.configure.get().executor.enterFunc)
 
         }
         return [Promise.resolve({ context })]
