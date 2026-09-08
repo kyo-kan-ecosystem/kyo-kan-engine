@@ -1,7 +1,6 @@
 const { ContextBridgeResolver } = require("./resolver/index.cjs")
 const { Bords } = require("../bords/bords.cjs")
 const { HistoriesContext: Histories } = require("../history/context.cjs")
-const { Repositries } = require("../configure/context.cjs")
 const { States } = require("../states/states.cjs")
 const { WorkflowsContext } = require("../workflow/context.cjs")
 const { ExecutorsContext } = require("../executor/context.cjs")
