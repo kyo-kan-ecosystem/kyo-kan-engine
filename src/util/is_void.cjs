@@ -15,4 +15,19 @@ function isVoid(value) {
 function dynamicDefault(value, defaultValue) {
     return isVoid(value) === true ? defaultValue : value
 }
-module.exports = { isVoid, dynamicDefault }
+/**
+ * 
+ * @param {any} value
+ * @param {new (arg0: any) => any} errorClass
+ * @param {any} messageData 
+ */
+function assertIsNotVoid(value, errorClass, messageData = undefined) {
+    if (isVoid(value) === true) {
+        if (isVoid(messageData) === true) {
+            throw new errorClass(value)
+        }
+        throw new errorClass(messageData)
+    }
+}
+
+module.exports = { isVoid, dynamicDefault, assertIsNotVoid }

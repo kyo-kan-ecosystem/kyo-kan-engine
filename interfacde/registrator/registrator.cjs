@@ -125,13 +125,13 @@ class Registrator {
      * executorPlugins 実行プラグイン本体
      * workflowPlugins ワークフロープラグイン本体
      * @param {import('../../protocol/configure/protocol.d.ts').ConfigureFormat} rootWorkflowConfigure
-     * @param {any} namedWorkflows
-     * @param {{ [s: string]: any; } | ArrayLike<any>} namedExecutors
+     * @param {{[k in string]:import('../../protocol/configure/protocol.d.ts').ConfigureFormat}} namedWorkflows
+     * @param {{ [s: string]: import("../../protocol/index").ExecutorConfigure }} namedExecutorConfigures
      * @param {any} executorPlugins
      * @param {any} workflowPlugins
      * 
      */
-    async _parse(rootWorkflowConfigure, namedWorkflows, namedExecutors, executorPlugins, workflowPlugins, engine) {
+    async _parse(rootWorkflowConfigure, namedWorkflows, namedExecutorConfigures, executorPlugins, workflowPlugins, engine) {
 
 
         /**
@@ -150,22 +150,47 @@ class Registrator {
         workingContext.workflows.addConfigure(rootWorkFlowPluginId, rootWorkflowConfigure)
 
         //名前付きプラグインからワークフローの設定を取り出す
-        const workflowConfigureChunks = []
-        let workflowConfigureChunk = new Map()
 
-        for (const [pluginid, config] of namedExecutors) {
+        /**
+         * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, configure:any, executorId?:any}[]}
+         */
+        const workflowConfigures = [{ id: rootWorkFlowPluginId, configurePath: [], configure: rootWorkflowConfigure }]
+        let workflowIndex = 0
+        let workflowCountedId = 0
+        for (const workflowId of namedWorkflows) {
 
-            const plugin = workingContext.executors.getExecutorPlugin(config.plugin)
-            const workflowConfigureMap = this._getSubWorkflow(plugin, config, pluginid, workingContext)
-            if (workflowConfigureMap == false) {
-                continue
+        }
+
+
+        /**
+         * @type {{id?:any, configurePath:any[], configure:any, workflowId?:any, workflowConfigure?:any}}
+         */
+        const executorDatas = []
+        let executorIndex = 0
+        let executorCountedId = 0
+        while (workflowConfigures.length > workflowIndex || executorDatas.length > executorIndex) {
+
+
+            while (workflowConfigures.length > workflowIndex) {
+
             }
-            for (const [workflowName, workflowConfigure] of Object.entries(workflowConfigureMap)) {
-                //ワークフローIDをworkflowNameから作る
-                //ワークフローから
-
+            while (executorDatas.length > executorIndex) {
+                const executorData = executorDatas[executorIndex]
+                executorIndex++
+                const plugin = workingContext.executors.getExecutorPlugin(executorData.configure.plugin)
+                const workflowConfigureMap = this._getSubWorkflow(plugin, config, executorData.id, workingContext)
+                if (workflowConfigureMap == false) {
+                    continue
+                }
 
             }
+        }
+
+        for (const [pluginId, config] of namedExecutorConfigures) {
+
+
+
+
         }
 
         // ワークフローのidからワークフローのコンフィグとプラグインを取り出す
@@ -264,6 +289,14 @@ class Registrator {
 
 
 
+
+
+    }
+    /**
+     * @param {{id:any, configure:any, path:any[]}[]} datas
+     * @param {InstanceType<ContextType>} workingContext  
+     */
+    _processExecutorConfigure(datas, workingContext) {
 
 
     }

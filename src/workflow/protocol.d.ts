@@ -1,3 +1,4 @@
+import { WithConfigurePath } from "../../interfacde/configure/protocol";
 
 export type { AbstractWorkflow as WorkflowPlugin } from "./plugin/protocol.class.cjs"
 export type WorkflowState<StateType = any, InitDataType = any> = {
@@ -25,8 +26,7 @@ export type WorkflowConfigureParseResult<DatasType = any, ExecutorsType = any> =
 export type WorkflowPluginConfigure<DatasType = any> = {
     plugin: any,
     datas: DatasType
-}
-
+} & WithConfigurePath
 
 
 

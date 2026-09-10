@@ -63,10 +63,11 @@ class PluginIdIsInvalidError extends Error {
 
 class PlugidDoesNotSetInConfigureError extends Error {
     /**
-     * @param {any} configureId
-     * @param {any} configure
+     * @param {Object} param0 
+     * @param {*} param0.configureId 
+     * @param {*} param0.configure 
      */
-    constructor(configureId, configure) {
+    constructor({ configureId, configure }) {
         super(`Plugin Id Does not set in configure. ${configureId} ${JSON.stringify(configure)}`)
     }
 

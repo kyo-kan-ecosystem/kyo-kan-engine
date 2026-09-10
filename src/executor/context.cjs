@@ -5,6 +5,8 @@ const { ExecutorPluginRepositry } = require("./repositry/plugin.cjs")
 
 
 const { SubworkflowNameDoesNotExistsError, ConfigureDoesNotExistsError, PluginDoesNotExistsError, PlugidDoesNotSetInConfigureError } = require("./errors.cjs")
+const { assertIsNotVoid } = require("../util/is_void.cjs")
+
 
 class ExecutorsContext {
     /**
@@ -47,9 +49,9 @@ class ExecutorsContext {
      */
     getConfigure(configureId) {
         const configure = this._pluginConfiguresRepositry.get(configureId)
-        if (configure === null || typeof configure === 'undefined') {
-            throw new ConfigureDoesNotExistsError(configureId)
-        }
+
+        assertIsNotVoid(configure, ConfigureDoesNotExistsError)
+
         return configure
     }
     /**
@@ -69,11 +71,8 @@ class ExecutorsContext {
     getOptionsAndExecutor(configureId) {
 
         const configure = this.getConfigure(configureId) || {}
-        if ('plugin' in configure.plugin === false || configure.plugin === null) {
-            throw new PlugidDoesNotSetInConfigureError(configureId, configure)
-
-        }
-
+        const plugin = configure.plugin
+        assertIsNotVoid(plugin, PlugidDoesNotSetInConfigureError, { configureId, plugin })
         const executor = this.getExecutorPlugin(configure.plugin)
         return { configure, executor }
 

@@ -1,3 +1,4 @@
+const { isVoid } = require("../../util/is_void.cjs")
 const { ConfigureIdIsInvalidError, SubworkflowNameIsInvalidError, SubworkflowNameDoesNotExistsError } = require("./errors.cjs")
 
 
@@ -27,7 +28,7 @@ class ContextBridgeResolver {
      * @param {any} name
      */
     resolveSubworkflowId(configureId, name) {
-        if (configureId === null || typeof configureId === 'undefined') {
+        if (isVoid(configureId) === true) {
             throw new ConfigureIdIsInvalidError(configureId)
         }
         if (name === null || typeof name === 'undefined') {
@@ -35,7 +36,11 @@ class ContextBridgeResolver {
         }
 
 
-        return
+        const subworkflowMap = this._context.executors.getConfigure(configureId).subworkflowMap
+        if (isVoid(subworkflowMap)) {
+
+        }
+        return [name]
 
 
 
