@@ -1,1 +1,1 @@
-module.exports = require('../../src/workflow/plugin/protocol.class')
+module.exports = require('../../src/workflow/plugin/protocol.class.cjs')

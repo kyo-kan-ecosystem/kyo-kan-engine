@@ -6,3 +6,12 @@ export type PluginModule<MetaType = any, EditDataType = any, CreateDataType = an
     create: () => CreateDataType,
     biuld: () => BuildResultType
 }
+
+export type PluginConfigureBaseProtocol<OptionsType = any, ExtendType = {}> = ({
+    plugin: any,
+    options?: OptionsType
+
+} & ExtendType) | {
+    id: any
+}
+

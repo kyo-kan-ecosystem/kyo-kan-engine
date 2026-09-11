@@ -120,6 +120,7 @@ class Registrator {
 
     }
     /**
+     * todo: bootを追加
      * namedWorkflows ライブラリ的に呼び出しできる名前付きライブラリ
      * namedExecutors ライブラリ的に呼び出しできる名前付き実行単位
      * executorPlugins 実行プラグイン本体

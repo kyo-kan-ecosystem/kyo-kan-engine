@@ -52,8 +52,15 @@ export type WorkflowSteps<ContextType = Context<any, any>> = WorkflowStep<Contex
 
 export type MaybeWorkflowSteps = WorkflowSteps | WorkflowStep
 
+export type MemberExecutorData<WorkflowDataType = any> = {
+    plugin: any,
+    options: any
+    workflowData: WorkflowDataType
+} | {
+    workflowData: WorkflowDataType
+    id: any
+}
 
-
-
+export type MemberExecutorDatas<WorkflowDataType> =
 
 

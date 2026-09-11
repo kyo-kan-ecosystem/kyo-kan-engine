@@ -1,7 +1,3 @@
-
-
-
-
 /**
  * 
  */
@@ -86,10 +82,10 @@ class AbstractWorkflow {
      * @abstract
      * @param {any} configure
 
-     * @returns {import("../protocol").WorkflowConfigureParseResult}
+     * @returns {{configure:import("../protocol").WorkflowConfigureParseResult}, executors:any}}
      */
     getConfigureParams(configure) {
-        return configure
+        throw new Error('not implemt')
     }
     /**
      * @abstract
@@ -99,7 +95,7 @@ class AbstractWorkflow {
      * @param {any?} workingObject
      */
     addExecutor(configure, executorId, executorConfig, workingObject) {
-
+        throw new Error('not implemt')
     }
     /**
      * @abstract

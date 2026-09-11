@@ -1,5 +1,5 @@
 import { WithConfigurePath } from "../../interfacde/configure/protocol";
-
+import { PluginConfigureBaseProtocol } from "../../protocol/plugin/protocol.d.ts"
 export type { AbstractWorkflow as WorkflowPlugin } from "./plugin/protocol.class.cjs"
 export type WorkflowState<StateType = any, InitDataType = any> = {
     id: any;
@@ -14,22 +14,22 @@ export type WorkflowStateMember = {
     workflow?: WorkflowState
 
 }
+export type WorkflowConfigureExtention<ExecutorsType = any> = {
 
-
-export type WorkflowConfigureParseResult<DatasType = any, ExecutorsType = any> = {
-    datas?: DatasType
     executors?: ExecutorsType
 }
 
-
-
-export type WorkflowPluginConfigure<DatasType = any> = {
-    plugin: any,
-    datas: DatasType
-} & WithConfigurePath
+export type WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any> = PluginConfigureBaseProtocol<OptionsType, WorkflowConfigureExtention<ExecutorsType>>
 
 
 
+export type WorkflowConfigureParseResult<ExecutorsType = any, OptionsType = any> = WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any >
+
+
+export type WorkflowPluginConfigureReadable<OptionsType = any, ExecutorsType = any> = WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any >
+
+
+export type WorkflowPluginConfigure<ExecutorsType = any, OptionsType = any> = WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any > & WithConfigurePath
 
 
 export type SubworkflowDefinition {

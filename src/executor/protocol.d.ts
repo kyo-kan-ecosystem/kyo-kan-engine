@@ -1,12 +1,17 @@
 import { WithConfigurePath } from "../../interfacde/configure/protocol"
+
 import type { ExecutorsContext } from "./context.cjs"
 
-export type ExecutorConfigureFormatBaseType<OptionsType = any> = {
+export type ExecutorConfigureFormatBaseType<OptionsType = any> = PluginConfigureBaseProtocol {
     plugin: any,
-    options: OptionsType
+        options ?: OptionsType
 
 
-} & WithConfigurePath
+}
+
+export type ExecutorConfigureReadableFormatType<OptionsType = any> = ExecutorConfigureFormatBaseType {
+    subworkflows ?: any
+}
 
 export type SubworkflowsConfigureOuterSettingFormat = {
     workflow: any,
@@ -25,10 +30,8 @@ export type SubworkflowsConfigureFormat<ConfigureType = any> = {
 }
 
 export type ExecutorConfigureFormatType<ConfigureType = any> = ExecutorConfigureFormatBaseType<ConfigureType> & {
-
-    subWorkflows?: SubworkflowsConfigureFormat,
     subworkflowMap?: { [name in any]: any }
-}
+} & WithConfigurePath
 
 export type ExecutorConfigures = {
     boots?: any,

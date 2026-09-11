@@ -50,7 +50,7 @@ class ExecutorsContext {
     getConfigure(configureId) {
         const configure = this._pluginConfiguresRepositry.get(configureId)
 
-        assertIsNotVoid(configure, ConfigureDoesNotExistsError)
+        assertIsNotVoid(configureId, ConfigureDoesNotExistsError)
 
         return configure
     }
