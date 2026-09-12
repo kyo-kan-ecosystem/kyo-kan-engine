@@ -21,12 +21,12 @@ export type WorkflowConfigureExtention<ExecutorsType = any> = {
 
 export type WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any> = PluginConfigureBaseProtocol<OptionsType, WorkflowConfigureExtention<ExecutorsType>>
 
-
+const t: WorkflowPluginConfigureBase = {}
 
 export type WorkflowConfigureParseResult<ExecutorsType = any, OptionsType = any> = WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any >
 
 
-export type WorkflowPluginConfigureReadable<OptionsType = any, ExecutorsType = any> = WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any >
+export type WorkflowPluginConfigureReadable<ExecutorsType = any, OptionsType = any> = WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any >
 
 
 export type WorkflowPluginConfigure<ExecutorsType = any, OptionsType = any> = WorkflowPluginConfigureBase<ExecutorsType = any, OptionsType = any > & WithConfigurePath
