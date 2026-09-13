@@ -125,9 +125,9 @@ class Registrator {
      * namedExecutors ライブラリ的に呼び出しできる名前付き実行単位
      * executorPlugins 実行プラグイン本体
      * workflowPlugins ワークフロープラグイン本体
-     * @param {import('../../protocol/configure/protocol.d.ts').ConfigureFormat} rootWorkflowConfigure
-     * @param {{[k in string]:import('../../protocol/configure/protocol.d.ts').ConfigureFormat}} namedWorkflows
-     * @param {{ [s: string]: import("../../protocol/index").ExecutorConfigure }} namedExecutorConfigures
+     * @param {import("../../src/workflow/protocol").RootWorkflowConfigure} rootWorkflowConfigure
+     * @param {{[k in string]:import("../../src/workflow/protocol").WorkflowPluginConfigureReadable}} namedWorkflows
+     * @param {{ [s in string]: import("../../src/executor/protocol").ExecutorConfigureReadable }} namedExecutorConfigures
      * @param {any} executorPlugins
      * @param {any} workflowPlugins
      * 
@@ -147,28 +147,41 @@ class Registrator {
         const workingContext = this._buildContext({ workflows, executors }, {})
 
         const rootWorkFlowPluginId = workingContext.engine.configure.get().root.workflow.id
+        const rootWorkflowPlugin = workingContext.engine.configure.get().root.workflow.plugin
 
-        workingContext.workflows.addConfigure(rootWorkFlowPluginId, rootWorkflowConfigure)
+
+
+
+
 
         //名前付きプラグインからワークフローの設定を取り出す
 
         /**
          * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, configure:any, executorId?:any}[]}
          */
-        const workflowConfigures = [{ id: rootWorkFlowPluginId, configurePath: [], configure: rootWorkflowConfigure }]
+        const workflowConfigures = [{ id: rootWorkFlowPluginId, configurePath: { root: 'root', expressions: [] }, configure: Object.assign({ plugin: rootWorkflowPlugin }, rootWorkflowConfigure) }]
         let workflowIndex = 0
         let workflowCountedId = 0
-        for (const workflowId of namedWorkflows) {
+        for (const [id, configure] of Object.entries(namedWorkflows)) {
+            workflowConfigures.push({ id, configurePath: { root: 'workflow', expressions: [id] }, configure })
 
         }
 
 
         /**
-         * @type {{id?:any, configurePath:any[], configure:any, workflowId?:any, workflowConfigure?:any}}
+         * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, workflowId?:any, configure:any}[]}
          */
         const executorDatas = []
+        for (const [id, configure] of Object.entries(namedExecutorConfigures)) {
+            executorDatas.push({ id, configurePath: { root: 'executor', expressions: [id] }, configure })
+
+        }
+
         let executorIndex = 0
         let executorCountedId = 0
+
+
+
         while (workflowConfigures.length > workflowIndex || executorDatas.length > executorIndex) {
 
 
