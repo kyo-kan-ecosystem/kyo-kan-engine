@@ -1,6 +1,6 @@
 const { ArrayRepositry } = require("../../repositry/array_repositry.cjs");
 /**
- * @extends {ArrayRepositry<import("../protocol").ExecutorConfigureFormatType>}
+ * @extends {ArrayRepositry<string | number>}
  */
 class BootExecutorConfigureRepositry extends ArrayRepositry {
 

@@ -12,17 +12,17 @@ class ExecutorsContext {
     /**
      * @type {import("./repositry/configure.cjs").ExecutorConfigureRepositry}   
      *  */
-    _pluginConfiguresRepositry
+    pluginConfigures
 
     /**
      * @type {ExecutorPluginRepositry}
      */
-    _pluginsRepositry
+    plugins
 
     /**
      * @type {BootExecutorConfigureRepositry}
      */
-    _bootConfigureRepositry
+    bootConfigures
 
     /**
      * @param {Object} param0
@@ -35,9 +35,9 @@ class ExecutorsContext {
     constructor({ configures = null, plugins = null, configuresRepositryClass = ExecutorConfigureRepositry, pluginsRepositryClass = ExecutorPluginRepositry, bootPluginRepositryClass = BootExecutorConfigureRepositry } = {}) {
 
 
-        this._pluginConfiguresRepositry = new configuresRepositryClass(configures?.plugins)
-        this._pluginsRepositry = new pluginsRepositryClass(plugins)
-        this._bootConfigureRepositry = new bootPluginRepositryClass(configures?.boots)
+        this.pluginConfigures = new configuresRepositryClass(configures?.plugins)
+        this.plugins = new pluginsRepositryClass(plugins)
+        this.bootConfigures = new bootPluginRepositryClass(configures?.boots)
 
 
 
@@ -48,7 +48,7 @@ class ExecutorsContext {
      * @returns {import("./protocol").ExecutorConfigureFormatType}
      */
     getConfigure(configureId) {
-        const configure = this._pluginConfiguresRepositry.get(configureId)
+        const configure = this.pluginConfigures.get(configureId)
 
         assertIsNotVoid(configureId, ConfigureDoesNotExistsError)
 
@@ -59,7 +59,7 @@ class ExecutorsContext {
      * @returns
      */
     getExecutorPlugin(pluginId) {
-        const plugin = this._pluginsRepositry.get(pluginId)
+        const plugin = this.plugins.get(pluginId)
         if (plugin === null || typeof plugin === 'undefined') {
             throw new PluginDoesNotExistsError(pluginId)
         }
@@ -80,13 +80,13 @@ class ExecutorsContext {
 
     }
     getInitData() {
-        const plugins = this._pluginsRepositry
+        const plugins = this.plugins
         /**
          * @type {import("./protocol").ExecutorConfigures}
          */
         const configures = {}
-        configures.plugins = this._pluginsRepositry.getDatas()
-        configures.boots = this._bootConfigureRepositry.getDatas()
+        configures.plugins = this.plugins.getDatas()
+        configures.boots = this.bootConfigures.getDatas()
         return { plugins, configures }
 
     }
@@ -95,10 +95,10 @@ class ExecutorsContext {
          * @type {{options:any, executor:any}[]}
          */
         const results = []
-        const bootPluginConfigures = this._bootConfigureRepositry.getDatas()
-        for (const configure of bootPluginConfigures) {
-            const executor = this.getExecutorPlugin(configure.plugin)
-            results.push({ options: configure.options, executor })
+        const bootPluginConfigureIDs = this.bootConfigures.getDatas()
+        for (const configureID of bootPluginConfigureIDs) {
+
+            results.push(this.pluginConfigures.get(configureID))
         }
         return results
 

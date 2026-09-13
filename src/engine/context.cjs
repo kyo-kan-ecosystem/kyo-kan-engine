@@ -1,4 +1,7 @@
+const { DEFAULT_ENGINE_CONFIGURE } = require("./defaults/configure.cjs")
 const { EngineConfigureRepositry } = require("./repositry/configure.cjs")
+const deepmerge = require('deepmerge')
+
 /**
  * 
  * 
@@ -14,6 +17,7 @@ class EngineContext {
      * 
      */
     constructor({ configureClass = EngineConfigureRepositry, configureInit = undefined } = {}) {
+        const _configureInit = deepmerge(DEFAULT_ENGINE_CONFIGURE, configureInit)
         this.configure = new configureClass(configureInit)
 
 

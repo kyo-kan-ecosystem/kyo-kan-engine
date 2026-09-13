@@ -10,7 +10,7 @@ type ExecutorConfiguresExtend<SubworkflowsType> = {
 
 export type ExecutorConfigureReadable<OptionsType = any, SubworkflowsType = any> = PluginConfigureBaseProtocol<OptionsType, ExecutorConfiguresExtend<SubworkflowsType>>
 export type SubworkflowMapType = Object<string | number, string | number>
-export type ExecutorConfigureFormatType<OptionsType = any> = PluginConfigureBaseProtocol<OptionsType, ExecutorConfiguresExtend<SubworkflowsType>> & WithConfigurePath
+export type ExecutorConfigureFormatType<OptionsType = any> = PluginConfigureBaseProtocol<OptionsType, ExecutorConfiguresExtend<SubworkflowsMapType>> & WithConfigurePath
 
 
 

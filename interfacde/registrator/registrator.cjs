@@ -128,11 +128,13 @@ class Registrator {
      * @param {import("../../src/workflow/protocol").RootWorkflowConfigure} rootWorkflowConfigure
      * @param {{[k in string]:import("../../src/workflow/protocol").WorkflowPluginConfigureReadable}} namedWorkflows
      * @param {{ [s in string]: import("../../src/executor/protocol").ExecutorConfigureReadable }} namedExecutorConfigures
+     * @param { import("../../src/executor/protocol").ExecutorConfigureReadable[]} bootExecutors
+     * @param {*} engineConfigure  
      * @param {any} executorPlugins
      * @param {any} workflowPlugins
      * 
      */
-    async _parse(rootWorkflowConfigure, namedWorkflows, namedExecutorConfigures, executorPlugins, workflowPlugins, engine) {
+    async _parse(rootWorkflowConfigure, namedWorkflows, namedExecutorConfigures, executorPlugins, workflowPlugins, engineConfigure, bootExecutors) {
 
 
         /**
@@ -143,8 +145,9 @@ class Registrator {
          * @type {import("../../src/executor/protocol").ExecutorsContextInit}
          */
         const executors = { plugins: executorPlugins }
+        const engine = { configureInit: engineConfigure }
 
-        const workingContext = this._buildContext({ workflows, executors }, {})
+        const workingContext = this._buildContext({ workflows, executors, engine }, {})
 
         const rootWorkFlowPluginId = workingContext.engine.configure.get().root.workflow.id
         const rootWorkflowPlugin = workingContext.engine.configure.get().root.workflow.plugin
@@ -172,13 +175,32 @@ class Registrator {
          * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, workflowId?:any, configure:any}[]}
          */
         const executorDatas = []
+        let executorIndex = 0
+        let executorCountedId = 0
         for (const [id, configure] of Object.entries(namedExecutorConfigures)) {
             executorDatas.push({ id, configurePath: { root: 'executor', expressions: [id] }, configure })
 
         }
+        workingContext.executors.getBootPlugins
+        let bootIndex
+        for (const configure of bootExecutors) {
+            let id
+            if (configure.id) {
+                id = configure.id
+            }
+            else {
+                id = executorCountedId
+                executorCountedId++
+                executorDatas.push({ id, configurePath: { root: 'boot', expressions: [bootIndex] }, configure })
+            }
 
-        let executorIndex = 0
-        let executorCountedId = 0
+
+            workingContext.executors.bootConfigures.add(id)
+            bootIndex++
+
+        }
+
+
 
 
 
