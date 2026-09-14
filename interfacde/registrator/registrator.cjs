@@ -181,7 +181,7 @@ class Registrator {
             executorDatas.push({ id, configurePath: { root: 'executor', expressions: [id] }, configure })
 
         }
-        workingContext.executors.getBootPlugins
+
         let bootIndex
         for (const configure of bootExecutors) {
             let id

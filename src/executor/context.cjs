@@ -4,8 +4,8 @@ const { ExecutorConfigureRepositry } = require("./repositry/configure.cjs")
 const { ExecutorPluginRepositry } = require("./repositry/plugin.cjs")
 
 
-const { SubworkflowNameDoesNotExistsError, ConfigureDoesNotExistsError, PluginDoesNotExistsError, PlugidDoesNotSetInConfigureError } = require("./errors.cjs")
-const { assertIsNotVoid } = require("../util/is_void.cjs")
+const { SubworkflowNameDoesNotExistsError, ConfigureDoesNotExistsError, PluginDoesNotExistsError, PlugidDoesNotSetInConfigureError, ConfigureIdIsInvalidError } = require("./errors.cjs")
+const { assertIsNotVoid, isVoid } = require("../util/is_void.cjs")
 
 
 class ExecutorsContext {
@@ -45,12 +45,18 @@ class ExecutorsContext {
 
     /**
      * @param {any} configureId
-     * @returns {import("./protocol").ExecutorConfigureFormatType}
+     * @returns {import("./protocol").ExecutorConfigureProtocol}
      */
     getConfigure(configureId) {
+        assertIsNotVoid(configureId, ConfigureIdIsInvalidError)
+        /**
+         * @type {import("./protocol").ExecutorConfigureProtocol}
+         */
         const configure = this.pluginConfigures.get(configureId)
+        assertIsNotVoid(configure, ConfigureDoesNotExistsError)
 
-        assertIsNotVoid(configureId, ConfigureDoesNotExistsError)
+
+
 
         return configure
     }
@@ -67,14 +73,16 @@ class ExecutorsContext {
     }
     /**
      * @param {any} configureId
+     * 
      */
     getOptionsAndExecutor(configureId) {
 
         const configure = this.getConfigure(configureId) || {}
+
         const plugin = configure.plugin
         assertIsNotVoid(plugin, PlugidDoesNotSetInConfigureError, { configureId, plugin })
         const executor = this.getExecutorPlugin(configure.plugin)
-        return { configure, executor }
+        return { options: configure.options, executor }
 
 
 
@@ -98,7 +106,8 @@ class ExecutorsContext {
         const bootPluginConfigureIDs = this.bootConfigures.getDatas()
         for (const configureID of bootPluginConfigureIDs) {
 
-            results.push(this.pluginConfigures.get(configureID))
+
+            results.push({ options: this.pluginConfigures.get(configureID).options, executor: this.getExecutorPlugin() })
         }
         return results
 

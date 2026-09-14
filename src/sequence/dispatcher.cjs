@@ -347,10 +347,10 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         if (typeof executorId === 'undefined' || executorId === null) {
             return { context }
         }
-        const { configure, executor } = context.executors.getOptionsAndExecutor(executorId)
+        const { options, executor } = context.executors.getOptionsAndExecutor(executorId)
 
         // @ts-ignore
-        await executor[callback].call(context, request, configure)
+        await executor[callback].call(context, request, options)
         return { context }
 
     }

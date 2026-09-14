@@ -1,7 +1,7 @@
 const { Repositry } = require("../../repositry/base.cjs")
 
 /**
- * @extends {Repositry<import("../protocol").ExecutorConfigureFormatType>}
+ * @extends {Repositry<import("../protocol").ExecutorConfigureProtocol>}
  */
 class ExecutorConfigureRepositry extends Repositry { }
 

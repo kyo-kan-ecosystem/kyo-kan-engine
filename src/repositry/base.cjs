@@ -34,7 +34,7 @@ class Repositry {
     /**
      * 
      * @param {any} id 
-     * 
+     * @returns {DataType}
      */
     get(id) {
 

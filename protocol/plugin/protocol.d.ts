@@ -1,3 +1,4 @@
+import { WithConfigurePath } from "../../interfacde/configure/protocol"
 
 export type MCPStyleMeta = { type: string, description: string, items?: MCPStyleMeta, prefixItems }
 export type PluginModule<MetaType = any, EditDataType = any, CreateDataType = any, BuildResultType = any> = {
@@ -6,11 +7,14 @@ export type PluginModule<MetaType = any, EditDataType = any, CreateDataType = an
     create: () => CreateDataType,
     biuld: () => BuildResultType
 }
-export type PluginConfigureOnTheSpot<OptionsType = any> = {
+export type PluginConfigureBase<OptionsType = any, ExtendType = any> = {
     plugin: any,
     options?: OptionsType
-}
-export type PluginConfigureBaseProtocol<OptionsType = any, ExtendType = {}> = (PluginConfigureOnTheSpot<OptionsType> & ExtendType) | {
-    id: any
-}
+} & ExtendType
 
+export type PluginConfigureLink = { id: any }
+
+
+export type PluginConfigureBaseReadableProtocol<OptionsType = any, ExtendType = any> = PluginConfigureBase<OptionsType, ExtendType> | PluginConfigureLink
+
+export type PluginConfigureProtocol<OptionsType = any, ExtendType = any> = PluginConfigureBase<OptionsType, ExtendType> & WithConfigurePath

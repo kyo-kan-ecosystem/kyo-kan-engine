@@ -10,7 +10,7 @@ class ConfigureIdIsInvalidError extends Error {
      * @param {any} configureId
      */
     constructor(configureId) {
-        super(`configureId ${configureId} is invalid`)
+        super(`configureId  is void. ${configureId}`)
     }
 }
 
@@ -33,6 +33,7 @@ class SubworkflowNameDoesNotExistsError extends Error {
     }
 
 }
+
 class ConfigureDoesNotExistsError extends Error {
     /**
      * @param {any} configureId
