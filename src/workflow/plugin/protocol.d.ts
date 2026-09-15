@@ -1,14 +1,24 @@
+import { PluginConfigureProtocol, PluginConfigureBaseReadableProtocol as PluginConfigureReadableProtocolBase } from "../../../protocol/plugin/protocol"
 import { Context } from "../../states/protocol"
 
-/**
- * Confingure which call on the flay configure
- 
- */
 
-export type WorkflowConfigureFormatBase<ExecutorsType = any, DatasType = any> = {
+export type WorkflowConfigureExtend<ExecutorsType = any> = {
+
+    executors: ExecutorsType
+}
+
+
+
+export type WorkflowPluginConfigureReadable<ExecutorsType = any, OptionsType = any> = PluginConfigureReadableProtocolBase<OptionsType, WorkflowConfigureExtend<ExecutorsType>>
+export type WorkflowConfigure<ExecutorsType = any, OptionsType = any> = PluginConfigureProtocol<OptionsType, WorkflowConfigureExtend<ExecutorsType>>
+
+export type RootWorkflowConfigure<ExecutorsType = any, OptionsType = any> = Omit<PluginConfigureBase<OptionsType = any > , 'plugin' > & WorkflowConfigureExtention<ExecutorsType>
+
+
+export type WorkflowConfigureFormatBase<ExecutorsType = any, OptionsType = any> = {
     plugin: string;
     executors: ExecutorsType;
-    datas?: DatasType;
+    options?: OptionsType;
 }
 
 /**

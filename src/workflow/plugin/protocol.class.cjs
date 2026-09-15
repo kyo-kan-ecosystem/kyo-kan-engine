@@ -82,7 +82,7 @@ class AbstractWorkflow {
      * @abstract
      * @param {any} configure
 
-     * @returns {{configure:import("../protocol").WorkflowConfigureParseResult}, executors:any}}
+     * @returns {{configure:import("../protocol").WorkflowConfigure}, executors:any}}
      */
     getConfigureParams(configure) {
         throw new Error('not implemt')

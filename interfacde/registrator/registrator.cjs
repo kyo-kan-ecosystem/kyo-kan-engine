@@ -182,7 +182,7 @@ class Registrator {
 
         }
 
-        let bootIndex
+        let bootIndex = 0
         for (const configure of bootExecutors) {
             let id
             if (configure.id) {

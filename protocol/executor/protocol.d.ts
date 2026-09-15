@@ -19,7 +19,7 @@ export type SubWorkflowConfigures = { [k in string]: Partial<WorkflowConfigureFo
 export type BasicConfigure = { subworkflows?: SubWorkflowConfigures, datas: any }
 export type ExecutorFunctionBaseType<ConfiguresType = any, RequestType = any, ContextType = Context> = (configures: ConfiguresType, request: RequestType, context: ContextType) => void
 export type ExecuterFunction<ConfiguresType = any, RequestType = any> = ExecutorFunctionBaseType<ConfiguresType, RequestType, Context>
-export type GetSubworkflowFunctionType<ConfiguresType = any> = (configure: ConfiguresType) => { [k in string]: WorkflowConfigureFormatUnion }
+export type GetSubworkflowFunctionType<OptionsType = any> = (options: OptionsType) => { [k in string]: WorkflowConfigureFormatUnion }
 export type ExecutorBaseType = { [k in string]: ExecutorFunction }
 export type WithGetSubworkflow = {
     getSubworkflow: GetSubworkflowFunctionType
