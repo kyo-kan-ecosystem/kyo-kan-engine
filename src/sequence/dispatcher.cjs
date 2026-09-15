@@ -344,13 +344,11 @@ class SequenceDispatcherBase extends AbstractDispatcher {
      * @returns {Promise<import("./protocol").StepResult>}
      */
     async _call(executorId, callback, context, request) {
-        if (typeof executorId === 'undefined' || executorId === null) {
-            return { context }
-        }
+
         const { options, executor } = context.executors.getOptionsAndExecutor(executorId)
 
         // @ts-ignore
-        await executor[callback].call(context, request, options)
+        await executor[callback].call(executor, context, request, options)
         return { context }
 
     }
