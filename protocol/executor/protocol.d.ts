@@ -1,30 +1,19 @@
 import { executeMode } from "../../src/states/protocol"
-import { WorkflowConfigureFormatBase, WorkflowConfigureFormatUnion } from "../../src/workflow/plugin/protocol"
+import { WorkflowConfigureFormatBase, WorkflowPluginConfigureReadable } from "../../src/workflow/plugin/protocol"
 import { Context } from "../context/protocol"
 
-export type ExecutorConfigure<DatasType = any> = {
-    datas: DatasType,
-    plugin: string
-    subworkflows?: { [k in string]: WorkflowConfigureFormatBase }
-    enterFunction?: string
-}
-export type ExecutorFunctionResponse<WorkflowDatasType = any> = {
-    mode: executeMode,
-    workflow?: string,
-    workflowDatas?: WorkflowDatasType,
-    callback?: string,
 
-}
-export type SubWorkflowConfigures = { [k in string]: Partial<WorkflowConfigureFormatUnion> }
+
+export type SubWorkflowConfigures = { [k in string]: WorkflowPluginConfigureReadable }
 export type BasicConfigure = { subworkflows?: SubWorkflowConfigures, datas: any }
-export type ExecutorFunctionBaseType<ConfiguresType = any, RequestType = any, ContextType = Context> = (configures: ConfiguresType, request: RequestType, context: ContextType) => void
-export type ExecuterFunction<ConfiguresType = any, RequestType = any> = ExecutorFunctionBaseType<ConfiguresType, RequestType, Context>
-export type GetSubworkflowFunctionType<OptionsType = any> = (options: OptionsType) => { [k in string]: WorkflowConfigureFormatUnion }
+export type ExecutorFunctionBaseType<OptionsType = any, RequestType = any, ContextType = Context> = (options: OptionsType, request: RequestType, context: ContextType) => void
+export type ExecutorFunction<ConfiguresType = any, RequestType = any> = ExecutorFunctionBaseType<ConfiguresType, RequestType, Context>
+export type GetSubworkflowFunctionType<OptionsType = any> = (options: OptionsType) => SubWorkflowConfigures
 export type ExecutorBaseType = { [k in string]: ExecutorFunction }
 export type WithGetSubworkflow = {
     getSubworkflow: GetSubworkflowFunctionType
 
 }
 export type MaybeWithGetSubworkflow = Partial<WithGetSubworkflow>
-
+export type Exec
 

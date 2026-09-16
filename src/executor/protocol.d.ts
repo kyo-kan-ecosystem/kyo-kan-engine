@@ -1,6 +1,6 @@
 import { WithConfigurePath } from "../../interfacde/configure/protocol"
 import type { ExecutorsContext } from "./context.cjs"
-import { PluginConfigureBaseReadableProtocol, PluginConfigureProtocol } from "../../protocol/plugin/protocol"
+import { PluginConfigureReadableProtocolBase, PluginConfigureProtocol } from "../../protocol/plugin/protocol"
 
 
 type ExecutorConfiguresExtend<SubworkflowsType = any> = {
@@ -8,7 +8,7 @@ type ExecutorConfiguresExtend<SubworkflowsType = any> = {
 }
 
 
-export type ExecutorConfigureReadable<OptionsType = any, SubworkflowsType = any> = PluginConfigureBaseReadableProtocol<OptionsType, ExecutorConfiguresExtend<SubworkflowsType>>
+export type ExecutorConfigureReadable<OptionsType = any, SubworkflowsType = any> = PluginConfigureReadableProtocolBase<OptionsType, ExecutorConfiguresExtend<SubworkflowsType>>
 export type SubworkflowMapType = { [k in string | number]: string | number }
 export type ExecutorConfigureProtocol<OptionsType = any> = PluginConfigureProtocol<OptionsType, ExecutorConfiguresExtend<SubworkflowMapType>>
 
@@ -23,7 +23,7 @@ export type SubworkflowsConfigureInnerSettingFormat<ConfigureType = any> = {
 export type SubworkflowsConfigureFormat<ConfigureType = any> = {
     [name in any]: SubworflowsOuterSettingFormat | SubworkflowsConfigureInnerSettingFormat<ConfigureType>
 }
-*/
+
 
 
 export type ExecutorConfigures = {
