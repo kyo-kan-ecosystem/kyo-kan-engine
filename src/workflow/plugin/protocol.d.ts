@@ -14,28 +14,12 @@ export type WorkflowConfigure<ExecutorsType = any, OptionsType = any> = PluginCo
 
 
 
-
-export type WorkflowConfigureFormatBase<ExecutorsType = any, OptionsType = any> = {
-    plugin: string;
-    executors: ExecutorsType;
-    options?: OptionsType;
+export type WorkflowMemberExecutorData<MemberDataType = any> = { memberData?: MemberDataType, executorConfig: any, configurePath: any[] }
+export type WorkflowMemberExecutorDatas<ExecutorDataType = any> = WorkflowMemberExecutorData<ExecutorDataType>[]
+export type WorkflowGetMemberExecutorResult<ExecutorsType = any, ExecutorDataType = any> = {
+    members: WorkflowMemberExecutorDatas<ExecutorDataType>,
+    executors: ExecutorsType
 }
-
-/**
- * Confingure which Call Registered Workflow
- * 
- */
-export type WorkflowConfigureFormatIdType<DatasType = any> = {
-    id: string
-    datas?: DatasType
-
-
-}
-
-
-export type WorkflowConfigureFormatUnion = WorkflowConfigureFormatBase | WorkflowConfigureFormatIdType
-
-
 
 export type WorkflowStepPluginConfigure = {
     executors: Array<any>

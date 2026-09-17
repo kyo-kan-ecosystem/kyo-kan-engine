@@ -4,6 +4,7 @@
 const deepmerge = require("deepmerge")
 const { Context } = require("../../src/context/index.cjs")
 const { DEFAULT_ENGINE_CONFIGURE } = require("../../src/engine/defaults/configure.cjs")
+const { deepcopy } = require("../../src/util/deepcopy.cjs")
 
 
 
@@ -160,13 +161,13 @@ class Registrator {
         //名前付きプラグインからワークフローの設定を取り出す
 
         /**
-         * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, configure:any, executorId?:any}[]}
+         * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, configure:import("../../src/workflow/protocol").WorkflowPluginConfigureReadable, executorConfigureId?:any}[]}
          */
-        const workflowConfigures = [{ id: rootWorkFlowPluginId, configurePath: { root: 'root', expressions: [] }, configure: Object.assign({ plugin: rootWorkflowPlugin }, rootWorkflowConfigure) }]
+        let workflowDatas = [{ id: rootWorkFlowPluginId, configurePath: { root: 'root', expressions: [] }, configure: Object.assign({ plugin: rootWorkflowPlugin }, rootWorkflowConfigure) }]
         let workflowIndex = 0
         let workflowCountedId = 0
         for (const [id, configure] of Object.entries(namedWorkflows)) {
-            workflowConfigures.push({ id, configurePath: { root: 'workflow', expressions: [id] }, configure })
+            workflowDatas.push({ id, configurePath: { root: 'workflow', expressions: [id] }, configure })
 
         }
 
@@ -174,7 +175,7 @@ class Registrator {
         /**
          * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, workflowId?:any, configure:any}[]}
          */
-        const executorDatas = []
+        let executorDatas = []
         let executorIndex = 0
         let executorCountedId = 0
         for (const [id, configure] of Object.entries(namedExecutorConfigures)) {
@@ -204,10 +205,41 @@ class Registrator {
 
 
 
-        while (workflowConfigures.length > workflowIndex || executorDatas.length > executorIndex) {
+        while (workflowDatas.length > workflowIndex || executorDatas.length > executorIndex) {
 
 
-            while (workflowConfigures.length > workflowIndex) {
+            while (workflowDatas.length > workflowIndex) {
+
+                const workflowData = workflowDatas[workflowIndex]
+                workflowIndex++
+                const workflowPlugin = workingContext.workflows.getPlugin(workflowData.configure)
+                let workflowId
+                if ('id' in workflowData === true) {
+                    workflowId = workflowData.id
+                }
+                else {
+                    workflowId = workflowCountedId
+                    workflowCountedId++
+                }
+
+                const { members, executors } = workflowPlugin.getMemberExecutors(workflowData.configure)
+                for (const member of members) {
+
+
+
+                    const configurePath = deepcopy(workflowData.configurePath)
+
+                    configurePath.expressions = configurePath.expressions.concat(['executors', ...member.configurePath])
+                    executorDatas.push({ configurePath, configure: member.executorConfig, })
+
+
+
+
+
+
+
+                }
+                workingContext.workflows.addConfigure({})
 
             }
             while (executorDatas.length > executorIndex) {

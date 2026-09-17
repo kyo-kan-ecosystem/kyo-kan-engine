@@ -1,5 +1,5 @@
 import { executeMode } from "../../src/states/protocol"
-import { WorkflowConfigureFormatBase, WorkflowPluginConfigureReadable } from "../../src/workflow/plugin/protocol"
+import { WorkflowPluginConfigureReadable } from "../../src/workflow/plugin/protocol"
 import { Context } from "../context/protocol"
 
 

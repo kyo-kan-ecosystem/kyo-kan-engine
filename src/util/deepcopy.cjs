@@ -60,19 +60,17 @@ class CopyClass {
 
 
 }
+
+const DEFAULT_COPY_OBJECT = new CopyClass()
 /**
  * @template T
  * @param {T} targets 
- * @param {*} copyClass 
+ * @param {{dispatchAndCopy:(target:T)=>T}} copyObject 
  * @returns T
  */
-function deepcopy(targets, copyClass = CopyClass) {
-    /**
-     * @template T
-     * @type {{dispatchAndCopy:(targets:T)=>T}}
-     */
-    const copyObj = new copyClass()
-    return copyObj.dispatchAndCopy(targets)
+function deepcopy(targets, copyObject = DEFAULT_COPY_OBJECT) {
+
+    return copyObject.dispatchAndCopy(targets)
 
 
 

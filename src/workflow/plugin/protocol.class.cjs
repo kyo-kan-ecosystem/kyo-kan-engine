@@ -1,5 +1,8 @@
+const { isVoid } = require("../../util/is_void.cjs")
+
+
 /**
- * 
+ * @template {any} StateType
  */
 class AbstractWorkflow {
     /**
@@ -80,38 +83,40 @@ class AbstractWorkflow {
 
     /**
      * @abstract
-     * @param {any} configure
+     * @param {import("../protocol").WorkflowPluginConfigureReadable} configure
 
-     * @returns {{configure:import("../protocol").WorkflowConfigure}, executors:any}}
+     * @returns {import("./protocol").WorkflowGetMemberExecutorResult}
      */
-    getConfigureParams(configure) {
+    getMemberExecutors(configure) {
         throw new Error('not implemt')
     }
     /**
      * @abstract
-     * @param {*} configure
      * @param {*} executorId
-     * @param {any} executorConfig
-     * @param {any?} workingObject
+     * @param {*} executors
+     * @param {any} memberData
      */
-    addExecutor(configure, executorId, executorConfig, workingObject) {
+    applyMemberExecutorId(executorId, memberData, executors) {
         throw new Error('not implemt')
     }
     /**
-     * @abstract
-     * @param {*} context 
-     * @param {*} configure
-     * @returns {*} 
+     * 
+     * @param {import("../../states/protocol").Context<any,any> } context 
+     * @param {StateType} defaultState
+     * @returns {StateType} 
      */
-    getExecuteFunction(context, configure) {
-
+    getState(context, defaultState) {
+        const state = context.states.now.get().workflow?.state
+        if (isVoid(state) === true) {
+            return defaultState
+        }
+        return state
     }
 
 
 
 
 }
-
 
 
 
