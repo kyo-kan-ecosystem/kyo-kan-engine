@@ -8,9 +8,10 @@ export type { Context } from "../context/index.cjs";
 export type ControllStateType = {
     executorId?: string,
     callback?: string,
-    executeMode?: ExecuteMode
-    subworkflowInit?: any
-    subworkflowName?: any
+    executeMode?: ExecuteMode,
+    subworkflowInit?: any,
+    subworkflowName?: any,
+    subworkflowState?: any,
 
 }
 

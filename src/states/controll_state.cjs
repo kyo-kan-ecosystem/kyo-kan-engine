@@ -134,6 +134,18 @@ class ControllState {
     getSubworkflowInit() {
         return this.getControll('subworkflowInit', false)
     }
+    /**
+     * 
+     * @param {*} state 
+     */
+    setSubworkflowState(state) {
+        this.setControll('subworkflowState', state)
+
+    }
+
+    getSubworkflowState() {
+        return this.getControll('subworkflowState')
+    }
 
 
 

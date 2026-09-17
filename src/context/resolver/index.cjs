@@ -53,7 +53,8 @@ class ContextBridgeResolver {
      */
     resolveGoSubProcess(workflowId = undefined, subworkflowInit = undefined) {
         const id = workflowId || this.resolveInContextSubworkflowId()
-        this._context.states.now.push({ workflow: { id } })
+        const state = this._context.states.controll.getSubworkflowState()
+        this._context.states.now.push({ workflow: { id, state } })
         this._context.bords.push(subworkflowInit || this._context.states.controll.getSubworkflowInit())
 
     }
