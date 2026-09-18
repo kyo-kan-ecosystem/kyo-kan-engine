@@ -28,12 +28,25 @@ class SubworkflowNameDoesNotExistsError extends Error {
 
 }
 
+class SubworflowsDoesNotExistError extends Error {
+
+    /**
+     * 
+     * @param {Object} param0 
+     * @param {*} param0.configureId  
+     */
+    constructor({ configureId }) {
+        super(`In configure ${configureId}, subworkflows does not set`)
+    }
+}
+
 
 module.exports = {
 
     ConfigureIdIsInvalidError,
     SubworkflowNameIsInvalidError,
     SubworkflowNameDoesNotExistsError,
+    SubworflowsDoesNotExistError
 
 
 }

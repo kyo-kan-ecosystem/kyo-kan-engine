@@ -18,7 +18,7 @@ class EngineContext {
      */
     constructor({ configureClass = EngineConfigureRepositry, configureInit = undefined } = {}) {
         const _configureInit = deepmerge(DEFAULT_ENGINE_CONFIGURE, configureInit)
-        this.configure = new configureClass(configureInit)
+        this.configure = new configureClass(_configureInit)
 
 
     }

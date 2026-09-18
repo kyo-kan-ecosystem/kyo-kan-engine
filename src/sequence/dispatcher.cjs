@@ -84,7 +84,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
             await this._boot(context, request)
             context.states.setNotBoot()
         }
-        context.resolver.resolvePassToResumeProcess()
+        context.resolver.resolveWaitToResumeProcess()
         context.histories.forword(request)
 
         if (context.states.controll.checkCallback() === false) {
@@ -110,7 +110,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     */
     wait(context, request) {
         context.histories.forword(request)
-        context.resolver.resolvePassToResumeProcess()
+        context.resolver.resolveWaitToResumeProcess()
 
 
         return [Promise.resolve(false)]

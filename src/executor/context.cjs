@@ -4,7 +4,7 @@ const { ExecutorConfigureRepositry } = require("./repositry/configure.cjs")
 const { ExecutorPluginRepositry } = require("./repositry/plugin.cjs")
 
 
-const { SubworkflowNameDoesNotExistsError, ConfigureDoesNotExistsError, PluginDoesNotExistsError, PlugidDoesNotSetInConfigureError, ConfigureIdIsInvalidError } = require("./errors.cjs")
+const { ConfigureDoesNotExistsError, PluginDoesNotExistsError, PlugidDoesNotSetInConfigureError, ConfigureIdIsInvalidError } = require("./errors.cjs")
 const { assertIsNotVoid, isVoid } = require("../util/is_void.cjs")
 
 

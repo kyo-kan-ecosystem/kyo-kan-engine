@@ -50,7 +50,7 @@ const DEFUALT_CLASSES = {
  * @template  {import("./protocol").MaybeForkType} [ReporterType=any]
  * @template  {import("./protocol").MaybeForkTypeMap} [ContextFunctionsType=any]
  * @template  {ContextBridgeResolver}[ResolverType=ContextBridgeResolver]
- * @implements ContextDataInterFace
+ * @implements {ContextDataInterFace}
  */
 class Context {
     /**

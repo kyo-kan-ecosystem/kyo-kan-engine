@@ -1,5 +1,5 @@
-const { isVoid } = require("../../util/is_void.cjs")
-const { ConfigureIdIsInvalidError, SubworkflowNameIsInvalidError, SubworkflowNameDoesNotExistsError } = require("./errors.cjs")
+const { isVoid, assertIsNotVoid } = require("../../util/is_void.cjs")
+const { ConfigureIdIsInvalidError, SubworkflowNameIsInvalidError, SubworkflowNameDoesNotExistsError, SubworflowsDoesNotExistError } = require("./errors.cjs")
 
 
 class ContextBridgeResolver {
@@ -28,19 +28,18 @@ class ContextBridgeResolver {
      * @param {any} name
      */
     resolveSubworkflowId(configureId, name) {
-        if (isVoid(configureId) === true) {
-            throw new ConfigureIdIsInvalidError(configureId)
-        }
-        if (name === null || typeof name === 'undefined') {
-            throw new SubworkflowNameIsInvalidError(name)
-        }
+
+        assertIsNotVoid(configureId, ConfigureIdIsInvalidError)
 
 
-        const subworkflowMap = this._context.executors.getConfigure(configureId).subworkflowMap
-        if (isVoid(subworkflowMap)) {
+        assertIsNotVoid(name, SubworkflowNameIsInvalidError)
 
-        }
-        return [name]
+
+
+        const subworkflows = this._context.executors.getConfigure(configureId).subworkflows
+        assertIsNotVoid(subworkflows, SubworflowsDoesNotExistError, {})
+        assertIsNotVoid(subworkflows, SubworkflowNameDoesNotExistsError)
+        return subworkflows[name]
 
 
 
@@ -71,21 +70,21 @@ class ContextBridgeResolver {
 
     }
     resolveStartProcess() {
-        const rootWorkflow = this._context.repositries.configures.engine.get().root.workflow
+        const rootWorkflow = this._context.engine.configure.get().root.workflow.id
         this._context.states.now.update({ workflow: { id: rootWorkflow } })
         this._context.states.controll.setExecuteMode('start')
 
 
     }
-    resolvePassToResumeProcess() {
-        const callbackMode = this._context.repositries.configures.engine.get().sequence.resume
-        this._context.states.controll.setExecuteMode(callbackMode)
+    resolveWaitToResumeProcess() {
+        const resumeMode = this._context.engine.configure.get().sequence.resume
+        this._context.states.controll.setExecuteMode(resumeMode)
 
 
 
     }
-    resolveResumeToPassProcess() {
-        const callbackMode = this._context.repositries.configures.engine.get().sequence.callback
+    resolveResumeToCallbackProcess() {
+        const callbackMode = this._context.engine.configure.get().sequence.callback
         this._context.states.controll.setExecuteMode(callbackMode)
 
 

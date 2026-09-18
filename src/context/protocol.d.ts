@@ -4,6 +4,7 @@ import type { Bords } from "../bords/bords.cjs"
 import type { WorkflowsContext } from "../workflow/context.cjs"
 import type { HistoriesContext } from "../history/context.cjs"
 import type { ExecutorsContext } from "../executor/context.cjs"
+import { EngineContext } from "../engine/context.cjs"
 export type StackTrees = {
     states: States,
     bords: Bords
@@ -12,14 +13,18 @@ export type StackTrees = {
 export type ImutableDataContexts = {
     workflows: WorkflowsContext,
     executors: ExecutorsContext,
+    engine: EngineContext
 }
 
 export type MutableDataContexts = {
     bords: Bords,
-
     histories: HistoriesContext,
     states: States,
 }
+
+
+
+
 
 export type ContextDataInterFace = ImutableDataContexts & MutableDataContexts
 
