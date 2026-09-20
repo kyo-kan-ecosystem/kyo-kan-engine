@@ -16,10 +16,7 @@ export type WorkflowConfigure<ExecutorsType = any, OptionsType = any> = PluginCo
 
 export type WorkflowMemberExecutorData<MemberDataType = any> = { memberData?: MemberDataType, executorConfig: any, configurePath: any[] }
 export type WorkflowMemberExecutorDatas<ExecutorDataType = any> = WorkflowMemberExecutorData<ExecutorDataType>[]
-export type WorkflowGetMemberExecutorResult<ExecutorsType = any, ExecutorDataType = any> = {
-    members: WorkflowMemberExecutorDatas<ExecutorDataType>,
-    executors: ExecutorsType
-}
+export type WorkflowGetMemberExecutorResult<ExecutorDataType = any> = WorkflowMemberExecutorDatas
 
 export type WorkflowStepPluginConfigure = {
     executors: Array<any>
@@ -43,9 +40,9 @@ export type WorkflowStep<ContextType = Context<any, any>> = {
 }
 
 export type WorkflowSteps<ContextType = Context<any, any>> = WorkflowStep<ContextType>[]
-
 export type MaybeWorkflowSteps = WorkflowSteps | WorkflowStep
 
+export type WorflowControllFunction<ExecutorsType = {}, OptionsType = any, RequestType = any, ContextType = Context<any, any>> = (context: ContextType, configure: WorkflowConfigure<ExecutorsType, OptionsType> request: RequestType) => MaybeWorkflowSteps
 
 
 

@@ -2,15 +2,12 @@ const { isVoid } = require("../../util/is_void.cjs")
 
 
 /**
- * @template {any} StateType
+ * @template  [StateType=any], [ExecutorsType=any], [ExecutorsReadableType=any], [RequestType=any], [OptionsType=any]
  */
 class AbstractWorkflow {
     /**
      * @abstract
-     * @param {import("../../states/protocol").Context<any, any>} context
-     * @param {*} configure
-     * @returns {import("./protocol").MaybeWorkflowSteps}
-     * @param {any} request
+     * @type {import("./protocol").WorflowControllFunction}
      */
     enterWorkflow(context, configure, request) {
         throw new Error('Method not implemented.')
@@ -84,21 +81,13 @@ class AbstractWorkflow {
     /**
      * @abstract
      * @param {import("../protocol").WorkflowPluginConfigureReadable} configure
-
+     * @param {import("../../resolver/interfacade/parse_context.cjs").ResolverParseContext} resolveContext 
      * @returns {import("./protocol").WorkflowGetMemberExecutorResult}
      */
-    getMemberExecutors(configure) {
+    getMemberExecutors(configure, resolveContext) {
         throw new Error('not implemt')
     }
-    /**
-     * @abstract
-     * @param {*} executorId
-     * @param {*} executors
-     * @param {any} memberData
-     */
-    applyMemberExecutorId(executorId, memberData, executors) {
-        throw new Error('not implemt')
-    }
+
     /**
      * 
      * @param {import("../../states/protocol").Context<any,any> } context 
@@ -117,7 +106,6 @@ class AbstractWorkflow {
 
 
 }
-
 
 
 

@@ -1,4 +1,4 @@
-const { ContextBridgeResolver } = require("./resolver/index.cjs")
+const { ContextBridgeResolver } = require("../resolver/context/index.cjs")
 const { Bords } = require("../bords/bords.cjs")
 const { HistoriesContext: Histories } = require("../history/context.cjs")
 const { States } = require("../states/states.cjs")

@@ -5,7 +5,7 @@ const deepmerge = require("deepmerge")
 const { Context } = require("../../src/context/index.cjs")
 const { DEFAULT_ENGINE_CONFIGURE } = require("../../src/engine/defaults/configure.cjs")
 const { deepcopy } = require("../../src/util/deepcopy.cjs")
-
+const { CountId } = require("../../src/util/count_id.cjs")
 
 
 
@@ -158,14 +158,14 @@ class Registrator {
 
 
 
-        //名前付きプラグインからワークフローの設定を取り出す
+
 
         /**
          * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, configure:import("../../src/workflow/protocol").WorkflowPluginConfigureReadable, executorConfigureId?:any}[]}
          */
         let workflowDatas = [{ id: rootWorkFlowPluginId, configurePath: { root: 'root', expressions: [] }, configure: Object.assign({ plugin: rootWorkflowPlugin }, rootWorkflowConfigure) }]
         let workflowIndex = 0
-        let workflowCountedId = 0
+        const workflowCountId = new CountId()
         for (const [id, configure] of Object.entries(namedWorkflows)) {
             workflowDatas.push({ id, configurePath: { root: 'workflow', expressions: [id] }, configure })
 
@@ -177,7 +177,7 @@ class Registrator {
          */
         let executorDatas = []
         let executorIndex = 0
-        let executorCountedId = 0
+        let executorCountId = new CountId()
         for (const [id, configure] of Object.entries(namedExecutorConfigures)) {
             executorDatas.push({ id, configurePath: { root: 'executor', expressions: [id] }, configure })
 
@@ -186,12 +186,11 @@ class Registrator {
         let bootIndex = 0
         for (const configure of bootExecutors) {
             let id
-            if (configure.id) {
+            if ('id' in configure) {
                 id = configure.id
             }
             else {
-                id = executorCountedId
-                executorCountedId++
+                id = executorCountId.generate()
                 executorDatas.push({ id, configurePath: { root: 'boot', expressions: [bootIndex] }, configure })
             }
 
@@ -203,8 +202,10 @@ class Registrator {
 
 
 
-
-
+        /**
+         * @type {[k in any]:{[k in any]:WorkflowMemberExecutorDatas<any>}}}
+         */
+        const workflowToMembers = {}
         while (workflowDatas.length > workflowIndex || executorDatas.length > executorIndex) {
 
 
@@ -218,11 +219,11 @@ class Registrator {
                     workflowId = workflowData.id
                 }
                 else {
-                    workflowId = workflowCountedId
-                    workflowCountedId++
+                    workflowId = workflowCountId.generate()
+
                 }
 
-                const { members, executors } = workflowPlugin.getMemberExecutors(workflowData.configure)
+                const members = workflowPlugin.getMemberExecutors(workflowData.configure)
                 for (const member of members) {
 
 
