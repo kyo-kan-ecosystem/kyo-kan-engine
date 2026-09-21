@@ -6,6 +6,7 @@ const { Context } = require("../../src/context/index.cjs")
 const { DEFAULT_ENGINE_CONFIGURE } = require("../../src/engine/defaults/configure.cjs")
 const { deepcopy } = require("../../src/util/deepcopy.cjs")
 const { CountId } = require("../../src/util/count_id.cjs")
+const { ResolverParseContext } = require("../../src/resolver/interfacade/parse_context.cjs")
 
 
 
@@ -22,11 +23,12 @@ class Registrator {
 
     /**
      * @param {import("../../src/context/protocol").ContextSerializableData} datas
-     * @returns {Context>}
+     * @returns
      */
-    _buildContext(datas, api) {
+    _buildResolver(datas, api) {
         // @ts-ignore
-        return new this._contextClass({ datas: datas, api: api })
+        const context = new this._contextClass({ datas: datas, api: api })
+        return new ResolverParseContext(context)
     }
     /**
      * @type {Object<any, any>?}
@@ -148,10 +150,10 @@ class Registrator {
         const executors = { plugins: executorPlugins }
         const engine = { configureInit: engineConfigure }
 
-        const workingContext = this._buildContext({ workflows, executors, engine }, {})
+        const workingResolver = this._buildResolver({ workflows, executors, engine }, {})
 
-        const rootWorkFlowPluginId = workingContext.engine.configure.get().root.workflow.id
-        const rootWorkflowPlugin = workingContext.engine.configure.get().root.workflow.plugin
+        const rootWorkFlowPluginId = workingResolver.context.engine.configure.get().root.workflow.id
+        const rootWorkflowPlugin = workingResolver.context.engine.configure.get().root.workflow.plugin
 
 
 
@@ -161,11 +163,11 @@ class Registrator {
 
 
         /**
-         * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, configure:import("../../src/workflow/protocol").WorkflowPluginConfigureReadable, executorConfigureId?:any}[]}
+         * @type {{id:any, configurePath:import("../configure/protocol").ConfigurePath, configure:import("../../src/workflow/protocol").WorkflowPluginConfigureReadable, executorConfigureId?:any}[]}
          */
         let workflowDatas = [{ id: rootWorkFlowPluginId, configurePath: { root: 'root', expressions: [] }, configure: Object.assign({ plugin: rootWorkflowPlugin }, rootWorkflowConfigure) }]
         let workflowIndex = 0
-        const workflowCountId = new CountId()
+
         for (const [id, configure] of Object.entries(namedWorkflows)) {
             workflowDatas.push({ id, configurePath: { root: 'workflow', expressions: [id] }, configure })
 
@@ -173,11 +175,11 @@ class Registrator {
 
 
         /**
-         * @type {{id?:any, configurePath:import("../configure/protocol").ConfigurePath, workflowId?:any, configure:any}[]}
+         * @type {{id:any, configurePath:import("../configure/protocol").ConfigurePath,  configure:any}[]}
          */
         let executorDatas = []
         let executorIndex = 0
-        let executorCountId = new CountId()
+
         for (const [id, configure] of Object.entries(namedExecutorConfigures)) {
             executorDatas.push({ id, configurePath: { root: 'executor', expressions: [id] }, configure })
 
@@ -185,27 +187,24 @@ class Registrator {
 
         let bootIndex = 0
         for (const configure of bootExecutors) {
-            let id
-            if ('id' in configure) {
-                id = configure.id
-            }
-            else {
-                id = executorCountId.generate()
+
+
+            const { isIdExist, id } = workingResolver.filterAndGetExcutorId(configure)
+            if (isIdExist === false) {
                 executorDatas.push({ id, configurePath: { root: 'boot', expressions: [bootIndex] }, configure })
             }
 
 
-            workingContext.executors.bootConfigures.add(id)
+
+
+            workingResolver.executors.bootConfigures.add(id)
             bootIndex++
 
         }
 
 
 
-        /**
-         * @type {[k in any]:{[k in any]:WorkflowMemberExecutorDatas<any>}}}
-         */
-        const workflowToMembers = {}
+
         while (workflowDatas.length > workflowIndex || executorDatas.length > executorIndex) {
 
 
@@ -213,129 +212,53 @@ class Registrator {
 
                 const workflowData = workflowDatas[workflowIndex]
                 workflowIndex++
-                const workflowPlugin = workingContext.workflows.getPlugin(workflowData.configure)
-                let workflowId
-                if ('id' in workflowData === true) {
-                    workflowId = workflowData.id
-                }
-                else {
-                    workflowId = workflowCountId.generate()
+                const workflowPlugin = workingResolver.context.workflows.getPlugin(workflowData.configure)
 
-                }
 
-                const members = workflowPlugin.getMemberExecutors(workflowData.configure)
-                for (const member of members) {
+
+                const { memberExecutors, executorIDs } = workflowPlugin.getMemberExecutors(workflowData.configure)
+                for (const memberExecutor of memberExecutors) {
 
 
 
                     const configurePath = deepcopy(workflowData.configurePath)
 
-                    configurePath.expressions = configurePath.expressions.concat(['executors', ...member.configurePath])
-                    executorDatas.push({ configurePath, configure: member.executorConfig, })
-
-
-
-
-
-
+                    configurePath.expressions = workflowData.configurePath.configurePath.expressions.concat(memberExecutor.configurePath)
+                    executorDatas.push({ id: memberExecutor.id, configurePath, configure: memberExecutor.executorConfig })
 
                 }
-                workingContext.workflows.addConfigure({})
+                workingResolver.context.workflows.addConfigure(
+                    workflowData.id,
+                    {
+                        configurePath: workflowData.configurePath,
+                        executorIDs,
+                        options: workflowData.configure.options,
+                        plugin: workflowData.configure.plugin
+                    }
+                )
 
             }
             while (executorDatas.length > executorIndex) {
                 const executorData = executorDatas[executorIndex]
                 executorIndex++
-                const plugin = workingContext.executors.getExecutorPlugin(executorData.configure.plugin)
-                const workflowConfigureMap = this._getSubWorkflow(plugin, config, executorData.id, workingContext)
+                const plugin = workingResolver.executors.getExecutorPlugin(executorData.configure.plugin)
+                const workflowConfigureMap = this._getSubWorkflow(plugin, config, executorData.id, workingResolver)
                 if (workflowConfigureMap == false) {
                     continue
                 }
+                // 次ここから
 
             }
         }
 
-        for (const [pluginId, config] of namedExecutorConfigures) {
-
-
-
-
-        }
-
-        // ワークフローのidからワークフローのコンフィグとプラグインを取り出す
-        //　ワークフローのプラグインから構成するえくぜきゅーた―の設定を取り出す
-        //　えくぜきゅーたを登録し、設定からプラグインを取り出す
-        //  えくぜきゅーたのプラグインと設定からサブワークフローを取り出す
-        //　サブワークフローを登録
-        // 　サブワークフローとえくぜきゅーたのプラグインの対応マップを登録する(じっそうすること)　
-        //　最初に戻る
-        for (const workflowId of workflowConfigureIds) {
-
-        }
-
-
-        /**
-         * @type {{workflow:string, executorConfig:import("../../protocol/executor/protocol.js").ExecutorConfigure, id:any?}[]}
-         */
-        const nonNamedExecutorQueue = []
-
-        for (const executorConfig of parsedRootConfigure.executors || []) {
-
-            const item = { workflow: engineConfigure.root?.workflow.id, executorConfig }
-            // @ts-ignore
-            nonNamedExecutorQueue.push(item)
-        }
-
-
-        let index = 0
-        const workerObjects = new Map()
-
-        while (nonNamedExecutorQueue.length > index) {
-
-            const item = nonNamedExecutorQueue[index]
-            index += 1
-            /**
-             * @type {import("../workflow/protocol.js").WorkflowPluginConfigure}
-             */
-            const workflowConfigure = workingContext.workflows.getConfigure(item.workflow)
-            let workerObject = workerObjects.get(item.workflow)
-
-            /**
-             * @type {import('../workflow/protocol.js').WorkflowPluginConfigure}
-             */
-            const workflowPluginConfigure = workingContext.workflows.configures.get(workflowConfigure.plugin)
-            const executorId = workingContext.workflows.addConfigure(item.executorConfig)
-            workerObject = workflowPluginConfigure.addExecutor(workflowConfigure, executorId, item.executorConfig, workerObject)
-            workerObjects.set(item.workflow, workerObject)
-            /**
-             * @type {import("../../protocol/executor/protocol.d.ts").MaybeWithGetSubworkflow}
-             */
-            const plugin = workingContext.repositries.plugins.executors.get(item.executorConfig.plugin)
-
-            for (const [name, difinition] of Object.entries(plugin.getSubworkflows(item.executorConfig))) {
-                /**
-                 * @type {WorkFlowPluginType}
-                 */
-                const subWorkflowPlugin = workingContext.repositries.plugins.workflows.get(difinition.plugin)
-                const configure = item.executorConfig.subworkflows[name]
-                const subWorkflowConfigure = subWorkflowPlugin.getConfigureParams(configure, executorId)
-                const subwWorkflowId = workingContext.repositries.configures.workflows.add(executorId, name, subWorkflowConfigure.params)
-
-
-                for (const executor of subWorkflowConfigure.executors || []) {
-                    const item = { workflow: subwWorkflowId, executorConfig: executor }
-                    nonNamedExecutorQueue.push(item)
-                }
-
-
-            }
 
 
 
 
 
 
-        }
+
+
 
 
 
@@ -361,26 +284,11 @@ class Registrator {
 
 
     }
-    /**
-     * @param {{id:any, configure:any, path:any[]}[]} datas
-     * @param {InstanceType<ContextType>} workingContext  
-     */
-    _processExecutorConfigure(datas, workingContext) {
-
-
-    }
-    _getWorkflowPlugins() {
-        return Object.assign({}, this._defaultWorkflowPlugins, this._workflowPlugins)
-    }
 
 
 
-    getPluginRepositry() {
-        return workingContext.repositries.getPluginRepositry()
-    }
-    getConfiguresAsSerializeDatas() {
-        return workingContext.repositries.getConfiguresAsSerializeDatas()
-    }
+
+
 
 
 

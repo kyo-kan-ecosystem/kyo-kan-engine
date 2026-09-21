@@ -4,11 +4,11 @@ const { ConfigureIdIsInvalidError, SubworkflowNameIsInvalidError, SubworkflowNam
 
 class ContextBridgeResolver {
     /**
-     * @type {import("../protocol").ContextDataInterFace}
+     * @type {import("../../context/protocol").ContextDataInterFace}
      */
     _context
     /**
-     * @param {import("../protocol").ContextDataInterFace} context
+     * @param {import("../../context/protocol").ContextDataInterFace} context
      */
     constructor(context) {
         this._context = context

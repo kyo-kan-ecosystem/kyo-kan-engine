@@ -2,21 +2,24 @@ import { PluginConfigureProtocol, PluginConfigureReadableProtocolBase } from "..
 import { Context } from "../../states/protocol"
 
 
-export type WorkflowConfigureExtend<ExecutorsType = any> = {
+export type WorkflowConfigureExtend<ExecutorIDsType = any> = {
 
-    executors: ExecutorsType
+    executorIDs: ExecutorIDsType
 }
 
 
 
 export type WorkflowPluginConfigureReadable<ExecutorsType = any, OptionsType = any> = PluginConfigureReadableProtocolBase<OptionsType, WorkflowConfigureExtend<ExecutorsType>>
-export type WorkflowConfigure<ExecutorsType = any, OptionsType = any> = PluginConfigureProtocol<OptionsType, WorkflowConfigureExtend<ExecutorsType>>
+export type WorkflowConfigure<ExecutorIdsType = any, OptionsType = any> = PluginConfigureProtocol<OptionsType, WorkflowConfigureExtend<ExecutorIdsType>>
 
 
 
-export type WorkflowMemberExecutorData<MemberDataType = any> = { memberData?: MemberDataType, executorConfig: any, configurePath: any[] }
-export type WorkflowMemberExecutorDatas<ExecutorDataType = any> = WorkflowMemberExecutorData<ExecutorDataType>[]
-export type WorkflowGetMemberExecutorResult<ExecutorDataType = any> = WorkflowMemberExecutorDatas
+export type WorkflowMemberExecutorData = { id: any, executorConfig: any, configurePath: any[] }
+export type WorkflowMemberExecutorDatas = WorkflowMemberExecutorData[]
+export type WorkflowGetMemberExecutorResult<ExecutorIDsType = any> = {
+    memberExecutors: WorkflowMemberExecutorDatas,
+    executorIDs: ExecutorIDsType,
+}
 
 export type WorkflowStepPluginConfigure = {
     executors: Array<any>
