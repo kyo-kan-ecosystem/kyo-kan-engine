@@ -82,7 +82,7 @@ class AbstractWorkflow {
      * @abstract
      * @param {import("../protocol").WorkflowPluginConfigureReadable} configure
      * @param {import("../../resolver/interfacade/parse_context.cjs").ResolverParseContext} resolveContext 
-     * @returns {import("./protocol").WorkflowGetMemberExecutorResult}
+     * @returns {any}
      */
     getMemberExecutors(configure, resolveContext) {
         throw new Error('not implemt')

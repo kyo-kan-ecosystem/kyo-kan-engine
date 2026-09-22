@@ -16,10 +16,7 @@ export type WorkflowConfigure<ExecutorIdsType = any, OptionsType = any> = Plugin
 
 export type WorkflowMemberExecutorData = { id: any, executorConfig: any, configurePath: any[] }
 export type WorkflowMemberExecutorDatas = WorkflowMemberExecutorData[]
-export type WorkflowGetMemberExecutorResult<ExecutorIDsType = any> = {
-    memberExecutors: WorkflowMemberExecutorDatas,
-    executorIDs: ExecutorIDsType,
-}
+
 
 export type WorkflowStepPluginConfigure = {
     executors: Array<any>

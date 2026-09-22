@@ -1,7 +1,7 @@
 import { WithConfigurePath } from "../../interfacde/configure/protocol"
 import type { ExecutorsContext } from "./context.cjs"
 import { PluginConfigureReadableProtocolBase, PluginConfigureProtocol } from "../../protocol/plugin/protocol"
-
+export * from './'
 
 type ExecutorConfiguresExtend<SubworkflowsType = any> = {
     subworkflows?: SubworkflowsType

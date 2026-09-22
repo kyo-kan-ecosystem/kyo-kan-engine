@@ -1,5 +1,10 @@
 const { CountId } = require('../../util/count_id.cjs')
+const { isVoid } = require('../../util/is_void.cjs')
 
+
+/**
+ * 
+ */
 class ResolverParseContext {
 
     context
@@ -9,10 +14,29 @@ class ResolverParseContext {
     executorCountId
 
     /**
+     * @type {number}
+     */
+    executorDataIndex
+    /**
+     * @type {{id:any, configure:any, configurePath:import('../../../interfacde/configure/protocol').ConfigurePath}[]}
+     */
+    executorDatas
+
+
+    /**
      * @type {CountId}
      */
     workflowCountId
 
+    /**
+     * @type {number}
+     */
+    workflowDataIndex
+
+    /**
+     * @type {{id:any, configure:any, configurePath:import('../../../interfacde/configure/protocol').ConfigurePath}[]}
+    */
+    workflowDatas
     /**
      * 
      * @param {import('../../context/index.cjs').Context} context 
@@ -22,6 +46,37 @@ class ResolverParseContext {
 
         this.executorCountId = new CountId()
         this.workflowCountId = new CountId()
+
+        this.executorDataIndex = 0
+        this.workflowDataIndex = 0
+
+        this.executorDatas = []
+        this.workflowDatas = []
+
+    }
+    /**
+     * 
+     * @param {import('../../workflow/protocol').WorkflowPluginConfigureReadable} configure
+     * @param {any[]} [configurePathExpression=[]]
+     * @param {Con} parentConfigurePath  
+     * @param  {any?} id
+     */
+    pushWorkflowdata(configure, parentConfigurePath, configurePathExpression = [], id = undefined) {
+        let resultId
+
+        if (isVoid(id) === true) {
+            const { isIdExist, id: targetId } = this.filterAndGetWorkflowId(configure)
+            if (isIdExist === false) {
+                // @ts-ignore
+                const plugin = this.context.workflows.getPlugin(configure.plugin)
+                const executorIDs = plugin.getMemberExecutors(configure, this)
+                this.context.workflows.addConfigure(targetId, {})
+
+            }
+
+
+
+        }
 
     }
     /**

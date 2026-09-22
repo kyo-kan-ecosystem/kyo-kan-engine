@@ -242,7 +242,7 @@ class Registrator {
                 const executorData = executorDatas[executorIndex]
                 executorIndex++
                 const plugin = workingResolver.executors.getExecutorPlugin(executorData.configure.plugin)
-                const workflowConfigureMap = this._getSubWorkflow(plugin, config, executorData.id, workingResolver)
+                const workflowConfigureMap = this._getSubWorkflow(plugin, config, workingResolver)
                 if (workflowConfigureMap == false) {
                     continue
                 }
@@ -269,9 +269,9 @@ class Registrator {
      * @param {import("../../protocol/executor/protocol.d.ts").MaybeWithGetSubworkflow} plugin 
      * @param {*} configure
      * @param {*} pluginid
-     * @param {InstanceType<ContextType>} workingContext   
+     * @param {ResolverParseContext} workingResolver   
      */
-    _getSubWorkflow(plugin, configure, pluginid, workingContext) {
+    _getSubWorkflow(plugin, configure, workingResolver) {
         if ('getSubworkflow' in plugin === false) {
             return false
         }
