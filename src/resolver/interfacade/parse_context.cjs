@@ -1,9 +1,11 @@
+const { extendConfigurePath, createWorkflowConfigurePath, createExecutorConfigurePath, createBootConfigurePath, createRootConfigurePath } = require('../../../interfacde/configure/configure_path.cjs')
 const { CountId } = require('../../util/count_id.cjs')
 const { isVoid } = require('../../util/is_void.cjs')
 
 
 /**
- * 
+ * @typedef {{id:any, configure:any, configurePath:import('../../../interfacde/configure/protocol').ConfigurePath}} ConfigureData
+ * @typedef {ConfigureData[]}ConfigureDatas
  */
 class ResolverParseContext {
 
@@ -18,7 +20,7 @@ class ResolverParseContext {
      */
     executorDataIndex
     /**
-     * @type {{id:any, configure:any, configurePath:import('../../../interfacde/configure/protocol').ConfigurePath}[]}
+     * @type {ConfigureDatas}
      */
     executorDatas
 
@@ -34,9 +36,14 @@ class ResolverParseContext {
     workflowDataIndex
 
     /**
-     * @type {{id:any, configure:any, configurePath:import('../../../interfacde/configure/protocol').ConfigurePath}[]}
+     * @type {ConfigureDatas}
     */
     workflowDatas
+
+    /**
+     * @type {import('../../../interfacde/configure/protocol').ConfigurePath?}
+     */
+    parentConfigurePath
     /**
      * 
      * @param {import('../../context/index.cjs').Context} context 
@@ -52,33 +59,130 @@ class ResolverParseContext {
 
         this.executorDatas = []
         this.workflowDatas = []
+        this.parentConfigurePath = null
+
+
 
     }
     /**
      * 
      * @param {import('../../workflow/protocol').WorkflowPluginConfigureReadable} configure
-     * @param {any[]} [configurePathExpression=[]]
-     * @param {Con} parentConfigurePath  
-     * @param  {any?} id
+     * @param {any[]} configurePathExpression
+     *  
+     * 
+     * 
      */
-    pushWorkflowdata(configure, parentConfigurePath, configurePathExpression = [], id = undefined) {
-        let resultId
+    pushWorkflowdata(configure, configurePathExpression) {
 
-        if (isVoid(id) === true) {
-            const { isIdExist, id: targetId } = this.filterAndGetWorkflowId(configure)
-            if (isIdExist === false) {
-                // @ts-ignore
-                const plugin = this.context.workflows.getPlugin(configure.plugin)
-                const executorIDs = plugin.getMemberExecutors(configure, this)
-                this.context.workflows.addConfigure(targetId, {})
 
-            }
 
+        const { isLink, id } = this.filterAndGetWorkflowId(configure)
+        if (isLink === false) {
+            // @ts-ignore
+            const configurePath = extendConfigurePath(this.parentConfigurePath, configurePathExpression)
+
+            // @ts-ignore
+            this.workflowDatas.push({ id, configure, configurePath })
 
 
         }
+        return id
+
+
+
+
 
     }
+    /**
+     * @param {any} id
+     * @param {any} configure
+     */
+    pushNamedWorkflow(id, configure) {
+        const configurePath = createWorkflowConfigurePath()
+        configurePath.expressions.push(id)
+        this.workflowDatas.push({ id, configure, configurePath })
+
+
+    }
+    /**
+     * 
+     * @param {import('../../workflow/protocol').WorkflowPluginConfigureReadable} configure
+     * @param {any[]} configurePathExpression
+     *  
+     * 
+     * 
+     */
+    pushExecutordata(configure, configurePathExpression) {
+
+
+
+        const { isLink, id } = this.filterAndGetExcutorId(configure)
+        if (isLink === false) {
+            // @ts-ignore
+            const configurePath = extendConfigurePath(this.parentConfigurePath, configurePathExpression)
+
+
+            this.workflowDatas.push({ id, configure, configurePath })
+
+
+        }
+        return id
+
+
+
+
+
+    }
+    /**
+     * @param {any} id
+     * @param {any} configure
+     */
+    pushNamedExecutor(id, configure) {
+        const configurePath = createExecutorConfigurePath()
+        configurePath.expressions.push(id)
+        this.executorDatas.push({ id, configure, configurePath })
+
+
+    }
+    /**
+     * 
+     * @param {Array<any>} configures 
+     */
+    pushBootExecutors(configures) {
+        let index = 0
+        while (configures.length > index) {
+            const configure = configures[index]
+            index++
+            const { isLink, id } = this.filterAndGetExcutorId(configure)
+            this.context.executors.bootConfigures.add(id)
+            if (isLink === true) {
+                continue
+            }
+            const configurePath = createBootConfigurePath()
+            configurePath.expressions.push(index)
+            this.executorDatas.push({ id, configure, configurePath })
+        }
+
+
+    }
+    /**
+     * 
+     * @param {*} rootConfigure 
+     */
+    setRootConfigure(rootConfigure) {
+        const engineWorkflowConfigure = this.context.engine.configure.get().root.workflow
+        const id = engineWorkflowConfigure.id
+        /**
+         * @type {Partial<import('../../workflow/protocol').WorkflowPluginConfigureReadable>}
+         */
+        const defaultConfigure = { plugin: engineWorkflowConfigure.plugin }
+        const configure = Object.assign({}, defaultConfigure, rootConfigure)
+        const configurePath = createRootConfigurePath()
+        this.workflowDatas.push({ id, configurePath, configure })
+
+
+    }
+
     /**
      * @param {import('../../../protocol/plugin/protocol').PluginConfigureReadableProtocolBase} configure
      */
@@ -96,15 +200,15 @@ class ResolverParseContext {
     /**
      * @param {import("../../../protocol/plugin/protocol").PluginConfigureReadableProtocolBase<any, {}>} configure
      * @param {CountId} countId
-     * @returns {{isIdExist:boolean, id:any}}
+     * @returns {{isLink:boolean, id:any}}
      */
     _filterAndGetId(configure, countId) {
-        const isIdExist = this._checkId(configure)
-        if (isIdExist === false) {
-            return { isIdExist, id: countId.generate }
+        const isLink = this._checkIsLink(configure)
+        if (isLink === false) {
+            return { isLink, id: countId.generate }
 
         }
-        return { isIdExist, id: configure.id }
+        return { isLink, id: configure.id }
     }
 
     /**
@@ -129,7 +233,7 @@ class ResolverParseContext {
     * @param {CountId} countId 
     */
     _checkAndGenerateId(configure, countId) {
-        if (this._checkId(configure) === true) {
+        if (this._checkIsLink(configure) === true) {
             return configure.id
         }
         return countId.generate()
@@ -138,7 +242,7 @@ class ResolverParseContext {
     /**
     * @param {import('../../../protocol/plugin/protocol').PluginConfigureReadableProtocolBase} configure
     */
-    _checkId(configure) {
+    _checkIsLink(configure) {
         return 'id' in configure
 
     }
