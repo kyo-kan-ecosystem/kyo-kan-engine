@@ -4,7 +4,7 @@ import { Context } from "../context/protocol"
 
 export * from '../../src/executor/protocol'
 
-export type SubWorkflowConfigures = { [k in string]: WorkflowPluginConfigureReadable }
+export type SubWorkflowConfigures = { [k in string]: { workflow: any, callback?: string } }
 export type BasicConfigure = { subworkflows?: SubWorkflowConfigures, datas: any }
 export type ExecutorFunctionBaseType<OptionsType = any, RequestType = any, ContextType = Context> = (options: OptionsType, request: RequestType, context: ContextType) => void
 export type ExecutorFunction<ConfiguresType = any, RequestType = any> = ExecutorFunctionBaseType<ConfiguresType, RequestType, Context>

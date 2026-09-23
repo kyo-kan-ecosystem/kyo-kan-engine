@@ -5,7 +5,7 @@ const { isVoid } = require('../../util/is_void.cjs')
 
 /**
  * @typedef {{id:any, configure:any, configurePath:import('../../../interfacde/configure/protocol').ConfigurePath}} ConfigureData
- * @typedef {ConfigureData[]}ConfigureDatas
+ * @typedef {ConfigureData[]} ConfigureDatas
  */
 class ResolverParseContext {
 
@@ -15,10 +15,7 @@ class ResolverParseContext {
      */
     executorCountId
 
-    /**
-     * @type {number}
-     */
-    executorDataIndex
+
     /**
      * @type {ConfigureDatas}
      */
@@ -30,10 +27,7 @@ class ResolverParseContext {
      */
     workflowCountId
 
-    /**
-     * @type {number}
-     */
-    workflowDataIndex
+
 
     /**
      * @type {ConfigureDatas}
@@ -180,6 +174,62 @@ class ResolverParseContext {
         const configurePath = createRootConfigurePath()
         this.workflowDatas.push({ id, configurePath, configure })
 
+
+    }
+    parseReadable() {
+        let workflowDataIndex = 0
+        let executorDataIndex = 0
+        while (this.workflowDatas.length > workflowDataIndex || this.executorDatas.length > executorDataIndex) {
+
+
+            while (this.workflowDatas.length > workflowDataIndex) {
+
+                const workflowData = this.workflowDatas[workflowDataIndex]
+                this.parentConfigurePath = workflowData.configurePath
+                workflowDataIndex++
+                const workflowPlugin = this.context.workflows.getPluginFromConfigure(workflowData.configure)
+                const configure = /** @type {import('../../workflow/protocol').WorkflowPluginConfigureReadable} */(workflowData.configure)
+
+
+
+                const executorIDs = workflowPlugin.getMemberExecutors(workflowData.configure, this)
+
+                this.context.workflows.addConfigure(
+                    workflowData.id,
+                    {
+                        configurePath: workflowData.configurePath,
+                        executorIDs,
+                        options: workflowData.configure.options,
+                        plugin: workflowData.configure.plugin
+                    }
+                )
+
+            }
+            while (this.executorDatas.length > executorDataIndex) {
+                const executorData = this.executorDatas[executorDataIndex]
+                executorDataIndex++
+                const plugin = this.context.executors.getPluginFromConfigure(executorData.configure)
+                this.parentConfigurePath = executorData.configurePath
+                /**
+                 * @type {import('../../executor/protocol').ExecutorConfigureProtocol}
+                 */
+                const executorConfigure = {
+
+                    plugin: executorData.configure.plugin,
+                    options: executorData.configure.options,
+                    configurePath: executorData.configurePath
+                }
+                if ('getSubworkflow' in plugin === true) {
+                    // @ts-ignore
+                    executorConfigure.subworkflow = plugin.getSubworkflow(executorData.configure.options, this)
+                }
+                this.context.executors.pluginConfigures.set(executorData.id, executorConfigure)
+
+
+
+
+            }
+        }
 
     }
 

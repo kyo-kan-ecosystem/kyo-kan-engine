@@ -58,10 +58,10 @@ class WorkflowsContext {
 
     }
     /**
-     * @param {any} pluginId
+     * @param {{plugin:any}} configure
      */
-    getPlugin(pluginId) {
-        return this.plugins.get(pluginId)
+    getPluginFromConfigure(configure) {
+        return this.plugins.get(configure.plugin)
     }
 
     /**

@@ -62,13 +62,13 @@ class ExecutorsContext {
     }
 
     /**
-     * @param {any} pluginId
+     * @param {{plugin:any}} configure
      * @returns
      */
-    getExecutorPlugin(pluginId) {
-        const plugin = this.plugins.get(pluginId)
+    getPluginFromConfigure(configure) {
+        const plugin = this.plugins.get(configure)
         if (plugin === null || typeof plugin === 'undefined') {
-            throw new PluginDoesNotExistsError(pluginId)
+            throw new PluginDoesNotExistsError(configure)
         }
         return plugin
     }
@@ -82,7 +82,7 @@ class ExecutorsContext {
 
         const plugin = configure.plugin
         assertIsNotVoid(plugin, PlugidDoesNotSetInConfigureError, { configureId, plugin })
-        const executor = this.getExecutorPlugin(configure.plugin)
+        const executor = this.getPluginFromConfigure(configure.plugin)
         return { options: configure.options, executor }
 
 
@@ -108,7 +108,7 @@ class ExecutorsContext {
         for (const configureID of bootPluginConfigureIDs) {
 
 
-            results.push({ options: this.pluginConfigures.get(configureID).options, executor: this.getExecutorPlugin() })
+            results.push({ options: this.pluginConfigures.get(configureID).options, executor: this.plugins.get(configureID) })
         }
         return results
 
