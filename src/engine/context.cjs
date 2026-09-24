@@ -16,7 +16,7 @@ class EngineContext {
      * @param {import("./protocol").EngineContextInit} param0 
      * 
      */
-    constructor({ configureClass = EngineConfigureRepositry, configureInit = undefined } = {}) {
+    constructor({ configureClass = EngineConfigureRepositry, configureInit = {} } = {}) {
         const _configureInit = deepmerge(DEFAULT_ENGINE_CONFIGURE, configureInit)
         this.configure = new configureClass(_configureInit)
 

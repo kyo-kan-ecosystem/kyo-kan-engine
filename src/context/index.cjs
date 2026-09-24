@@ -128,9 +128,10 @@ class Context {
      * @param {import("./protocol").ContextSerializableData | false| null} [param0.datas] 
      * @param {import("./protocol").ContextApi?} [param0.api]
      * @param {ContextClasses} [param0.classes] 
-     * @param {import("./protocol").ContextInheritance?} [param0.inheritance] 
+     * @param {import("./protocol").ContextInheritance?} [param0.inheritance]
+     * @param {boolean}[param0.autoStart = true] 
      */
-    constructor({ datas = null, api = null, inheritance = null, classes = DEFUALT_CLASSES }) {
+    constructor({ datas = null, api = null, inheritance = null, classes = DEFUALT_CLASSES, autoStart = true }) {
         this._classes = classes
         // @ts-ignore
         this.resolver = new classes.resolver(this)
@@ -187,7 +188,7 @@ class Context {
         this._countRef = datas?._countRef || { n: 0 }
         this._linkMap = datas?._linkMap || {}
 
-        if (datas === null || !datas.states) {
+        if (autoStart == true && (datas === null || !datas.states)) {
             this._branchId = this._createIdMap()
 
             this.resolver.resolveStartProcess()

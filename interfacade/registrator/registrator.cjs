@@ -71,7 +71,7 @@ class Registrator {
      *@param {any}[param0.defaultWorkflowPlugins=null]
      */
     constructor({ contextClass = Context, defaultWorkflowPlugins, defaultEngineConfigure = DEFAULT_ENGINE_CONFIGURE } = {}) {
-        super(contextClass)
+
         this._functions = {}
         this._reporter = {}
         this._executorPlugins = {}

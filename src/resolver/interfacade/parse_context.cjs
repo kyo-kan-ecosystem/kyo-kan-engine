@@ -1,6 +1,6 @@
 const { extendConfigurePath, createWorkflowConfigurePath, createExecutorConfigurePath, createBootConfigurePath, createRootConfigurePath } = require('../../../interfacade/configure/configure_path.cjs')
 const { CountId } = require('../../util/count_id.cjs')
-const { isVoid } = require('../../util/is_void.cjs')
+
 
 
 /**
@@ -188,7 +188,7 @@ class ResolverParseContext {
                 this.parentConfigurePath = workflowData.configurePath
                 workflowDataIndex++
                 const workflowPlugin = this.context.workflows.getPluginFromConfigure(workflowData.configure)
-                const configure = /** @type {import('../../workflow/protocol').WorkflowPluginConfigureReadable} */(workflowData.configure)
+
 
 
 

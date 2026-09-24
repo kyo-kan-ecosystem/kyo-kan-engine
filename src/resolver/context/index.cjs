@@ -39,6 +39,7 @@ class ContextBridgeResolver {
         const subworkflows = this._context.executors.getConfigure(configureId).subworkflows
         assertIsNotVoid(subworkflows, SubworflowsDoesNotExistError, {})
         assertIsNotVoid(subworkflows, SubworkflowNameDoesNotExistsError)
+        // @ts-ignore
         return subworkflows[name]
 
 
@@ -71,7 +72,7 @@ class ContextBridgeResolver {
     }
     resolveStartProcess() {
         const rootWorkflow = this._context.engine.configure.get().root.workflow.id
-        this._context.states.now.update({ workflow: { id: rootWorkflow } })
+        this._context.states.now.push({ workflow: { id: rootWorkflow } })
         this._context.states.controll.setExecuteMode('start')
 
 
