@@ -1,4 +1,4 @@
-import { WithConfigurePath } from "../../interfacde/configure/protocol"
+import { WithConfigurePath } from "../../interfacade/configure/protocol"
 import type { ExecutorsContext } from "./context.cjs"
 import { PluginConfigureReadableProtocolBase, PluginConfigureProtocol } from "../../protocol/plugin/protocol"
 

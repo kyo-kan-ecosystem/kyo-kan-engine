@@ -1,4 +1,4 @@
-import { WithConfigurePath } from "../../interfacde/configure/protocol"
+import { WithConfigurePath } from "../../interfacade/configure/protocol"
 
 export type MCPStyleMeta = { type: string, description: string, items?: MCPStyleMeta, prefixItems }
 export type PluginModule<MetaType = any, EditDataType = any, CreateDataType = any, BuildResultType = any> = {

@@ -2,8 +2,8 @@
     "include": [
         "src/**/*",
         "void/word4typscript.ts",
-        "interfacde/configure/protocol.d.ts",
-        "interfacde/configure/configure_path.cjs"
+        "interfacade/configure/protocol.d.ts",
+        "interfacade/configure/configure_path.cjs"
     ],
     "compilerOptions": {
         "lib": [

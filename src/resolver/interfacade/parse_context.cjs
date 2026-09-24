@@ -1,10 +1,10 @@
-const { extendConfigurePath, createWorkflowConfigurePath, createExecutorConfigurePath, createBootConfigurePath, createRootConfigurePath } = require('../../../interfacde/configure/configure_path.cjs')
+const { extendConfigurePath, createWorkflowConfigurePath, createExecutorConfigurePath, createBootConfigurePath, createRootConfigurePath } = require('../../../interfacade/configure/configure_path.cjs')
 const { CountId } = require('../../util/count_id.cjs')
 const { isVoid } = require('../../util/is_void.cjs')
 
 
 /**
- * @typedef {{id:any, configure:any, configurePath:import('../../../interfacde/configure/protocol').ConfigurePath}} ConfigureData
+ * @typedef {{id:any, configure:any, configurePath:import('../../../interfacade/configure/protocol').ConfigurePath}} ConfigureData
  * @typedef {ConfigureData[]} ConfigureDatas
  */
 class ResolverParseContext {
@@ -35,7 +35,7 @@ class ResolverParseContext {
     workflowDatas
 
     /**
-     * @type {import('../../../interfacde/configure/protocol').ConfigurePath?}
+     * @type {import('../../../interfacade/configure/protocol').ConfigurePath?}
      */
     parentConfigurePath
     /**
