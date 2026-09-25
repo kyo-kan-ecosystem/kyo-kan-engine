@@ -6,15 +6,15 @@
 
 
 /**
- * @typedef {import("../protocol").ApplyResponse<number>} ApplyResponse
- * @typedef {import("../protocol").UnitConfigure<number>} UnitConfigure
+ * @typedef {import("../../../src/workflow/protocol").ApplyResponse<number>} ApplyResponse
+ * @typedef {import("../../../src/workflow/protocol").UnitConfigure<number>} UnitConfigure
  * @typedef {{steps:any[]}} WorkflowData
  */
 class WorkflowPluginStep {
     /**
      * 
      * @param {any[]} configures
-     * @param {import("../protocol").WorkflowContext} context 
+     * @param {import("../../../src/workflow/protocol").WorkflowContext} context 
      * @returns {ApplyResponse}  
      */
     applyConfigure(name, configures, context) {
@@ -73,3 +73,12 @@ class WorkflowPluginStep {
     }
 
 }
+
+/**
+ * 
+ * @param {*} hoge 
+ * @returns 
+ */
+function t(hoge) {
+    return hoge
+} 

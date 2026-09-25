@@ -20,7 +20,7 @@ const mockValueInit = {
 let mockValue
 
 /**
- * @typedef {{id:any, configure:{plugin:any, options:any}, }}
+ * @typedef {{id:any, configure:{plugin:any, options:any}}}
  */
 
 /**

@@ -153,7 +153,7 @@ class ResolverParseContext {
                 continue
             }
             const configurePath = createBootConfigurePath()
-            configurePath.expressions.push(index)
+            configurePath.expressions.push(id)
             this.executorDatas.push({ id, configure, configurePath })
         }
 
@@ -163,7 +163,7 @@ class ResolverParseContext {
      * 
      * @param {*} rootConfigure 
      */
-    setRootConfigure(rootConfigure) {
+    setRootWorkflow(rootConfigure) {
         const engineWorkflowConfigure = this.context.engine.configure.get().root.workflow
         const id = engineWorkflowConfigure.id
         /**
@@ -255,7 +255,7 @@ class ResolverParseContext {
     _filterAndGetId(configure, countId) {
         const isLink = this._checkIsLink(configure)
         if (isLink === false) {
-            return { isLink, id: countId.generate }
+            return { isLink, id: countId.generate() }
 
         }
         return { isLink, id: configure.id }

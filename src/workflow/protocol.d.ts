@@ -33,6 +33,7 @@ export type WorkflowContextInit = {
     pluginsClass?: any,
     configuresClass?: any,
 
+
 }
 
 

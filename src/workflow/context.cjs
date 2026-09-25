@@ -8,7 +8,10 @@ const { WorkflowPluginRepositry } = require("./repositry/plugins.cjs")
 
 
 
-
+/**
+ * @templte StateType
+ * @templte InitDataType
+ */
 class WorkflowsContext {
 
     /**

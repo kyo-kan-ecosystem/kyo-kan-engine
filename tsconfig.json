@@ -1,9 +1,10 @@
 {
     "include": [
         "src/**/*",
-        "void/word4typscript.ts",
+        "void/void.ts",
         "interfacade/configure/protocol.d.ts",
-        "interfacade/configure/configure_path.cjs"
+        "interfacade/configure/configure_path.cjs",
+        "presets/workflow/step/step.cjs"
     ],
     "compilerOptions": {
         "lib": [

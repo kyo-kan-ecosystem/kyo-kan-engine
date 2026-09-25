@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { WorkflowState, WorkflowStateMember as WorkflowStateMember } from "../workflow/protocol";
+import { WorkflowState, WorkflowStateMember } from "../workflow/protocol";
 import { ExecuteMode } from "../sequence/protocol";
 
 
