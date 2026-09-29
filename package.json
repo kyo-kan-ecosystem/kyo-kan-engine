@@ -9,11 +9,16 @@
   "types": "./exports/index.d.ts",
   "exports": {
     ".": {
-      "types": "./exports/index.d.ts",
       "module": "./exports/index.mjs",
       "import": "./exports/index.mjs",
       "require": "./exports/index.cjs",
       "default": "./exports/index.mjs"
+    },
+    "./protocol/types": "./protocol/index.d.ts",
+    "./protocol/classes": {
+      "import": "./protocol/index.mjs",
+      "require": "./protocol/index.cjs",
+      "default": "./protocol/index.mjs"
     }
   },
   "scripts": {
@@ -27,7 +32,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.13.2",
     "chai": "latest",
-    "mocha": "^11.7.6",
+    "mocha": "^12.0.2",
     "sinon": "latest",
     "typescript": "^5.9.2"
   },
