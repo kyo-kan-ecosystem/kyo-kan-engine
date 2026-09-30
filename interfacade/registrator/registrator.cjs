@@ -216,7 +216,7 @@ class Registrator {
 
 
 
-                const { memberExecutors, executorIDs } = workflowPlugin.getMemberExecutors(workflowData.configure)
+                const { memberExecutors, flowDatas } = workflowPlugin.getMemberExecutors(workflowData.configure)
                 for (const memberExecutor of memberExecutors) {
 
 
@@ -231,7 +231,7 @@ class Registrator {
                     workflowData.id,
                     {
                         configurePath: workflowData.configurePath,
-                        executorIDs,
+                        flowDatas,
                         options: workflowData.configure.options,
                         plugin: workflowData.configure.plugin
                     }

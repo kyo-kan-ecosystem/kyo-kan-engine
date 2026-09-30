@@ -192,13 +192,13 @@ class ResolverParseContext {
 
 
 
-                const executorIDs = workflowPlugin.getMemberExecutors(workflowData.configure, this)
+                const flowDatas = workflowPlugin.getMemberExecutors(workflowData.configure, this)
 
                 this.context.workflows.addConfigure(
                     workflowData.id,
                     {
                         configurePath: workflowData.configurePath,
-                        executorIDs,
+                        flowDatas,
                         options: workflowData.configure.options,
                         plugin: workflowData.configure.plugin
                     }

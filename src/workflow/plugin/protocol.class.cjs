@@ -102,11 +102,12 @@ class AbstractWorkflow {
     }
     /**
      * @param {import("../../states/protocol").Context<any,any> } context 
-     * @param {StateType} state 
+     * @param {StateType} state
+     * @param {boolean} [isFullOverWrite=true]  
      */
-    setState(context, state) {
+    setState(context, state, isFullOverWrite = true) {
         // @ts-ignore
-        context.states.now.update({ workflow: state })
+        context.states.now.update({ workflow: state }, isFullOverWrite)
 
 
     }

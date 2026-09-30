@@ -3,20 +3,20 @@ import type { ResolverParseContext } from "../../resolver/exports.cjs"
 import type { Context } from "../../states/protocol"
 
 
-export type WorkflowReadablConfigureExtend<ExecutorsType = {}> = {
-    executors: ExecutorsType
+export type WorkflowReadablConfigureExtend<FlowDatasType = {}> = {
+    flowDatas: FlowDatasType
 }
 
-export type WorkflowConfigureExtend<ExecutorIDsType = any> = {
+export type WorkflowConfigureExtend<FlowDatasType = any> = {
 
-    executorIDs: ExecutorIDsType
+    flowDatas: FlowDatasType
 }
 
-export type WorkflowConfigureInPlace<ExecutorsType = PluginConfigureReadableProtocolBase<{}, WorkflowReadablConfigureExtend<ExecutorsType>>
+export type WorkflowConfigureInPlace<FlowDatasType, OptionsType = any> = PluginConfigureReadableProtocolBase<OptionsType, WorkflowReadablConfigureExtend<FlowDatasType>>
 
 
 
-export type WorkflowPluginConfigureReadable<ExecutorsType = any, OptionsType = any> = PluginConfigureReadableProtocolBase<OptionsType, WorkflowReadablConfigureExtend<ExecutorsType>>
+export type WorkflowPluginConfigureReadable<FlowDatasType = any, OptionsType = any> = PluginConfigureReadableProtocolBase<OptionsType, WorkflowReadablConfigureExtend<FlowDatasType>>
 export type WorkflowConfigure<ExecutorIdsType = any, OptionsType = any> = PluginConfigureProtocol<OptionsType, WorkflowConfigureExtend<ExecutorIdsType>>
 
 
@@ -49,7 +49,7 @@ export type WorkflowStep<ContextType = Context<any, any>> = {
 export type WorkflowSteps<ContextType = Context<any, any>> = WorkflowStep<ContextType>[]
 export type MaybeWorkflowSteps = WorkflowSteps | WorkflowStep
 
-export type WorflowControllFunction<ExecutorsType = {}, OptionsType = any, RequestType = any, ContextType = Context<any, any>> = (context: ContextType, configure: WorkflowConfigure<ExecutorsType, OptionsType> request: RequestType) => MaybeWorkflowSteps
-export type WorkflowGetMemberExecutorsFunction<ExecutorsType = any, ExecutorIDsType = any> = (configure: WorkflowConfigureInPlace, resolver: ResolverParseContext) => ExecutorIDsType // protocol example
+export type WorflowControllFunction<FlowDatasType = {}, OptionsType = any, RequestType = any, ContextType = Context<any, any>> = (context: ContextType, configure: WorkflowConfigure<FlowDatasType, OptionsType> request: RequestType) => MaybeWorkflowSteps
+export type WorkflowGetMemberExecutorsFunction<FlowDatasType = any, FlowDatasType = any> = (configure: WorkflowConfigureInPlace, resolver: ResolverParseContext) => FlowDatasType // protocol example
 
 
