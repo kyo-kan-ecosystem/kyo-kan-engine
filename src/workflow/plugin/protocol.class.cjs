@@ -2,7 +2,7 @@ const { isVoid } = require("../../util/is_void.cjs")
 
 
 /**
- * @template  [StateType=any], [ExecutorsType=any], [ExecutorsReadableType=any], [RequestType=any], [OptionsType=any]
+ * @template  [StateType=any]
  */
 class AbstractWorkflow {
     /**
@@ -30,9 +30,10 @@ class AbstractWorkflow {
     /**
      * @abstract
      * @param {import("../../states/protocol").Context<any, any>} context
-     * @param {*} configure
-     * @returns {import("./protocol").MaybeWorkflowSteps}
+     * @param {*} configure 
      * @param {any} request
+     * @returns {import("./protocol").MaybeWorkflowSteps}
+     *
      */
     now(context, configure, request) {
         throw new Error('Method not implemented.')
@@ -60,7 +61,7 @@ class AbstractWorkflow {
      * @returns {import("./protocol").MaybeWorkflowSteps}
      */
     exitFromSubworkflow(context, request, configure) {
-        throw new Error('Method not implemented.')
+        return { context }
 
     }
     /**
@@ -71,7 +72,7 @@ class AbstractWorkflow {
      * @returns {import("./protocol").MaybeWorkflowSteps}
      */
     returnFromSubworkflow(context, request, configure) {
-        throw new Error('Method not implemented.')
+        return { context }
 
     }
 
@@ -80,9 +81,7 @@ class AbstractWorkflow {
 
     /**
      * @abstract
-     * @param {import("../protocol").WorkflowPluginConfigureReadable} configure
-     * @param {import("../../resolver/interfacade/parse_context.cjs").ResolverParseContext} resolveContext 
-     * @returns {any}
+     * @type {import("./protocol").WorkflowGetMemberExecutorsFunction}
      */
     getMemberExecutors(configure, resolveContext) {
         throw new Error('not implemt')
@@ -101,12 +100,21 @@ class AbstractWorkflow {
         }
         return state
     }
+    /**
+     * @param {import("../../states/protocol").Context<any,any> } context 
+     * @param {StateType} state 
+     */
+    setState(context, state) {
+        // @ts-ignore
+        context.states.now.update({ workflow: state })
+
+
+    }
 
 
 
 
 }
-
 
 
 module.exports = { AbstractWorkflow }
