@@ -39,7 +39,7 @@ function getCalled() {
     return called
 }
 class MockWorkflow extends AbstractWorkflow {
-    getMemberExecutors(configure, resolver) {
+    getFlowDatas(configure, resolver) {
 
     }
 }

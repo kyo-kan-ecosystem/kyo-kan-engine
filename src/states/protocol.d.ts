@@ -11,7 +11,7 @@ export type ControllStateType = {
     executeMode?: ExecuteMode,
     subworkflowInit?: any,
     subworkflowName?: any,
-    subworkflowState?: any,
+    subworkflowInitState?: any,
 
 }
 

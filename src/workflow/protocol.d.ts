@@ -3,10 +3,11 @@ import { PluginConfigureReadableProtocolBase, PluginConfigureBase } from "../../
 
 export * from './plugin/protocol.d.ts'
 export type { AbstractWorkflow as WorkflowPlugin } from "./plugin/protocol.class.cjs"
-export type WorkflowState<StateType = any, InitDataType = any> = {
+export type WorkflowState<StateType = any, InitDataType = any, InitStateType = any> = {
     id: any;
     initData?: InitDataType;
     state?: StateType;
+    initState?: InitStateType;
 
 
 

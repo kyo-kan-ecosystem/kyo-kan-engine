@@ -2,7 +2,7 @@ const { isVoid } = require("../../util/is_void.cjs")
 
 
 /**
- * @template  [StateType=any]
+ * @template  [StateType=any], [DefaultStateType=any]
  */
 class AbstractWorkflow {
     /**
@@ -81,9 +81,9 @@ class AbstractWorkflow {
 
     /**
      * @abstract
-     * @type {import("./protocol").WorkflowGetMemberExecutorsFunction}
+     * @type {import("./protocol").WorkflowGetFlowDatasFunction}
      */
-    getMemberExecutors(configure, resolveContext) {
+    getFlowDatas(configure, resolveContext) {
         throw new Error('not implemt')
     }
 
@@ -109,6 +109,19 @@ class AbstractWorkflow {
         // @ts-ignore
         context.states.now.update({ workflow: state }, isFullOverWrite)
 
+
+    }
+    /**
+     * @param {import("../../states/protocol").Context<any, any>} context
+     * @param {any?} defaultState
+     * @returns {DefaultStateType}
+     */
+    getInitState(context, defaultState) {
+        const state = context.states.now.get().workflow?.initState
+        if (isVoid(state) === true) {
+            return defaultState
+        }
+        return state
 
     }
 

@@ -138,13 +138,13 @@ class ControllState {
      * 
      * @param {*} state 
      */
-    setSubworkflowState(state) {
-        this.setControll('subworkflowState', state)
+    setSubworkflowInitState(state) {
+        this.setControll('subworkflowInitState', state)
 
     }
 
-    getSubworkflowState() {
-        return this.getControll('subworkflowState')
+    getSubworkflowInitState() {
+        return this.getControll('subworkflowInitState')
     }
 
 

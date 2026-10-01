@@ -50,6 +50,6 @@ export type WorkflowSteps<ContextType = Context<any, any>> = WorkflowStep<Contex
 export type MaybeWorkflowSteps = WorkflowSteps | WorkflowStep
 
 export type WorflowControllFunction<FlowDatasType = {}, OptionsType = any, RequestType = any, ContextType = Context<any, any>> = (context: ContextType, configure: WorkflowConfigure<FlowDatasType, OptionsType> request: RequestType) => MaybeWorkflowSteps
-export type WorkflowGetMemberExecutorsFunction<FlowDatasType = any, FlowDatasType = any> = (configure: WorkflowConfigureInPlace, resolver: ResolverParseContext) => FlowDatasType // protocol example
+export type WorkflowGetFlowDatasFunction<FlowDatasType = any, FlowDatasType = any> = (configure: WorkflowConfigureInPlace, resolver: ResolverParseContext) => FlowDatasType // protocol example
 
 
