@@ -1,6 +1,7 @@
 
 const deepmerge = require("deepmerge")
 const { StackTreeRootPopError, StackTreeRootSuperGetError, StackTreeBranchDoesNotExistError } = require("./errors.cjs")
+const { deepcopy } = require("../deepcopy.cjs")
 
 
 /**
@@ -306,14 +307,14 @@ class StackTree {
      */
     setBranchId(id, isStrict = true) {
 
-        this._branchId = id;
-        if (!this._branches[id]) {
+        this._branchId = id
+        if (id in this._branches[id] === false) {
             if (isStrict === true) {
                 throw new StackTreeBranchDoesNotExistError(id)
 
             }
 
-            this._branches[id] = new this._branchClass();
+            this._branches[id] = new this._branchClass()
         }
         this.now = this._branches[id]
 
@@ -439,4 +440,19 @@ class StackTree {
 }
 
 
-module.exports = { Stack, StackTree }
+/**
+ * @template {Stack} BranchType
+ * @extends {StackTree<BranchType>}
+ */
+class StackSuperimpositionLinkTree extends StackTree {
+    /**
+     * @param {number | null | undefined} [id]
+     */
+    fork(id) {
+        const forked = super.fork(id)
+        forked.now.update(deepcopy(this.now.get()))
+        return forked
+
+    }
+}
+module.exports = { Stack, StackTree, StackSuperimpositionLinkTree }

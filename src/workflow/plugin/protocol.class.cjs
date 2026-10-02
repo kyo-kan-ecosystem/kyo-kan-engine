@@ -2,7 +2,7 @@ const { isVoid } = require("../../util/is_void.cjs")
 
 
 /**
- * @template  [StateType=any], [DefaultStateType=any]
+ * @template  [StateType=any], [InitStateType=any]
  */
 class AbstractWorkflow {
     /**
@@ -113,15 +113,23 @@ class AbstractWorkflow {
     }
     /**
      * @param {import("../../states/protocol").Context<any, any>} context
-     * @param {any?} defaultState
-     * @returns {DefaultStateType}
+     * @param {InitStateType?} [defaultInitState=undefined] 
+     * @returns {InitStateType}
      */
-    getInitState(context, defaultState) {
+    getInitState(context, defaultInitState = undefined) {
         const state = context.states.now.get().workflow?.initState
         if (isVoid(state) === true) {
-            return defaultState
+            // @ts-ignore
+            return defaultInitState
         }
         return state
+
+    }
+    /**
+     * @param {import("../../states/protocol").Context<any, any>} context
+     */
+    getWorkflowState(context) {
+        return context.states.now.get().workflow
 
     }
 

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 const merge = require("deepmerge")
 
 /**
@@ -13,20 +13,22 @@ class BasicWithGetSubworkflowClass {
      * @abstract
      * @type {import("./protocol").SubWorkflowConfigures}
      */
+
+    // @ts-ignore
     _subworkflows
 
     /**
      * 
-     * @param {import("./protocol").BasicConfigure} configure
+     * @param {import("./protocol").BasicOptions} options
      * 
      */
-    getSubworkflow(configure) {
-        const subWorkflowConfigures = configure.subwwokflows || {}
+    getSubworkflow(options) {
+        const subWorkflowConfigures = options.subworkflows || {}
         /**
         * @type {import("./protocol").SubWorkflowConfigures}
         */
         const res = {}
-        for (const key in configure.subwwokflows || {}) {
+        for (const key in options.subworkflows || {}) {
 
 
             const element = subWorkflowConfigures[key];

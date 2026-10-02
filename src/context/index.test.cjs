@@ -54,6 +54,7 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
 
         it('should call resolver.resolveStartProcess on initial instantiation', function () {
             const resolveStartProcessSpy = sandbox.spy(ContextBridgeResolver.prototype, 'resolveStartProcess')
+            // @ts-ignore
             const context = new Context({})
             assert.isTrue(resolveStartProcessSpy.calledOnce)
         })
@@ -92,6 +93,7 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
 
     describe('Constructor initialization with inheritance (datas === false)', function () {
         it('should inherit all properties and call histories.context.setContext without re-instantiation', function () {
+            // @ts-ignore
             const setContextSpy = sandbox.spy()
             const mockHistories = {
                 context: {
@@ -113,6 +115,7 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
                 functions: {}
             }
 
+            // @ts-ignore
             const MockResolver = sandbox.stub()
             const classes = {
                 resolver: MockResolver
@@ -121,18 +124,24 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
             const context = new Context({
                 datas: false,
                 inheritance,
+                // @ts-ignore
                 classes
             })
 
+            // @ts-ignore
             assert.equal(context.bords, inheritance.bords)
+            // @ts-ignore
             assert.equal(context.states, inheritance.states)
             assert.equal(context.histories, inheritance.histories)
             assert.isTrue(setContextSpy.calledWith(context))
             assert.equal(context._branches, inheritance.branches)
             assert.equal(context._countRef, inheritance._countRef)
             assert.equal(context._linkMap, inheritance._linkMap)
+            // @ts-ignore
             assert.equal(context.engine, inheritance.engine)
+            // @ts-ignore
             assert.equal(context.workflows, inheritance.workflows)
+            // @ts-ignore
             assert.equal(context.executors, inheritance.executors)
             assert.equal(context.getBranchId(), 2)
             assert.equal(context.reporter, inheritance.reporter)
@@ -142,27 +151,36 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
     describe('Constructor with custom classes (dependency injection)', function () {
         it('should instantiate provided custom classes', function () {
             const customBordsInstance = { getBranchId: () => 10 }
+            // @ts-ignore
             const CustomBords = sandbox.stub().returns(customBordsInstance)
 
             const customStatesInstance = { getBranchId: () => 20 }
+            // @ts-ignore
             const CustomStates = sandbox.stub().returns(customStatesInstance)
 
             const customHistoriesInstance = {
+                // @ts-ignore
                 context: { setContext: sandbox.stub() },
                 getBranchId: () => 30
             }
+            // @ts-ignore
             const CustomHistories = sandbox.stub().returns(customHistoriesInstance)
 
             const customEngineInstance = {}
+            // @ts-ignore
             const CustomEngine = sandbox.stub().returns(customEngineInstance)
 
             const customWorkflowsInstance = {}
+            // @ts-ignore
             const CustomWorkflows = sandbox.stub().returns(customWorkflowsInstance)
 
             const customExecutorsInstance = {}
+            // @ts-ignore
             const CustomExecutors = sandbox.stub().returns(customExecutorsInstance)
 
+            // @ts-ignore
             const customResolverInstance = { resolveStartProcess: sandbox.stub() }
+            // @ts-ignore
             const CustomResolver = sandbox.stub().returns(customResolverInstance)
 
             const customClasses = {
@@ -175,22 +193,32 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
                 resolver: CustomResolver
             }
 
+            // @ts-ignore
             const context = new Context({ classes: customClasses })
 
+            // @ts-ignore
             assert.isTrue(CustomBords.calledOnce)
+            // @ts-ignore
             assert.isTrue(CustomStates.calledOnce)
+            // @ts-ignore
             assert.isTrue(CustomHistories.calledOnce)
+            // @ts-ignore
             assert.isTrue(CustomEngine.calledOnce)
+            // @ts-ignore
             assert.isTrue(CustomWorkflows.calledOnce)
+            // @ts-ignore
             assert.isTrue(CustomExecutors.calledOnce)
+            // @ts-ignore
             assert.isTrue(CustomResolver.calledOnce)
 
             assert.equal(context.bords, customBordsInstance)
             assert.equal(context.states, customStatesInstance)
+            // @ts-ignore
             assert.equal(context.histories, customHistoriesInstance)
             assert.equal(context.engine, customEngineInstance)
             assert.equal(context.workflows, customWorkflowsInstance)
             assert.equal(context.executors, customExecutorsInstance)
+            // @ts-ignore
             assert.equal(context.resolver, customResolverInstance)
         })
     })
@@ -228,6 +256,7 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
             sandbox.stub(context.states, 'isRoot').returns(true)
             assert.isTrue(context.isRoot())
 
+            // @ts-ignore
             context.states.isRoot.returns(false)
             assert.isFalse(context.isRoot())
         })
@@ -237,6 +266,7 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
             sandbox.stub(context.states, 'isEmptyNow').returns(true)
             assert.isTrue(context.isEmptyNow())
 
+            // @ts-ignore
             context.states.isEmptyNow.returns(false)
             assert.isFalse(context.isEmptyNow())
         })
@@ -272,8 +302,11 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
             const mockHistories = { getBranchId: () => 103 }
 
             const newId = context._createIdMap({
+                // @ts-ignore
                 bords: mockBords,
+                // @ts-ignore
                 states: mockStates,
+                // @ts-ignore
                 histories: mockHistories
             })
 
@@ -310,13 +343,17 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
         it('should invoke bords.forkAsNamedTree and _fork on forkAsNamedTree', function () {
             const context = new Context({})
             const forkedBords = { getBranchId: () => 200 }
+            // @ts-ignore
             sandbox.stub(context.bords, 'forkAsNamedTree').returns(forkedBords)
             const forkStub = sandbox.stub(context, '_fork').returns('fork-result')
 
             const result = context.forkAsNamedTree('subTree')
 
+            // @ts-ignore
             assert.isTrue(context.bords.forkAsNamedTree.calledWith('subTree'))
+            // @ts-ignore
             assert.isTrue(forkStub.calledWith(null, null, forkedBords))
+            // @ts-ignore
             assert.equal(result, 'fork-result')
         })
 
@@ -324,23 +361,31 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
             const context = new Context({})
             const branchData = context._branches[0]
             const forkedBords = { getBranchId: () => 300 }
+            // @ts-ignore
             sandbox.stub(context.bords, 'fork').returns(forkedBords)
             const forkStub = sandbox.stub(context, '_fork').returns('fork-result')
 
             const result = context.fork(0)
 
+            // @ts-ignore
             assert.isTrue(context.bords.fork.calledWith(branchData.bords))
+            // @ts-ignore
             assert.isTrue(forkStub.calledWith(0, branchData, forkedBords))
+            // @ts-ignore
             assert.equal(result, 'fork-result')
         })
 
         it('should perform states.fork and histories.fork inside _fork', function () {
+            // @ts-ignore
             const forkedStates = { getBranchId: () => 1, fork: sandbox.stub() }
             const forkedHistories = {
                 getBranchId: () => 2,
+                // @ts-ignore
                 fork: sandbox.stub(),
+                // @ts-ignore
                 context: { setContext: sandbox.stub() }
             }
+            // @ts-ignore
             const forkedBords = { getBranchId: () => 3, fork: sandbox.stub() }
 
             const customClasses = {
@@ -357,25 +402,32 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
                 resolver: class { resolveStartProcess() { } }
             }
 
+            // @ts-ignore
             const context = new Context({ classes: customClasses })
             const branch = context._branches[0]
 
+            // @ts-ignore
             const forked = context._fork(0, branch, forkedBords)
             assert.isDefined(forked)
             assert.instanceOf(forked, Context)
         })
 
         it('should pass step parameter to histories.fork in _fork', function () {
+            // @ts-ignore
             const forkedStates = { getBranchId: () => 1, fork: sandbox.stub() }
+            // @ts-ignore
             const historiesForkSpy = sandbox.stub().returns({
                 getBranchId: () => 2,
+                // @ts-ignore
                 context: { setContext: sandbox.stub() }
             })
             const forkedHistories = {
                 getBranchId: () => 2,
                 fork: historiesForkSpy,
+                // @ts-ignore
                 context: { setContext: sandbox.stub() }
             }
+            // @ts-ignore
             const forkedBords = { getBranchId: () => 3, fork: sandbox.stub() }
 
             const customClasses = {
@@ -384,6 +436,7 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
                 histories: class {
                     constructor() { this.context = { setContext: () => { } } }
                     getBranchId() { return 0 }
+                    // @ts-ignore
                     fork() { return forkedHistories.fork(...arguments) }
                 },
                 engine: class { },
@@ -392,11 +445,15 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
                 resolver: class { resolveStartProcess() { } }
             }
 
+            // @ts-ignore
             const context = new Context({ classes: customClasses })
             const branch = context._branches[0]
 
+            // @ts-ignore
             context._fork(0, branch, forkedBords, 5)
+            // @ts-ignore
             assert.isTrue(historiesForkSpy.calledOnce)
+            // @ts-ignore
             assert.equal(historiesForkSpy.firstCall.args[2], 5)
         })
     })
@@ -404,6 +461,7 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
     describe('API forking (_forkApi)', function () {
         it('should invoke fork on reporter when reporter has a fork method', function () {
             const mockReporter = {
+                // @ts-ignore
                 fork: sandbox.stub().returns({ forkedReporter: true })
             }
 
@@ -411,7 +469,9 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
                 api: { reporter: mockReporter }
             })
 
+            // @ts-ignore
             assert.isTrue(mockReporter.fork.calledOnce)
+            // @ts-ignore
             assert.isTrue(mockReporter.fork.calledWith(context.getBranchId(), context))
             assert.deepEqual(context.reporter, { forkedReporter: true })
         })
@@ -434,6 +494,7 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
 
         it('should handle functions mapping in _forkApi', function () {
             const mockFn = {
+                // @ts-ignore
                 fork: sandbox.stub().returns('forkedFunction')
             }
             const context = new Context({
@@ -442,7 +503,9 @@ describe('Context (repositries/engine/src/context/index.cjs)', function () {
                 }
             })
 
+            // @ts-ignore
             assert.isTrue(mockFn.fork.calledOnce)
+            // @ts-ignore
             assert.isTrue(mockFn.fork.calledWith(context.getBranchId(), context))
             assert.equal(context.functions['0'], 'forkedFunction')
         })

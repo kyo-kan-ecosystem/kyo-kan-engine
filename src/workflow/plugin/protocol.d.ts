@@ -1,4 +1,4 @@
-import { PluginConfigureProtocol, PluginConfigureReadableProtocolBase } from "../../../protocol/plugin/protocol"
+import { PluginConfigureProtocol, PluginConfigureReadableProtocolBase, PluginConfigureReadablInPlaceProtocol } from "../../../protocol/plugin/protocol"
 import type { ResolverParseContext } from "../../resolver/exports.cjs"
 import type { Context } from "../../states/protocol"
 
@@ -12,7 +12,7 @@ export type WorkflowConfigureExtend<FlowDatasType = any> = {
     flowDatas: FlowDatasType
 }
 
-export type WorkflowConfigureInPlace<FlowDatasType, OptionsType = any> = PluginConfigureReadableProtocolBase<OptionsType, WorkflowReadablConfigureExtend<FlowDatasType>>
+export type WorkflowConfigureInPlace<FlowDatasType, OptionsType = any> = PluginConfigureReadablInPlaceProtocol<OptionsType, WorkflowReadablConfigureExtend<FlowDatasType>>
 
 
 

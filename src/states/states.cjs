@@ -1,15 +1,15 @@
 
-const { StackTree } = require('../util/stack/stack.cjs');
+const { StackSuperimpositionLinkTree } = require('../util/stack/stack.cjs');
 const { StateBranch } = require('./branch.cjs');
 const { ControllState } = require('./controll_state.cjs')
 
 
 /**
  * @template {ControllState} [ControllStateType=ControllState]
- * @extends {StackTree<StateBranch>} 
+ * @extends {StackSuperimpositionLinkTree<StateBranch>} 
  *
  */
-class States extends StackTree {
+class States extends StackSuperimpositionLinkTree {
     /**
      * @type {ControllStateType}
      */
