@@ -26,7 +26,7 @@ const { EngineContext } = require("../engine/context.cjs")
 /**
  * @type {ContextClasses}
  */
-const DEFUALT_CLASSES = {
+const DEFAULT_CLASSES = {
     bords: Bords,
     engine: EngineContext,
     states: States,
@@ -112,6 +112,8 @@ class Context {
      */
     _linkMap
 
+
+
     /**
      * @type {ContextClasses}
      */
@@ -131,7 +133,7 @@ class Context {
      * @param {import("./protocol").ContextInheritance?} [param0.inheritance]
      * 
      */
-    constructor({ datas = null, api = null, inheritance = null, classes = DEFUALT_CLASSES }) {
+    constructor({ datas = null, api = null, inheritance = null, classes = DEFAULT_CLASSES }) {
         this._classes = classes
         // @ts-ignore
         this.resolver = new classes.resolver(this)
@@ -142,6 +144,7 @@ class Context {
             this.states = inheritance?.states
 
             this.histories = inheritance?.histories
+            this.histories.context.setContext(this)
             this._branches = inheritance?.branches
             this.reporter = inheritance?.reporter
             this._countRef = inheritance?._countRef
@@ -182,6 +185,7 @@ class Context {
          * @type {Histories}
          */
         this.histories = new classes.histories({ states: this.states, bords: this.bords }, datas?.histories)
+        this.histories.context.setContext(this)
         this._branches = datas?.branches || {}
 
 
@@ -197,7 +201,7 @@ class Context {
 
         }
         else {
-            this._branchId = 0
+            this.setBranchId(datas._branchId)
 
         }
         const { functions = {}, reporter = {} } = this._forkApi(api?.reporter, api?.functions)
@@ -217,7 +221,7 @@ class Context {
     /**
      * @returns {import("./protocol").ContextSerializableData}
      */
-    getSerialiableData() {
+    getSerializableData() {
         return {
             bords: this.bords.getSerializableData(),
             states: this.states.getSerializableData(),
@@ -306,9 +310,11 @@ class Context {
     _fork(id, branchIds, bords, step = null) {
 
 
+
+
+
         const states = this.states.fork(branchIds?.state)
         const histories = this.histories.fork(branchIds?.histories, { states, bords }, step)
-
         let branchId = id
         if (id === null || typeof id === 'undefined') {
             branchId = this._createIdMap({ bords, states, histories })
@@ -317,7 +323,6 @@ class Context {
 
 
         }
-
 
         /**
         * @type {import("./protocol").ContextInheritance}
@@ -341,7 +346,7 @@ class Context {
          * @type {this}
          */
         // @ts-ignore
-        const forked = new this.constructor({ inheritance, classes: this._classes })
+        const forked = new this.constructor({ inheritance, classes: this._classes, datas: false })
 
 
 
@@ -360,7 +365,7 @@ class Context {
     _forkApi(reporter, functions) {
         const forkedFunctions = {}
 
-        for (const key in Object.keys(functions || {})) {
+        for (const key in functions) {
             // @ts-ignore
             const functionObj = functions[key] || {}
             if ('fork' in functionObj) {

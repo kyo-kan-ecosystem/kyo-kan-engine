@@ -24,8 +24,7 @@ export type StateType = WorkflowStateMember & {
     isBoot?: boolean
 
 }
-
-export type PartialSateType = Partial<StateType>
+export type PteartialSateType = Partial<StateType>
 
 
 

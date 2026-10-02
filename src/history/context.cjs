@@ -3,6 +3,7 @@ const { StateHistory } = require('../states/history.cjs');
 const { BordGlobalHistory } = require('../bords/history/global.cjs');
 const { BordCurrentWorkflowHistory } = require('../bords/history/current_workflow.cjs');
 const { BordSubWorkflowHistory } = require('../bords/history/sub_workflow.cjs');
+const { ContextHistory } = require('../context/history/class.cjs');
 
 /**
  * @typedef {{state:any, request:any, bords:{global:any, currentWorkflow:any, subWorkflow:any}}} BranchIdMapType
@@ -12,6 +13,7 @@ const { BordSubWorkflowHistory } = require('../bords/history/sub_workflow.cjs');
  * @typedef {{
  *    state:typeof StateHistory, 
  *    request:typeof RequestHistory, 
+ *    context:typeof ContextHistory,  
  *    bords:{
  *          global: typeof BordGlobalHistory, 
  *          subWorkflow: typeof BordSubWorkflowHistory, 
@@ -21,7 +23,7 @@ const { BordSubWorkflowHistory } = require('../bords/history/sub_workflow.cjs');
 const DEFAULT_HISTORY_CLASSES = {
     state: StateHistory,
     request: RequestHistory,
-
+    context: ContextHistory,
     bords: {
         global: BordGlobalHistory,
         subWorkflow: BordSubWorkflowHistory,
@@ -36,7 +38,8 @@ const DEFAULT_HISTORY_CLASSES = {
  *      state?:any, 
  *      request?:any, 
  *      bords?:{global:any, subWorkflow:any, currentWorkflow:any},
- *      countRef?:CountRef
+ *      countRef?:CountRef,
+ *      context?:any
  * }} HistoryInits
  */
 
@@ -83,7 +86,10 @@ class HistoriesContext {
      */
     _bordsTree
 
-
+    /**
+     * @type {import("../context/history/class.cjs").ContextHistory}
+     */
+    context
     /**
      * @type {CountRef}
      */
@@ -111,6 +117,7 @@ class HistoriesContext {
             this.request = historyInheritance.request
             this.bords = historyInheritance.bords
             this._countRef = historyInheritance.countRef
+            this.context = historyInheritance.context
             return
 
         }
@@ -120,6 +127,7 @@ class HistoriesContext {
         this.state = new _historyClasses.state(historyInit?.state)
         this.request = new _historyClasses.request(historyInit?.request)
         this._countRef = { n: 0 }
+        this.context = new _historyClasses.context(historyInit?.context)
 
         this.bords = {
             global: new _historyClasses.bords.global(historyInit?.bords?.global),
@@ -135,6 +143,7 @@ class HistoriesContext {
 
 
     }
+
     /**
      * 
      * @param {*} request 
@@ -184,6 +193,7 @@ class HistoriesContext {
                 currentWorkflow: this.bords.currentWorkflow.fork(_ids.bords?.currentWorkflow, step),
                 subWorkflow: this.bords.subWorkflow.fork(_ids.bords?.subWorkflow, step)
             },
+            context: this.context.fork(_ids, step),
             countRef: this._countRef
         }
         /**
@@ -240,6 +250,9 @@ class HistoriesContext {
         }
 
     }
+    /**
+     * @param {any} step
+     */
     switchHistory(step) {
         const stateIds = this.state.switchHistory(step)
         const requestIds = this.request.switchHistory(step)

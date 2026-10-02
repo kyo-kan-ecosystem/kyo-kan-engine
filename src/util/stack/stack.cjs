@@ -254,7 +254,7 @@ class StackTree {
         }
 
         // @ts-ignore
-        const responseObj = new this.constructor(this.getReference(), this._branchClass)
+        const responseObj = new this.constructor(this.getReference(), _id, this._branchClass)
 
         responseObj.setBranchId(_id)
         return responseObj;

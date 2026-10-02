@@ -454,10 +454,11 @@ class MapedHistory {
     }
     /**
      * 
-     * @param {*} fromId 
+     * @param {any?} fromId 
      * @param {*} step 
      */
-    switchHistory(step, fromId) {
+    switchHistory(step, fromId = undefined) {
+
         const traverseResult = this._traverseBranchPath(step, fromId)
         if (traverseResult === false) {
             return false
