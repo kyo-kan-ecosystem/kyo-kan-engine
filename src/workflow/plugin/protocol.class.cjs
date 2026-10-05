@@ -18,12 +18,12 @@ class AbstractWorkflow {
     * @param {import("../../states/protocol").Context<any,any>} context 
     * @param {*} configure
     * @param {*} request 
-    * @returns {import("./protocol").MaybeWorkflowSteps}
+    * @returns {import("../../../protocol").MaybeContexts}
     * 
     * 
     */
     enterAsSubworkflow(context, configure, request) {
-        throw new Error('Method not implemented.')
+        return context
 
     }
 
@@ -32,7 +32,7 @@ class AbstractWorkflow {
      * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} configure 
      * @param {any} request
-     * @returns {import("./protocol").MaybeWorkflowSteps}
+     * @returns {import("../../../protocol").MaybeContexts}
      *
      */
     now(context, configure, request) {
@@ -45,7 +45,7 @@ class AbstractWorkflow {
    
     * @param {*} configure
     * @param {*} request 
-    * @returns {import("./protocol").MaybeWorkflowSteps}
+    * @returns {import("../../../protocol").MaybeContexts}
     * 
     */
     go(context, configure, request) {
@@ -58,10 +58,10 @@ class AbstractWorkflow {
      * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} request
      * @param {any} configure
-     * @returns {import("./protocol").MaybeWorkflowSteps}
+     * @returns {import("../../../protocol").MaybeContexts}
      */
     exitFromSubworkflow(context, request, configure) {
-        return { context }
+        return context
 
     }
     /**
@@ -69,10 +69,10 @@ class AbstractWorkflow {
      * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} request    
      * @param {any} configure
-     * @returns {import("./protocol").MaybeWorkflowSteps}
+     * @returns {import("../../../protocol").MaybeContexts}
      */
     returnFromSubworkflow(context, request, configure) {
-        return { context }
+        return context
 
     }
 

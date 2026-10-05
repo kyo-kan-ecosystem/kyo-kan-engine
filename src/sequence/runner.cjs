@@ -1,4 +1,5 @@
 
+const { isVoid } = require("../util/is_void.cjs")
 const { SingleEvent } = require("../util/single_event.cjs")
 
 /**
@@ -53,49 +54,39 @@ class SequenceRunner {
     }
     /**
      * 
-     * @param {import("./protocol").StepResult?} stepResult 
+     * @param {import("./protocol").StepResult?} _context 
      */
-    run(stepResult = null) {
+    run(_context = null) {
+        const context = isVoid(_context) ? this._context : _context
 
 
-        if (stepResult === false) {
+        if (_context === false) {
             this._processPathCounter.n--
         }
 
         else {
 
-
-            /**
-             * @type {import("../context/index.cjs").Context<any, any>}
-             */
-            const context = stepResult?.context || this._context
+            // @ts-ignore
             const executeMode = context.states.controll.getExecuteMode()
-
-
-
-
-
-
-            if (context === this._context) {
-
+            if (_context === this._context) {
 
                 // @ts-ignore
-                const proms = this.dispatcher[executeMode].call(this.dispatcher, this._context, this._request)
-                if (proms instanceof Promise) {
-                    proms.then(this._processPromises)
+                const maybeProms = this.dispatcher[executeMode].call(this.dispatcher, this._context, this._request)
+                if (maybeProms instanceof Promise) {
+                    maybeProms.then(this._processPromises)
                 }
                 else {
-                    this._processPromises(proms)
+                    this._processPromises(maybeProms)
                 }
 
 
             }
             else {
                 this._processPathCounter.n++
-                this._contexts.push(context)
+                this._contexts.push(_context)
                 // @ts-ignore
-                const runner = new this.constructor(this.dispatcher, context, this._request, this._processEndEvent, this._contexts, this._processPathCounter, this.startMode, this.resumeMode)
-                runner.run(stepResult)
+                const runner = new this.constructor(this.dispatcher, _context, this._request, this._processEndEvent, this._contexts, this._processPathCounter, this.startMode, this.resumeMode)
+                runner.run(_context)
             }
         }
 

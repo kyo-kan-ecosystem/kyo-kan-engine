@@ -1,3 +1,4 @@
+import { MaybeContexts } from "../../../protocol"
 import { PluginConfigureProtocol, PluginConfigureReadableProtocolBase, PluginConfigureReadablInPlaceProtocol } from "../../../protocol/plugin/protocol"
 import type { ResolverParseContext } from "../../resolver/exports.cjs"
 import type { Context } from "../../states/protocol"
@@ -49,7 +50,7 @@ export type WorkflowStep<ContextType = Context<any, any>> = {
 export type WorkflowSteps<ContextType = Context<any, any>> = WorkflowStep<ContextType>[]
 export type MaybeWorkflowSteps = WorkflowSteps | WorkflowStep
 
-export type WorflowControllFunction<FlowDatasType = {}, OptionsType = any, RequestType = any, ContextType = Context<any, any>> = (context: ContextType, configure: WorkflowConfigure<FlowDatasType, OptionsType> request: RequestType) => MaybeWorkflowSteps
+export type WorflowControllFunction<FlowDatasType = {}, OptionsType = any, RequestType = any, ContextType = Context<any, any>> = (context: ContextType, configure: WorkflowConfigure<FlowDatasType, OptionsType> request: RequestType) => MaybeContexts
 export type WorkflowGetFlowDatasFunction<FlowDatasType = any, FlowDatasType = any> = (configure: WorkflowConfigureInPlace, resolver: ResolverParseContext) => FlowDatasType // protocol example
 
 

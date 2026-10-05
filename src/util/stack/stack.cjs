@@ -407,10 +407,8 @@ class StackTree {
 
     /**
      * Pops data from the current branch.
-     * @param {Object} [param0={}] 
-     * @param {boolean} [param0.checkIsTop=true] 
-     * @param {boolean} [param0.autoreturn=true] 
-     * @returns {BranchClass}
+     * @param {boolean} [checkIsTop=true] 
+     * 
      */
     returnFromSub(checkIsTop = true) {
         const ret = this._branches[this._branchId].pop() || {}

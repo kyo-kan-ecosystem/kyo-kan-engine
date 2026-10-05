@@ -21,6 +21,7 @@
             "node",
             "mocha",
             "chai"
-        ]
+        ],
+        "preserveSymlinks": true
     },
 }

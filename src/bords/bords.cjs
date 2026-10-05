@@ -96,8 +96,7 @@ class Bords extends StackSuperimpositionLinkTree {
         const nowId = this.getBranchId()
         const name = this._nameMap[nowId]
 
-        const item = this.now.pop() || {}
-
+        const item = super.returnFromSub()
 
         /**
         * @type {{subworkflow?:any}}
@@ -113,10 +112,6 @@ class Bords extends StackSuperimpositionLinkTree {
             subworkflow[name] = item.workflow
             nowItem.subworkflow = subworkflow
         }
-        this.now.update(nowItem)
-
-
-
         return item
 
 

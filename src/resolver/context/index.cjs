@@ -58,7 +58,12 @@ class ContextBridgeResolver {
         this._context.bords.push(subworkflowInit || this._context.states.controll.getSubworkflowInit())
 
     }
-    resolveReturnFromSubProcess() {
+    /**
+     * 
+     * @param {*} request 
+     * @returns 
+     */
+    resolveReturnFromSubProcess(request) {
 
 
         const subworkflowState = this._context.states.now.pop()
@@ -66,7 +71,7 @@ class ContextBridgeResolver {
 
         this._context.bords.returnFromSub()
 
-        return { workflowState, subworkflowState }
+        return this._context.workflows.returnFromSub(workflowState, subworkflowState, this._context, request)
 
 
     }
@@ -90,7 +95,11 @@ class ContextBridgeResolver {
 
 
     }
+    resolveGetExecutorWithConfigure() {
+        const configureId = this._context.states.controll.getExecutorId()
+        return this._context.executors.getOptionsAndExecutor(configureId)
 
+    }
 
 
 

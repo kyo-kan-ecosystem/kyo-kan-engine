@@ -69,9 +69,10 @@ class WorkflowsContext {
 
     /**
      * 
-     * @param {any} context
+     * @param {import("../context/index.cjs").Context<any, any>} context
      * @param {import("../states/protocol").StateType} state
-     * @param {import("../context/index.cjs").Context<any, any>} request
+     * @param {any} request
+     * @returns {import("../../protocol").MaybeContexts}
      * */
     go(context, state, request) {
 
@@ -142,10 +143,10 @@ class WorkflowsContext {
     }
     /**
      * @param {*} context
-     * @param {*} request
-     * @returns {import("./plugin/protocol").MaybeWorkflowSteps}
+     * @param {*} request     * 
      * @param {import("../states/protocol").StateType} subworkflowState
      * @param {import("../states/protocol").StateType} workflowState
+     * @returns {import("../../protocol").MaybeContexts}
      */
     returnFromSub(subworkflowState, workflowState, context, request) {
         const { workflow, configure } = this.getWorkflowFromState(subworkflowState)
