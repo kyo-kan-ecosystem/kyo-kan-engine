@@ -2,6 +2,7 @@
 const deepmerge = require("deepmerge")
 const { StackTreeRootPopError, StackTreeRootSuperGetError, StackTreeBranchDoesNotExistError } = require("./errors.cjs")
 const { deepcopy } = require("../deepcopy.cjs")
+const { isVoid } = require("../is_void.cjs")
 
 
 /**
@@ -264,10 +265,11 @@ class StackTree {
 
     /**
      * Returns the `Stack` instance of the currently active branch.
+     * @param {*} id 
      * @returns {BranchClass}
      */
-    getStack() {
-        return this._branches[this._branchId]
+    getStack(id = undefined) {
+        return this._branches[isVoid(id) ? this._branchId : id]
     }
 
     /**

@@ -274,6 +274,14 @@ class Context {
     }
     /**
      * 
+     * @param {*} id 
+     */
+    getStateBranch(id) {
+        const stateBranchId = this._branches[id]
+        return this.states.getStack(stateBranchId)
+    }
+    /**
+     * 
      * @param {string} name 
      */
     forkAsNamedTree(name) {
