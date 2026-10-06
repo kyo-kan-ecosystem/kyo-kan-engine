@@ -73,16 +73,43 @@ class Bords extends StackSuperimpositionLinkTree {
 
     }
     /**
+    * 
+    * @param {*} data
+    * @param {boolean} [isFullOverWrite=false]  
+    */
+    updateCurrentWorkflowBord(data, isFullOverWrite = false) {
+
+        if (isFullOverWrite === true) {
+            const item = this.now.get() || {}
+            item.workflow = data
+            this.now.update(item, true)
+
+        }
+        else {
+            this.now.update({ workflow: data }, false)
+        }
+
+
+
+
+
+    }
+    /**
      * 
      * @param {*} data
-     * @param {true?} [isFullOverWrite=null]  
+     * @param {boolean} [isFullOverWrite=false]  
      */
-    updateCurrentExecutorBord(data, isFullOverWrite = null) {
+    updateCurrentExecutorBord(data, isFullOverWrite = false) {
+        if (isFullOverWrite === true) {
+            const item = this.now.get() || {}
+            item.executor = data
+            this.now.update(item, isFullOverWrite)
+        }
+        else {
+            this.now.update({ executor: data }, isFullOverWrite)
+        }
 
-        const item = this.now.get() || {}
-        item.current = data
 
-        this.now.update(item, isFullOverWrite)
 
 
     }

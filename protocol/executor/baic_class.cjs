@@ -19,10 +19,11 @@ class BasicWithGetSubworkflowClass {
 
     /**
      * 
-     * @param {import("./protocol").BasicOptions} options
+     * @param {{options:import("./protocol").BasicOptions}} configure
      * 
      */
-    getSubworkflow(options) {
+    processConfigure(configure) {
+        const options = configure.options
         const subWorkflowConfigures = options.subworkflows || {}
         /**
         * @type {import("./protocol").SubWorkflowConfigures}

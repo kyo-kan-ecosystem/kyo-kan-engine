@@ -219,9 +219,9 @@ class ResolverParseContext {
                     options: executorData.configure.options,
                     configurePath: executorData.configurePath
                 }
-                if ('getSubworkflow' in plugin === true) {
+                if ('processConfigure' in plugin === true) {
                     // @ts-ignore
-                    executorConfigure.subworkflow = plugin.getSubworkflow(executorData.configure.options, this)
+                    executorConfigure.subworkflow = plugin.processConfigure(executorData.configure, this)
                 }
                 this.context.executors.pluginConfigures.set(executorData.id, executorConfigure)
 

@@ -79,9 +79,9 @@ class Stack {
     /**
      * Updates the top element of the stack.
      * @param {Partial<DataType>} upData - The data to update the top item with.
-     * @param {true?} [isFullOverWrite] - If true, the item is completely replaced; otherwise, it's merged.
+     * @param {boolean} [isFullOverWrite] - If true, the item is completely replaced; otherwise, it's merged.
      */
-    update(upData, isFullOverWrite) {
+    update(upData, isFullOverWrite = false) {
         if (this.isEmpty()) {
             throw new Error("Stack is empty");
 

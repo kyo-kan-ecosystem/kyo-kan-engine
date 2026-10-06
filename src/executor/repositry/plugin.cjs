@@ -1,7 +1,7 @@
 const { Repositry } = require("../../repositry/base.cjs")
 
 /**
- * @typedef {import("../../../protocol").MaybeWithGetSubworkflow} MaybeWithGetSubworkflow
+ * @typedef {import("../../../protocol").MaybeWithProcessConfigure} MaybeWithGetSubworkflow
  * @extends Repositry<MaybeWithGetSubworkflow >
  */
 class ExecutorPluginRepositry extends Repositry { }
