@@ -5,6 +5,7 @@ const { States } = require("../states/states.cjs")
 const { WorkflowsContext } = require("../workflow/context.cjs")
 const { ExecutorsContext } = require("../executor/context.cjs")
 const { EngineContext } = require("../engine/context.cjs")
+const { isVoid } = require("../util/is_void.cjs")
 
 
 
@@ -82,7 +83,7 @@ class Context {
      */
     engine
     /**
-     * @type {Object<any, {bords:any, histories:any, states:any}>}
+     * @type {{[k in any]:{bords:any, histories:any, states:any}}}
      */
     _branches
 
@@ -277,9 +278,20 @@ class Context {
      * @param {*} id 
      */
     getStateBranch(id) {
-        const stateBranchId = this._branches[id]
+        const stateBranchId = this._branches[id].states
         return this.states.getStack(stateBranchId)
     }
+    /**
+     * 
+     * @param {*} id 
+     */
+    getBordsBranch(id) {
+        const bordsBranchId = this._branches[id].bords
+        return this.bords.getBranch(bordsBranchId)
+
+    }
+
+
     /**
      * 
      * @param {string} name 
@@ -311,7 +323,7 @@ class Context {
 
     /**
      * @param {any} id
-     * @param {{ state: number | null | undefined; histories: { state?: any; request?: any; bords?: { global?: any; currentWorkflow?: any; subWorkflow?: any; }; } | null | undefined; } | null} branchIds
+     * @param {{ states: number | null | undefined; histories: { state?: any; request?: any; bords?: { global?: any; currentWorkflow?: any; subWorkflow?: any; }; } | null | undefined; } | null} branchIds
      * @param {null| true | number} step     * 
      * @param {Bords} bords
      */
@@ -321,10 +333,10 @@ class Context {
 
 
 
-        const states = this.states.fork(branchIds?.state)
+        const states = this.states.fork(branchIds?.states)
         const histories = this.histories.fork(branchIds?.histories, { states, bords }, step)
         let branchId = id
-        if (id === null || typeof id === 'undefined') {
+        if (isVoid(id) === true) {
             branchId = this._createIdMap({ bords, states, histories })
             this._linkMap[branchId] = this._branchId
 

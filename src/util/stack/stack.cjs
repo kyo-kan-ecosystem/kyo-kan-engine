@@ -322,6 +322,14 @@ class StackTree {
 
 
     }
+    /**
+     * 
+     * @param {*} id 
+     * @returns 
+     */
+    getBranch(id) {
+        return this._branches[id]
+    }
 
 
 
@@ -433,6 +441,11 @@ class StackTree {
 
         }
         return ret
+
+    }
+    getBranchFrom() {
+        const branchFromId = this._linkMap[this._branchId]
+        return this.getBranch(branchFromId)
 
     }
 
