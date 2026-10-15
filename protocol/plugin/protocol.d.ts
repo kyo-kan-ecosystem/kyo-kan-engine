@@ -1,11 +1,12 @@
 import { WithConfigurePath } from "../../interfacade/configure/protocol"
 
-export type MCPStyleMeta = { type: string, description: string, items?: MCPStyleMeta, prefixItems }
-export type PluginModule<MetaType = any, EditDataType = any, CreateDataType = any, BuildResultType = any> = {
-    meta: () => BuildResultType,
-    update: () => UpdateDataType,
-    create: () => CreateDataType,
-    biuld: () => BuildResultType
+export type DefaultTag = 'remote access' | 'local access' | 'data access'
+export type KyoKanExtendedType = 'executor' | 'workflow' | 'both'
+export type MCPStyleMeta = { type: string, description: string, items?: MCPStyleMeta, properties: { [k in any:]: MCPStyleMeta }, default?: any, required: string[], keep }
+expport type PluginMeta<> = { name: string, description: string, tag?:}
+export type PluginModule<MetaType = MCPStyleMeta, BuildResultType = any> = {
+    meta: () => MetaType,
+    build: () => BuildResultType
 }
 export type PluginConfigureBase<OptionsType = any, ExtendType = any> = {
     plugin: any,

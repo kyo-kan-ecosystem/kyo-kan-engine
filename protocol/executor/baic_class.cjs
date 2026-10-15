@@ -2,7 +2,7 @@
 const merge = require("deepmerge")
 
 /**
- * @typedef {import("./protocol").WithGetSubworkflow} WithGetSubworkflow
+ * @typedef {import("./protocol").WithProcessConfigure} WithGetSubworkflow
  * @implements {WithGetSubworkflow}  
  * */
 class BasicWithGetSubworkflowClass {
@@ -19,7 +19,7 @@ class BasicWithGetSubworkflowClass {
 
     /**
      * 
-     * @param {{options:import("./protocol").BasicOptions}} configure
+     * @param {{options:import("./protocol").OptionsWithSubworkflow}} configure
      * 
      */
     processConfigure(configure) {

@@ -1,4 +1,4 @@
-export type DefaultRootType = 'workflow' | 'executor' | 'root' | 'boot'
+export type DefaultRootType = 'workflows' | 'executors' | 'root' | 'boots'
 
 export type ConfigurePath<RootType = DefaultRootType> {
     root: RootType;

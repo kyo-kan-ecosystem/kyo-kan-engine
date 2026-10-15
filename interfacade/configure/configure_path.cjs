@@ -40,21 +40,21 @@ function createBootConfigurePath() {
     /**
      * @type {import("./protocol").DefaultRootType}
      */
-    const root = 'boot'
+    const root = 'boots'
     return createConfigurePath(root)
 }
 function createWorkflowConfigurePath() {
     /**
      * @type {import("./protocol").DefaultRootType}
      */
-    const root = 'workflow'
+    const root = 'workflows'
     return createConfigurePath(root)
 }
 function createExecutorConfigurePath() {
     /**
      * @type {import("./protocol").DefaultRootType}
      */
-    const root = 'executor'
+    const root = 'executors'
     return createConfigurePath(root)
 }
 /**

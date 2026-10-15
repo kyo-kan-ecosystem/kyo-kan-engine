@@ -59,9 +59,24 @@ class Registrator {
     _engineConfigure
 
     /**
-     * @type {Partial<import('../workflow/protocol.js').WorkflowPluginConfigure>}
+     * @type {Partial<import('../workflow/protocol.js').WorkflowPluginConfigure?>}
      */
-    _rootWorkflow
+    root
+
+    /**
+     * @type {[k in string| number]:any}
+     */
+    workflows
+    /**
+    * @type {[k in string| number]:any}
+    */
+    executors
+
+    /**
+     * @type {Array<any>}
+     */
+    boots
+
 
 
     /**
@@ -78,6 +93,10 @@ class Registrator {
         this._engineConfigure = deepmerge({}, defaultEngineConfigure)
         this._workflowPlugins = defaultWorkflowPlugins
         this._defaultWorkflowPlugins = defaultWorkflowPlugins
+        this.root = null
+        this.executors = {}
+        this.workflows = {}
+        this.boots = []
 
     }
     /**
@@ -86,7 +105,7 @@ class Registrator {
      * @param {*} param0.params 
      */
     registerRootWorkflow({ pluginName, params }) {
-        this._rootWorkflow = { pluginName, params }
+        this.root = { pluginName, params }
 
     }
 
@@ -95,10 +114,10 @@ class Registrator {
     /**
      * 
      * @param {*} pluginName 
-     * @param {*} plugin 
+     * @param {} plugin 
      */
-    registerExecutorPlugin(pluginName, plugin) {
-        this._executorPlugins[pluginName] = plugin
+    registerExecutorPluginModule(pluginName, pluginModule) {
+        this._executorPlugins[pluginName] = pluginModule
     }
 
     /**
@@ -123,11 +142,7 @@ class Registrator {
 
     }
     /**
-     * todo: bootを追加
-     * namedWorkflows ライブラリ的に呼び出しできる名前付きライブラリ
-     * namedExecutors ライブラリ的に呼び出しできる名前付き実行単位
-     * executorPlugins 実行プラグイン本体
-     * workflowPlugins ワークフロープラグイン本体
+   
      * @param {import("../../src/workflow/protocol").RootWorkflowConfigure} rootWorkflowConfigure
      * @param {{[k in string]:import("../../src/workflow/protocol").WorkflowPluginConfigureReadable}} namedWorkflows
      * @param {{ [s in string]: import("../../src/executor/protocol").ExecutorConfigureReadable }} namedExecutorConfigures
@@ -169,7 +184,7 @@ class Registrator {
         let workflowIndex = 0
 
         for (const [id, configure] of Object.entries(namedWorkflows)) {
-            workflowDatas.push({ id, configurePath: { root: 'workflow', expressions: [id] }, configure })
+            workflowDatas.push({ id, configurePath: { root: 'workflows', expressions: [id] }, configure })
 
         }
 
@@ -181,7 +196,7 @@ class Registrator {
         let executorIndex = 0
 
         for (const [id, configure] of Object.entries(namedExecutorConfigures)) {
-            executorDatas.push({ id, configurePath: { root: 'executor', expressions: [id] }, configure })
+            executorDatas.push({ id, configurePath: { root: 'executors', expressions: [id] }, configure })
 
         }
 
@@ -191,7 +206,7 @@ class Registrator {
 
             const { isIdExist, id } = workingResolver.filterAndGetExcutorId(configure)
             if (isIdExist === false) {
-                executorDatas.push({ id, configurePath: { root: 'boot', expressions: [bootIndex] }, configure })
+                executorDatas.push({ id, configurePath: { root: 'boots', expressions: [bootIndex] }, configure })
             }
 
 
@@ -246,7 +261,7 @@ class Registrator {
                 if (workflowConfigureMap == false) {
                     continue
                 }
-                // 次ここから
+
 
             }
         }
@@ -271,7 +286,7 @@ class Registrator {
      * @param {*} pluginid
      * @param {ResolverParseContext} workingResolver   
      */
-    _getSubWorkflow(plugin, configure, workingResolver) {
+    _getSubWorklow(plugin, configure, workingResolver) {
         if ('getSubworkflow' in plugin === false) {
             return false
         }
