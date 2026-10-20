@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@types/chai": "^5.2.3",
+    "@types/json-schema": "^7.0.15",
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.13.2",
     "chai": "latest",
