@@ -1,5 +1,5 @@
 import { WithConfigurePath } from "../../interfacade/configure/protocol"
-import type { Regrator } from "../../interfacade/portabledata/registrator.cjs"
+import type { Registrator } from "../../interfacade/scenario/scenario.cjs"
 import { JSONSchema4 } from "@types/json-schema"
 
 export type DefaultTag = 'remote_fetch' | 'local_access' | 'data_access' | 'eval_fix' | 'eval_flex'
