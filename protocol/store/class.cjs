@@ -1,9 +1,9 @@
-const { dynamicDefault } = require("../../src/util/is_void.cjs")
+const { dynamicDefault, isVoid } = require("../../src/util/is_void.cjs")
 
 /**
- * @abstract
+ * @typedef {import("./protocol").StoreInterface} StoreInterface
  * @template [ValueType=any]
- * @implements {import("./protocol").StoreInterface<ValueType>} 
+ * @implements {StoreInterface<ValueType>} 
  */
 class StoreTemplate {
     /**
@@ -11,11 +11,18 @@ class StoreTemplate {
      */
     epoc
     /**
-     * 
-     * @param {number | undefined} epoc 
+     * @type {string?}
      */
-    constructor(epoc) {
+    namespace
+    /**
+     * @param {Object} param0 
+     * @param {number} [param0.epoc=100] 
+     * @param {string?} [param0.namespace=null] 
+     * 
+     */
+    constructor({ epoc = 100, namespace = null }) {
         this.epoc = epoc
+        this.namespace = namespace
 
     }
     /**
@@ -24,9 +31,10 @@ class StoreTemplate {
      * @param {ValueType} value
      * @param {number | undefined} epoc 
      */
-    set(key, value, epoc) {
-        const _epoc = dynamicDefault(epoc, this._epoc)
-        this._set(key, value, epoc)
+    async set(key, value, epoc) {
+
+        const _key = this.namespace + ':' + key
+        return this._set(_key, value, epoc)
 
     }
     /**
@@ -41,11 +49,22 @@ class StoreTemplate {
     /**
      * @abstract
      * @param {*} key
-     * @returns {ValueType} 
+     * @returns {value:ValueType,}
      */
     get(key) {
+        const _key = this._createKeyWithNamespace(key)
+        return
+
+
+
+    }
+    _get(key) {
         throw 'Not Implement'
+    }
+    _createKeyWithNamespace(key) {
+        return this.namespace + : + key
 
     }
 
 }
+module.exports = { StoreTemplate }

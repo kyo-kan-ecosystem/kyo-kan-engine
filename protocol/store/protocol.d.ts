@@ -1,6 +1,7 @@
-export interface StoreInterface<ValueType> {
-    get(key: string): ValueType
-    set(key: string, value: ValueType, epoc: number | undefined): void
+export interface StoreInterface<ValueType = any> {
+    constractor({ namespace: string, epoc: number })
+    get(key: string): Promise<{ value: ValueType, isExist: boolean }>
+    set(key: string, value: ValueType, epoc: number | undefined): Promise<void>
 
 
 

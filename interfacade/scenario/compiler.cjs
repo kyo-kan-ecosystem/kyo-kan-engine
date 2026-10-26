@@ -1,5 +1,6 @@
+
 class Compiler {
-    constructor(registrator) {
+    constructor(scenario,) {
 
     }
     compile() {

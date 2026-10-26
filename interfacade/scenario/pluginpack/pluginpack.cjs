@@ -19,6 +19,13 @@ class ScenarioPluginPack {
      * @type {boolean}
      */
     _isEmpty
+
+
+    /**
+     * @type {string | undefined}
+     */
+
+    url
     /**
      * 
      * @param {string | undefined} [name=undefined] 
