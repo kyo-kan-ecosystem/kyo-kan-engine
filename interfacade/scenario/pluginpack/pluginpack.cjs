@@ -1,72 +1,76 @@
-const crypto = require("crypto")
-const { isVoid } = require('../../../src/util/is_void.cjs')
+)
+const { isVoid, dynamicDefault } = require('../../../src/util/is_void.cjs')
 
 
 class ScenarioPluginPack {
     /**
-     * @type {{[k in string]:{path:string, moduleName?:string}}}
+     * @type {{[k in string]: import("./protocol.d.ts").PluginPackageConfigureType}}
      */
     executors
     /**
-     * @type {{[k in string]:{path:string, moduleName?:string}}}
+     * @type {{[k in string]: import("./protocol.d.ts").PluginPackageConfigureType}}
      */
     workflows
-    /**
-     * @type {string}
-     */
-    name
+
     /**
      * @type {boolean}
      */
     _isEmpty
 
-
+    modulePath
     /**
      * @type {string | undefined}
      */
 
     url
     /**
+     * @param {Object} param0 
+     * @param {string |undefined} [param0.modulePath=undefined]
+     * @param {string | undefined} [param0.url=undefined]
      * 
-     * @param {string | undefined} [name=undefined] 
+     * 
      */
-    constructor(name = undefined) {
+    constructor({ modulePath = undefined, url = undefined }) {
         this.executors = {}
         this.workflows = {}
+        this.modulePath = modulePath
+        this.url = url
 
-        // @ts-ignore
-        this.name = isVoid(name) === true ? crypto.randomUUID() : name
+
+
         this._isEmpty = true
 
 
     }
 
     /**
+     * @param {Object} param0 
+     * @param {string} param0.id 
+     * @param {string | undefined} [param0.modulePath=undefined] 
+     * @param {string | undefined} [param0.moduleName=undefined] 
      * 
-     * @param {*} name 
-     * @param {*} modulePath 
-     * @param {*} name 
      */
-    addExecutorPlugin(name, modulePath, moduleName = undefined) {
+    addExecutorPlugin({ id, modulePath = undefined, moduleName = undefined }) {
         this._isEmpty = false
-        this.executors[name] = { path: modulePath }
+        this.executors[id] = { modulePath: dynamicDefault(modulePath, this.modulePath), id }
         if (isVoid(moduleName) === false) {
-            this.executors[name].moduleName = moduleName
+            this.executors[id].moduleName = moduleName
         }
 
 
     }
     /**
+     * @param {Object} param0 
+     * @param {string} param0.id 
+     * @param {string | undefined} [param0.modulePath=undefined] 
+     * @param {string | undefined} [param0.moduleName=undefined] 
      * 
-     * @param {*} name 
-     * @param {*} modulePath 
-     * @param {*} name 
      */
-    addWorkflowPlugin(name, modulePath, moduleName = undefined) {
+    addWorkflowPlugin({ id, modulePath = undefined, moduleName = undefined }) {
         this._isEmpty = false
-        this.executors[name] = { path: modulePath }
+        this.workflows[id] = { modulePath: dynamicDefault(modulePath, this.modulePath), id }
         if (isVoid(moduleName) === false) {
-            this.executors[name].moduleName = moduleName
+            this.workflows[id].moduleName = moduleName
         }
 
 
@@ -94,6 +98,7 @@ class ScenarioPluginPack {
         }
         return ret
     }
+    get
 }
 
 module.exports = { ScenarioPluginPack }
