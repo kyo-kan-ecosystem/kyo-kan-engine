@@ -1,7 +1,9 @@
 export type PluginPackageConfigureType = {
     modulePath: string;
-    id: any;
-    moduleName: string | undefined;
+    moduleName?: string | undefined;
 }
 
-export type PluginPackageConfigureTypes = PluginPackageConfigureType[]
+export type PluginPackageConfigureTypes = {
+    [id in string]: PluginPackageConfigureType
+
+}

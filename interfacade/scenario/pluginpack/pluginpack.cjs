@@ -1,6 +1,5 @@
-)
-const { isVoid, dynamicDefault } = require('../../../src/util/is_void.cjs')
 
+const { isVoid, dynamicDefault } = require('../../../src/util/is_void.cjs')
 
 class ScenarioPluginPack {
     /**
@@ -23,18 +22,26 @@ class ScenarioPluginPack {
      */
 
     url
+
+    /**
+     * @type {string | undefined}
+     */
+
+    baseDir
     /**
      * @param {Object} param0 
      * @param {string |undefined} [param0.modulePath=undefined]
      * @param {string | undefined} [param0.url=undefined]
+     * @param {string | undefined} [param0.basedir=undefined]
      * 
      * 
      */
-    constructor({ modulePath = undefined, url = undefined }) {
+    constructor({ modulePath = undefined, url = undefined, basedir = undefined }) {
         this.executors = {}
         this.workflows = {}
         this.modulePath = modulePath
         this.url = url
+        this.baseDir = basedir
 
 
 
@@ -52,7 +59,7 @@ class ScenarioPluginPack {
      */
     addExecutorPlugin({ id, modulePath = undefined, moduleName = undefined }) {
         this._isEmpty = false
-        this.executors[id] = { modulePath: dynamicDefault(modulePath, this.modulePath), id }
+        this.executors[id] = { modulePath: dynamicDefault(modulePath, this.modulePath) }
         if (isVoid(moduleName) === false) {
             this.executors[id].moduleName = moduleName
         }
@@ -68,7 +75,7 @@ class ScenarioPluginPack {
      */
     addWorkflowPlugin({ id, modulePath = undefined, moduleName = undefined }) {
         this._isEmpty = false
-        this.workflows[id] = { modulePath: dynamicDefault(modulePath, this.modulePath), id }
+        this.workflows[id] = { modulePath: dynamicDefault(modulePath, this.modulePath) }
         if (isVoid(moduleName) === false) {
             this.workflows[id].moduleName = moduleName
         }
@@ -98,7 +105,17 @@ class ScenarioPluginPack {
         }
         return ret
     }
-    get
+    getWorkflows() {
+        return this.workflows
+
+    }
+    /**
+     * 
+     * @returns {{[k in string]: import("./protocol.d.ts").PluginPackageConfigureType}}
+     */
+    getExecutors() {
+        return this.executors
+    }
 }
 
 module.exports = { ScenarioPluginPack }
