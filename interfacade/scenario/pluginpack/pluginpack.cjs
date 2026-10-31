@@ -27,7 +27,7 @@ class ScenarioPluginPack {
      * @type {string | undefined}
      */
 
-    baseDir
+    basedire
     /**
      * @param {Object} param0 
      * @param {string |undefined} [param0.modulePath=undefined]
@@ -41,7 +41,7 @@ class ScenarioPluginPack {
         this.workflows = {}
         this.modulePath = modulePath
         this.url = url
-        this.baseDir = basedir
+        this.basedire = basedir
 
 
 

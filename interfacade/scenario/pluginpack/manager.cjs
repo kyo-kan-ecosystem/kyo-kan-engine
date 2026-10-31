@@ -20,10 +20,50 @@ class PluginPackManager {
 
     /**
      * 
-     * @param {} packs 
+     * @param {Object} param0 
+     * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginMager }} param0.workflows 
+     * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginMager }} param0.executors 
      */
-    constructor(packs) {
-        this.packs = packs
+    constructor({ workflows, executors }) {
+        this.workflows = workflows
+        this.executors = executors
+
+    }
+    /**
+     * 
+     * @param {PropertyKey} key 
+     */
+    async _getPlugins(key) {
+
+
+        /**
+         * @type {{[id in string]:import("../../../protocol/plugin/protocol").PluginManager}}
+         */
+        const target = this[key]
+
+        const proms = []
+        for (const id in target) {
+
+            /**
+             * @type {import("../../../protocol/plugin/protocol").PluginManager}
+             */
+            const manager = target[id];
+            proms.push(this._buildPlugin(id, manager))
+
+        }
+        const pluginAndIds = await Promise.all(proms)
+
+        return Object.fromEntries(pluginAndIds)
+
+
+    }
+    /**
+     * @param {*} id 
+     * @param {import("../../../protocol/plugin/protocol").PluginManager} manager 
+     */
+    async _buildPlugin(id, manager) {
+        const plugin = await manager.build()
+        return [id, plugin]
 
     }
 }
@@ -42,7 +82,7 @@ class PluginPackManagerBuilder {
         /**
          * @type {{[propertyKey in string]:{[id in string]:import("./protocol").PluginPackageConfigureType}}}
          */
-        const pluginsMap = {}
+        const pluginsConfigureMap = {}
         for (const pack of packs) {
 
             /**
@@ -50,23 +90,23 @@ class PluginPackManagerBuilder {
              */
             const pluginAndPropertyKeys = [[pack.getWorkflows(), 'workflows'], [pack.getExecutors(), 'executors']]
             for (const [pluginDatas, propertyKey] of pluginAndPropertyKeys) {
-                const plugins = pluginsMap[propertyKey] || {}
+                const plugins = pluginsConfigureMap[propertyKey] || {}
                 for (const key in pluginDatas) {
 
 
-                    const element = pluginDatas[key]
-                    if (typeof element === 'function') {
+                    const pluginData = pluginDatas[key]
+                    if (typeof pluginData === 'function') {
                         continue
                     }
 
 
-                    const modulePath = this._regularaizeModulePath(element.modulePath, pack.baseDir)
-                    plugins[key] = Object.assign({}, element, { modulePath })
+                    const modulePath = this._regularaizeModulePath(pluginData.modulePath, pack.baseDir)
+                    plugins[key] = Object.assign({}, pluginData, { modulePath })
 
 
 
                 }
-                pluginsMap[propertyKey] = plugins
+                pluginsConfigureMap[propertyKey] = plugins
 
 
 
@@ -76,10 +116,12 @@ class PluginPackManagerBuilder {
 
 
         }
-
+        /**
+         * @type {{[modulePath in string]:{[propertyKey in PropertyKey]:string[]}}}
+         */
         const modulePathToIds = {}
-        for (const propertyKey in pluginsMap) {
-            const plugins = pluginsMap[propertyKey]
+        for (const propertyKey in pluginsConfigureMap) {
+            const plugins = pluginsConfigureMap[propertyKey]
 
 
             for (const id in plugins) {
@@ -90,19 +132,47 @@ class PluginPackManagerBuilder {
 
                 ids.push(id)
                 idsMap[propertyKey] = ids
-                modulePathToIds[pluginsMap.modulePath] = idsMap
+                modulePathToIds[plugin.modulePath] = idsMap
 
 
             }
 
 
         }
+        const proms = []
         for (const modulePath in modulePathToIds) {
+            proms.push(this._loadModule(modulePath))
+
 
 
 
 
         }
+        const moduleAndPaths = await Promise.all(proms)
+        const pluginsMap = {}
+        for (const { module, modulePath } of moduleAndPaths) {
+            for (const [propertyKey, ids] in Object.entries(modulePathToIds[modulePath])) {
+                const plugins = pluginsMap[propertyKey] || {}
+                const pluginConfigures = pluginsConfigureMap[propertyKey]
+                for (const id in ids) {
+                    const pluginConfigure = pluginConfigures[id]
+                    const plugin = isVoid(pluginConfigure.moduleName) ? module['manager'] : module[pluginConfigure.moduleName]
+                    plugins[id] = plugin
+
+
+
+
+                }
+                pluginsMap[propertyKey] = plugins
+
+
+
+
+            }
+
+
+        }
+        return new PluginPackManager(pluginsMap)
 
 
 
@@ -125,9 +195,15 @@ class PluginPackManagerBuilder {
         const targetPath = path.resolve(...targetPaths)
         return path.relative(__dirname, targetPath)
     }
+    /**
+     * 
+     * @param {string} modulePath 
+     * @returns 
+     */
     async _loadModule(modulePath) {
 
         const module = await import(modulePath)
+
         return { module, modulePath }
 
 
