@@ -1,3 +1,4 @@
+const { isVoid } = require('../../src/util/is_void.cjs')
 
 
 
@@ -88,12 +89,22 @@ class Scenario {
         this.boots.push(configure)
     }
     getSeriaraizableData() {
-        const pluginPacksMap = new Map()
+        const pluginPacks = []
         for (const pluginPack of this.pluginPacks) {
-            pluginPacksMap.set(pluginPack.url, true)
+            /**
+             * @type {import("./protocol.d.ts").ScenarioPluginPackUrlFormat}
+             */
+            const pluginPackURL = { url: pluginPack.url }
+            if (isVoid(pluginPack.packageModuleName) === false) {
+                pluginPackURL.packageModuleName = pluginPack.packageModuleName
+            }
+            pluginPacks.push(pluginPackURL)
 
         }
-        const plug
+        /**
+         * @type {Object<any, any>}
+         */
+        const seriaraizeData = { pluginPacks }
         for (const key in this) {
             if (key.indexOf('_') === -1) {
                 continue
@@ -102,10 +113,12 @@ class Scenario {
                 continue
             }
             const property = this[key];
+            seriaraizeData[key] = property
 
 
         }
-        return JSON.stringify(this)
+        return seriaraizeData
+
 
     }
 

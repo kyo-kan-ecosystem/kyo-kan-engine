@@ -13,34 +13,36 @@ class ScenarioPluginPack {
 
 
     /**
-     * @type {string | undefined}
+     * @type {string}
      */
-
     url
+
     /**
      * @type {string | undefined} 
      */
     packageModuleName
 
     /**
-     * @type {string | undefined}
+     * @type {string}
      */
 
     basedire
     /**
      * @param {Object} param0 
      * @param {string |undefined} [param0.modulePath=undefined]
-     * @param {string | undefined} [param0.url=undefined]
-     * @param {string | undefined} [param0.basedir=undefined]
+     * @param {string} param0.url
+     * @param {string} param0.basedir
+     * @param {string} [param0.packageModuleName]
      * 
      * 
      */
-    constructor({ modulePath = undefined, url = undefined, basedir = undefined }) {
+    constructor({ modulePath = undefined, url, packageModuleName = undefined, basedir }) {
         this.executors = {}
         this.workflows = {}
         this.modulePath = modulePath
         this.url = url
         this.basedire = basedir
+        this.packageModuleName = packageModuleName
 
 
 
