@@ -16,17 +16,20 @@ class PluginPackManager {
       */
     executors
 
-
-
+    /**
+     * @type {string[]}
+     */
+    urls
     /**
      * 
      * @param {Object} param0 
      * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginMager }} param0.workflows 
      * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginMager }} param0.executors 
      */
-    constructor({ workflows, executors }) {
+    constructor({ workflows, executors }, urls) {
         this.workflows = workflows
         this.executors = executors
+        this.urls = urls
 
     }
     /**
@@ -83,6 +86,9 @@ class PluginPackManagerBuilder {
          * @type {{[propertyKey in string]:{[id in string]:import("./protocol").PluginPackageConfigureType}}}
          */
         const pluginsConfigureMap = {}
+
+        const idToUrl = new Map()
+
         for (const pack of packs) {
 
             /**
@@ -91,17 +97,18 @@ class PluginPackManagerBuilder {
             const pluginAndPropertyKeys = [[pack.getWorkflows(), 'workflows'], [pack.getExecutors(), 'executors']]
             for (const [pluginDatas, propertyKey] of pluginAndPropertyKeys) {
                 const plugins = pluginsConfigureMap[propertyKey] || {}
-                for (const key in pluginDatas) {
+                for (const id in pluginDatas) {
 
 
-                    const pluginData = pluginDatas[key]
+                    const pluginData = pluginDatas[id]
                     if (typeof pluginData === 'function') {
                         continue
                     }
 
 
                     const modulePath = this._regularaizeModulePath(pluginData.modulePath, pack.baseDir)
-                    plugins[key] = Object.assign({}, pluginData, { modulePath })
+                    plugins[id] = Object.assign({}, pluginData, { modulePath })
+                    idToUrl.set(id, pack.url)
 
 
 
@@ -116,6 +123,12 @@ class PluginPackManagerBuilder {
 
 
         }
+        const urlMap = new Map()
+        for (const url of Object.values(idToUrl)) {
+            urlMap.set(url, true)
+        }
+        const urls = Array.from(urlMap.keys())
+
         /**
          * @type {{[modulePath in string]:{[propertyKey in PropertyKey]:string[]}}}
          */
@@ -156,7 +169,7 @@ class PluginPackManagerBuilder {
                 const pluginConfigures = pluginsConfigureMap[propertyKey]
                 for (const id in ids) {
                     const pluginConfigure = pluginConfigures[id]
-                    const plugin = isVoid(pluginConfigure.moduleName) ? module['manager'] : module[pluginConfigure.moduleName]
+                    const plugin = isVoid(pluginConfigure.moduleName) ? module : module[pluginConfigure.moduleName]
                     plugins[id] = plugin
 
 
@@ -172,7 +185,8 @@ class PluginPackManagerBuilder {
 
 
         }
-        return new PluginPackManager(pluginsMap)
+
+        return new this.managerClass(pluginsMap, urls)
 
 
 
@@ -209,3 +223,5 @@ class PluginPackManagerBuilder {
 
     }
 }
+
+module.exports = { PluginPackManagerBuilder, PluginPackManager }

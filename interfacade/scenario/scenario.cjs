@@ -2,7 +2,7 @@
 
 
 
-const { ScenarioPluginPack } = require('./pluginpack/pluginpack.cjs')
+
 
 
 
@@ -30,29 +30,26 @@ class Scenario {
      */
     boots
 
-    /**
-     * @type {ScenarioPluginPack}
-     */
-    pluginPack
+
 
     /**
-     * @type {ScenarioPluginPack[]}
+     * @type {import('./pluginpack/pluginpack.cjs').ScenarioPluginPack[]}
      */
     pluginPacks
     /**
      * 
-     * @param {ScenarioPluginPack[]} pluginPacks 
-     * @param {typeof ScenarioPluginPack} pluginPackClass 
+     * @param {import('./pluginpack/pluginpack.cjs').ScenarioPluginPack[]} pluginPacks 
+     *  
      */
-    constructor(pluginPacks = [], pluginPackClass = ScenarioPluginPack) {
+    constructor(pluginPacks = []) {
         this.executorPlugins = {}
         this.workflowPlugins = {}
         this.executorPlugins = {}
         this.workflows = {}
         this.executors = {}
         this.boots = []
-        this.pluginPack = new pluginPackClass()
-        this.pluginPacks = pluginPacks
+
+        this.pluginPacks = pluginPacks.concat([])
 
 
     }
@@ -90,7 +87,24 @@ class Scenario {
     addBoot(configure) {
         this.boots.push(configure)
     }
-    getJSONString() {
+    getSeriaraizableData() {
+        const pluginPacksMap = new Map()
+        for (const pluginPack of this.pluginPacks) {
+            pluginPacksMap.set(pluginPack.url, true)
+
+        }
+        const plug
+        for (const key in this) {
+            if (key.indexOf('_') === -1) {
+                continue
+            }
+            if (key === 'pluginPacks') {
+                continue
+            }
+            const property = this[key];
+
+
+        }
         return JSON.stringify(this)
 
     }

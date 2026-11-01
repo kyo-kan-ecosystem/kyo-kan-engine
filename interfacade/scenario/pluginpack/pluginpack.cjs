@@ -11,17 +11,16 @@ class ScenarioPluginPack {
      */
     workflows
 
-    /**
-     * @type {boolean}
-     */
-    _isEmpty
 
-    modulePath
     /**
      * @type {string | undefined}
      */
 
     url
+    /**
+     * @type {string | undefined} 
+     */
+    packageModuleName
 
     /**
      * @type {string | undefined}
