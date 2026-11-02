@@ -1,9 +1,17 @@
-export type PluginPackageConfigureType = {
+import { PluginManager } from "../../../protocol/plugin/protocol"
+
+export type PluginPackagePathLinkType = {
     modulePath: string;
     moduleName?: string | undefined;
 }
 
-export type PluginPackageConfigureTypes = {
-    [id in string]: PluginPackageConfigureType
+export type PluginPackageDirectType = {
+    manager: PluginManager
+}
+
+
+
+export type PluginPackageDataTypes = {
+    [id in string]: PluginPackagePathLinkType | PluginPackageDirectType
 
 }

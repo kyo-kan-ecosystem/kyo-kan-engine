@@ -3,11 +3,11 @@ const { isVoid, dynamicDefault } = require('../../../src/util/is_void.cjs')
 
 class ScenarioPluginPack {
     /**
-     * @type {{[k in string]: import("./protocol.d.ts").PluginPackageConfigureType}}
+     * @type {import("./protocol.d.ts").PluginPackageDataTypes}
      */
     executors
     /**
-     * @type {{[k in string]: import("./protocol.d.ts").PluginPackageConfigureType}}
+     * @type {import("./protocol.d.ts").PluginPackageDataTypes}
      */
     workflows
 
@@ -30,8 +30,8 @@ class ScenarioPluginPack {
     /**
      * @param {Object} param0 
      * @param {string |undefined} [param0.modulePath=undefined]
-     * @param {string} param0.url
-     * @param {string} param0.basedir
+     * @param {string} [param0.url='']
+     * @param {string} [param0.basedir='']
      * @param {string} [param0.packageModuleName]
      * 
      * 
@@ -68,6 +68,15 @@ class ScenarioPluginPack {
 
     }
     /**
+     * @param {string | number} id
+     * @param {import('../../../protocol/plugin/protocol.js').PluginManager} manager
+    */
+    addExecutorPluginManager(id, manager) {
+        this.workflows[id] = { manager }
+
+    }
+
+    /**
      * @param {Object} param0 
      * @param {string} param0.id 
      * @param {string | undefined} [param0.modulePath=undefined] 
@@ -81,6 +90,16 @@ class ScenarioPluginPack {
             this.workflows[id].moduleName = moduleName
         }
 
+
+    }
+
+
+    /**
+     * @param {string | number} id
+     * @param {import('../../../protocol/plugin/protocol.js').PluginManager} manager
+     */
+    addWorkflowPluginManager(id, manager) {
+        this.workflows[id] = { manager }
 
     }
     checkIsEmpty() {
@@ -112,7 +131,7 @@ class ScenarioPluginPack {
     }
     /**
      * 
-     * @returns {{[k in string]: import("./protocol.d.ts").PluginPackageConfigureType}}
+     * @returns {{[k in string]: import("./protocol.d.ts").PluginPackagePathLinkType}}
      */
     getExecutors() {
         return this.executors
