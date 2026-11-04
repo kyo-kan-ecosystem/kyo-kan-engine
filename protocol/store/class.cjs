@@ -62,7 +62,7 @@ class StoreTemplate {
         throw 'Not Implement'
     }
     _createKeyWithNamespace(key) {
-        return this.namespace + : + key
+        return this.namespace + ':' + key
 
     }
 

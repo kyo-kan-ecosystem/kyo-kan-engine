@@ -14,7 +14,7 @@
       "require": "./exports/index.cjs",
       "default": "./exports/index.mjs"
     },
-    "./protocol/types": "./protocol/index.d.ts",
+    "./protocol/types": "./protocol/index.protocol.d.ts",
     "./protocol/classes": {
       "import": "./protocol/index.mjs",
       "require": "./protocol/index.cjs",

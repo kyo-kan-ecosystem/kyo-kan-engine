@@ -18,7 +18,7 @@ class AbstractWorkflow {
     * @param {import("../../states/protocol").Context<any,any>} context 
     * @param {*} configure
     * @param {*} request 
-    * @returns {import("../../../protocol").MaybeContexts}
+    * @returns {import("../../../protocol/index.protocol").MaybeContexts}
     * 
     * 
     */
@@ -32,7 +32,7 @@ class AbstractWorkflow {
      * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} configure 
      * @param {any} request
-     * @returns {import("../../../protocol").MaybeContexts}
+     * @returns {import("../../../protocol/index.protocol").MaybeContexts}
      *
      */
     now(context, configure, request) {
@@ -45,7 +45,7 @@ class AbstractWorkflow {
    
     * @param {*} configure
     * @param {*} request 
-    * @returns {import("../../../protocol").MaybeContexts}
+    * @returns {import("../../../protocol/index.protocol").MaybeContexts}
     * 
     */
     go(context, configure, request) {
@@ -58,7 +58,7 @@ class AbstractWorkflow {
      * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} request
      * @param {any} configure
-     * @returns {import("../../../protocol").MaybeContexts}
+     * @returns {import("../../../protocol/index.protocol").MaybeContexts}
      */
     exitFromSubworkflow(context, request, configure) {
         return context
@@ -69,7 +69,7 @@ class AbstractWorkflow {
      * @param {import("../../states/protocol").Context<any, any>} context
      * @param {*} request    
      * @param {any} configure
-     * @returns {import("../../../protocol").MaybeContexts}
+     * @returns {import("../../../protocol/index.protocol").MaybeContexts}
      */
     returnFromSubworkflow(context, request, configure) {
         return context

@@ -23,7 +23,7 @@ class ScenarioPluginPack {
     packageModuleName
 
     /**
-     * @type {string}
+     * @type {string | undefined}
      */
 
     basedire
@@ -31,12 +31,12 @@ class ScenarioPluginPack {
      * @param {Object} param0 
      * @param {string |undefined} [param0.modulePath=undefined]
      * @param {string} [param0.url='']
-     * @param {string} [param0.basedir='']
+     * @param {string | undefined} [param0.basedir=undefined]
      * @param {string} [param0.packageModuleName]
      * 
      * 
      */
-    constructor({ modulePath = undefined, url, packageModuleName = undefined, basedir }) {
+    constructor({ modulePath = undefined, url = '', packageModuleName = undefined, basedir = undefined }) {
         this.executors = {}
         this.workflows = {}
         this.modulePath = modulePath
@@ -105,33 +105,12 @@ class ScenarioPluginPack {
     checkIsEmpty() {
         return this._isEmpty
     }
-    getSeriaraizableData() {
-        const ret = {}
-        for (const key in this) {
-            /**
-             * @type {any}
-             */
-            const element = this[key]
-            if (key.indexOf('_') === 0 || typeof element === 'function') {
-                continue
-            }
-            // @ts-ignore
-            ret[key] = element
-
-
-
-
-
-        }
-        return ret
-    }
     getWorkflows() {
         return this.workflows
 
     }
     /**
      * 
-     * @returns {{[k in string]: import("./protocol.d.ts").PluginPackagePathLinkType}}
      */
     getExecutors() {
         return this.executors

@@ -15,7 +15,7 @@ const equal = require('fast-deep-equal')
  * This allows for efficient storage by reusing identical states across different branches or history points.
  * Multiple instances can share the same underlying data store, allowing for lightweight branching ('forking').
  * 
- * @template {import('../../protocol/index').JSONSeriaraizable}[LogType=import('../../protocol/index').JSONSeriaraizable]
+ * @template {import('../../protocol/index.protocol').JSONSeriaraizable}[LogType=import('../../protocol/index.protocol').JSONSeriaraizable]
  */
 class MapedHistory {
     /**
@@ -583,7 +583,7 @@ class MapedHistory {
  * An extension of `MapedHistory` that uses deep equality to compare log states.
  * It also ensures that all added logs are deep-cloned to prevent external mutations
  * from affecting the history.
- * @template {import("../../protocol/index").JSONSeriaraizable}[LogType=import("../../protocol/index").JSONSeriaraizable]
+ * @template {import("../../protocol/index.protocol").JSONSeriaraizable}[LogType=import("../../protocol/index.protocol").JSONSeriaraizable]
  * @extends MapedHistory<LogType> 
  */
 class MapedHistoryDeepEqual extends MapedHistory {

@@ -146,11 +146,11 @@ class SequenceDispatcherBase extends AbstractDispatcher {
          */
         const proms = []
         /**
-         * @type {import("../../protocol").Contexts}
+         * @type {import("../../protocol/index.protocol").Contexts}
          */
         const contexts = ensureArray(context.workflows.go(context, context.states.now.get(), request))
         /**
-         * @type { import("../../protocol").Contexts }
+         * @type { import("../../protocol/index.protocol").Contexts }
          */
         const filteredSteps = []
 
@@ -228,14 +228,14 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     }
     /**
      * @typedef {}
-     * @param {import("../../protocol").MaybeContexts} contexts 
+     * @param {import("../../protocol/index.protocol").MaybeContexts} contexts 
      * @param {import("./protocol").ExecuteMode} defaultExecuteMode 
      * @returns {Promise<import("./protocol").StepResult>[]}
      */
     _workflowStepsToPromise(contexts, defaultExecuteMode) {
         const results = []
         /**
-         * @type {import("../../protocol").Contexts}
+         * @type {import("../../protocol/index.protocol").Contexts}
          */
         const ensuredContexts = ensureArray(contexts)
 
@@ -310,7 +310,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
     }
     /**
      * 
-     * @param {import("../../protocol").MaybeContexts} contexts 
+     * @param {import("../../protocol/index.protocol").MaybeContexts} contexts 
      * @param {*} request 
      * @param {*} defaultCallback 
      * @returns 
@@ -321,7 +321,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
          */
         const proms = []
         /**
-         * @type {import("../../protocol/index").Contexts}
+         * @type {import("../../protocol/index.protocol").Contexts}
          */
         // @ts-ignore
         const _contexts = isEnsured === true ? contexts : ensureArray(contexts)
@@ -338,7 +338,7 @@ class SequenceDispatcherBase extends AbstractDispatcher {
         return proms
     }
     /**
-     * @param {import("../../protocol").Context} context
+     * @param {import("../../protocol/index.protocol").Context} context
      * @param {string} callback
      * @param {any} request
      *
