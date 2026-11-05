@@ -1,7 +1,8 @@
 class AbstractScenarioPluginpackResolver {
     /**
      * @abstract
-     * @param {string} url 
+     * @param {string} url
+     * @returns {string} 
      */
     resolve(url) {
         throw 'Not implemnted'

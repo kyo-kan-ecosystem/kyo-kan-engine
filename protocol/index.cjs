@@ -1,8 +1,7 @@
 
-const { BasicWithGetSubworkflowClass } = require('./executor/baic_class.cjs')
-const { AbstractWorkflow } = require('./workflow/class.cjs')
-const store = require('./store/class.cjs')
+const Executor = require('./executor/class.cjs')
+const Workflow = require('./workflow/class.cjs')
+const Store = require('./store/class.cjs')
 
 
-
-module.exports = { AbstractWorkflow, BasicWithGetSubworkflowClass, }
+module.exports = { Executor, Workflow, Store }
