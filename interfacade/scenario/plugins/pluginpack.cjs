@@ -3,11 +3,11 @@ const { isVoid, dynamicDefault } = require('../../../src/util/is_void.cjs')
 
 class ScenarioPluginPack {
     /**
-     * @type {import("./protocol.d.ts").PluginPackageDataTypes}
+     * @type {import("./protocol").PluginPackageDataTypes}
      */
     executors
     /**
-     * @type {import("./protocol.d.ts").PluginPackageDataTypes}
+     * @type {import("./protocol").PluginPackageDataTypes}
      */
     workflows
 

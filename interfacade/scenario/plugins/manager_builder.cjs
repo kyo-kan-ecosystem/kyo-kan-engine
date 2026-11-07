@@ -1,4 +1,4 @@
-class PluginPackManagerBuilder {
+class PluginsManagerBuilder {
     constructor(managerClass = PluginPackManager) {
         this.managerClass = managerClass
     }
@@ -162,4 +162,4 @@ class PluginPackManagerBuilder {
     }
 }
 
-module.exports = { PluginPackManagerBuilder }
+module.exports = { PluginsManagerBuilder }

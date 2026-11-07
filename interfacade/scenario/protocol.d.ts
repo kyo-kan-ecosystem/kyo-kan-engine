@@ -6,9 +6,10 @@ export type ScenarioPluginPackUrlFormat = {
 }
 export type ScenarioJsonFormat = {
     root: any;
-    workflows: any;
-    executors: any;
-    boots: Array<any>
+    workflows?: any;
+    executors?: any;
+    boots?: Array<any>;
+    pluginPacks: ScenarioPluginPackUrlFormat[]
 
 
 

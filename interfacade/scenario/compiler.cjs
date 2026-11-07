@@ -1,10 +1,49 @@
+const { PluginsManagerBuilder } = require("./plugins/manager_builder.cjs")
+const { Scenario } = require("./scenario.cjs")
+class ScenarioCompiler {
+    /**
+     * @type {import("./plugins/loader/loader.cjs").PluginPackLoader}
+     */
+    pluginPackLoader
 
-class Compiler {
-    constructor(scenario,) {
+    /**
+     * @type { PluginsManagerBuilder }
+     */
+    pluginsManagerBuilder
+    /**
+     * @type
+     */
+    /**
+     * 
+     * @param {import("./plugins/loader/loader.cjs").PluginPackLoader} pluginPackLoader 
+     * @param {PluginsPackManagerBuilder?} pluginsPackManagerBuilder 
+     */
+    constructor(pluginPackLoader, pluginsPackManagerBuilder) {
+        this.pluginPackLoader = pluginPackLoader
+        this.pluginsManagerBuilder = pluginsPackManagerBuilder || new PluginsManagerBuilder()
+    }
+    /**
+     * 
+     * @param {import("./protocol").ScenarioJsonFormat} seriaraizedScenario 
+     */
+    async compileFromSeriaraized(seriaraizedScenario) {
+        const pluginPacks = await this.pluginPackLoader.load(seriaraizedScenario.pluginPacks)
+        const pluginsManager = await this.pluginsManagerBuilder.convertFromObjects(pluginPacks)
+        return Object.assign({ pluginsManager }, seriaraizedScenario)
+
 
     }
-    compile() {
+    /**
+     * 
+     * @param {import('./scenario.cjs').Scenario} scenarioObject 
+     */
+    async conpileFromObject(scenarioObject) {
+
+        const pluginsManager = await this.pluginsManagerBuilder.convertFromObjects(scenarioObject.pluginPacks)
+        return Object.assign({ pluginsManager }, seriaraizedScenario)
 
 
     }
 }
+
+module.exports = { ScenarioCompiler }

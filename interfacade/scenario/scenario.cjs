@@ -34,12 +34,12 @@ class Scenario {
 
 
     /**
-     * @type {import('./pluginpack/pluginpack.cjs').ScenarioPluginPack[]}
+     * @type {import('./plugins/pluginpack.cjs').ScenarioPluginPack[]}
      */
     pluginPacks
     /**
      * 
-     * @param {import('./pluginpack/pluginpack.cjs').ScenarioPluginPack[]} pluginPacks 
+     * @param {import('./plugins/pluginpack.cjs').ScenarioPluginPack[]} pluginPacks 
      *  
      */
     constructor(pluginPacks = []) {
@@ -88,6 +88,10 @@ class Scenario {
     addBoot(configure) {
         this.boots.push(configure)
     }
+    /**
+     * 
+     * @returns {import('./protocol.d.ts').ScenarioJsonFormat}
+     */
     getSeriaraizableData() {
         const pluginPacks = []
         for (const pluginPack of this.pluginPacks) {
@@ -134,6 +138,6 @@ class Scenario {
 
 module.exports = { Scenario }
 
-const t = Object.assign({ a: 1 }, require('./pluginpack/pluginpack.cjs'))
+const t = Object.assign({ a: 1 }, require('./plugins/pluginpack.cjs'))
 
 module.exports.t = t

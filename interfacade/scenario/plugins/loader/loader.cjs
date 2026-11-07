@@ -2,10 +2,10 @@ const { isVoid } = require("../../../../src/util/is_void.cjs")
 const { PluginPackURLInvalidError } = require("./errors.cjs")
 /**
  * 
- * @type {import('../protocol.d.ts').PluginPackDefaultModuleNameType} 
+ * @type {import('../protocol').PluginPackDefaultModuleNameType} 
  */
 const DEFAULT_PLUGINPACK_NAME = 'Pack'
-class PluginpackLoader {
+class PluginPackLoader {
     /**
      * @type {import("./resolver/protocol.class.cjs").AbstractScenarioPluginpackResolver}
      */
@@ -62,4 +62,4 @@ class PluginpackLoader {
 
 }
 
-module.exports = { PluginpackLoader }
+module.exports = { PluginPackLoader }
