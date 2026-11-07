@@ -10,13 +10,11 @@ class ScenarioCompiler {
      * @type { PluginsManagerBuilder }
      */
     pluginsManagerBuilder
-    /**
-     * @type
-     */
+
     /**
      * 
      * @param {import("./plugins/loader/loader.cjs").PluginPackLoader} pluginPackLoader 
-     * @param {PluginsPackManagerBuilder?} pluginsPackManagerBuilder 
+     * @param {PluginsManagerBuilder?} pluginsPackManagerBuilder 
      */
     constructor(pluginPackLoader, pluginsPackManagerBuilder) {
         this.pluginPackLoader = pluginPackLoader

@@ -1,3 +1,6 @@
+const { PluginPackManager } = require("./manager.cjs")
+const { ScenarioPluginPack } = require("./pluginpack.cjs")
+
 class PluginsManagerBuilder {
     constructor(managerClass = PluginPackManager) {
         this.managerClass = managerClass

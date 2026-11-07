@@ -32,7 +32,7 @@ class PluginPackLoader {
 
     /**
      * 
-     * @param {string[]} urls 
+     * @param {any[]} urls 
      */
     async load(urls) {
         const proms = []
