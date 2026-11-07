@@ -40,7 +40,7 @@ class ScenarioCompiler {
     async conpileFromObject(scenarioObject) {
 
         const pluginsManager = await this.pluginsManagerBuilder.convertFromObjects(scenarioObject.pluginPacks)
-        return Object.assign({ pluginsManager }, seriaraizedScenario)
+        return Object.assign({ pluginsManager }, scenarioObject.getSeriaraizableData())
 
 
     }
