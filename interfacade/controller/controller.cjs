@@ -1,5 +1,29 @@
 class Controller {
     /**
+     * @type {import("./protocol").StateLoader}
+     */
+    stateLoader
+
+
+    /**
+     * @type {import("./protocol").ScenarioLoader}
+     * 
+     * 
+     */
+    sceanrioLoader
+
+    /**
+     * @param {import("./protocol").StateLoader} stateLoader
+     * @param {import("./protocol").ScenarioLoader} scenarioLoader
+     */
+    constructor(stateLoader, scenarioLoader) {
+        this.sceanrioLoader = scenarioLoader
+        this.stateLoader = stateLoader
+
+    }
+
+
+    /**
      * 
      * @param {*} id 
      * @param {*} request 
