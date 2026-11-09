@@ -1,4 +1,4 @@
-const { isVoid } = require("../../../../src/util/is_void.cjs")
+const { dynamicDefault } = require("../../../../src/util/is_void.cjs")
 const { PluginPackURLInvalidError } = require("./errors.cjs")
 /**
  * 
@@ -54,7 +54,8 @@ class PluginPackLoader {
      */
     async _loadPluginPack(resolvedPath) {
         const mod = await import(resolvedPath.path)
-        const modName = isVoid(resolvedPath.moduleName) ? this.defaultPluginPackName : resolvedPath.moduleName
+        const modName = dynamicDefault(resolvedPath.moduleName, this.defaultPluginPackName)
+
         return mod[modName]
 
 

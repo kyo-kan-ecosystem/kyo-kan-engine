@@ -1,3 +1,5 @@
+const { default: path } = require("node:path")
+const { isVoid } = require("../../../src/util/is_void.cjs")
 const { PluginPackManager } = require("./manager.cjs")
 const { ScenarioPluginPack } = require("./pluginpack.cjs")
 
@@ -22,11 +24,11 @@ class PluginsManagerBuilder {
         for (const pack of packs) {
 
             /**
-             * @type {[import("./protocol").PluginPackageDataTypes, PropertyKey][]}
+             * @type {[import("./protocol").PluginPackageDataTypes,string][]}
              */
             const pluginAndPropertyKeys = [[pack.getWorkflows(), 'workflows'], [pack.getExecutors(), 'executors']]
             for (const [pluginDatas, propertyKey] of pluginAndPropertyKeys) {
-                const pluginDatas = pluginDatasMap[propertyKey] || {}
+                const targetPluginDatas = pluginDatasMap[propertyKey] || {}
                 for (const id in pluginDatas) {
 
 
@@ -36,12 +38,12 @@ class PluginsManagerBuilder {
                     }
 
                     if ('modulePath' in pluginData) {
-                        const modulePath = this._regularaizeModulePath(pluginData.modulePath, pack.baseDir)
-                        pluginDatas[id] = Object.assign({}, pluginData, { modulePath })
+                        const modulePath = this._regularaizeModulePath(pluginData.modulePath, pack.basedir)
+                        targetPluginDatas[id] = Object.assign({}, pluginData, { modulePath })
 
                     }
                     else {
-                        pluginDatas[id] = pluginData
+                        targetPluginDatas[id] = pluginData
                     }
 
                     idToUrl.set(id, pack.url)
@@ -49,7 +51,7 @@ class PluginsManagerBuilder {
 
 
                 }
-                pluginDatasMap[propertyKey] = pluginDatas
+                pluginDatasMap[propertyKey] = targetPluginDatas
 
 
 
@@ -69,10 +71,13 @@ class PluginsManagerBuilder {
          * @type {{[modulePath in string]:{[propertyKey in PropertyKey]:string[]}}}
          */
         const modulePathToIds = {}
+        /**
+         * @type {Object<string, Object<any, any>>}
+         */
         const pluginsMap = {}
         for (const propertyKey in pluginDatasMap) {
             const pluginDatas = pluginDatasMap[propertyKey]
-            const plugins = pluginsMap[propertyKey]
+            const plugins = pluginsMap[propertyKey] || {}
 
 
             for (const id in pluginDatas) {
@@ -105,11 +110,12 @@ class PluginsManagerBuilder {
         const moduleAndPaths = await Promise.all(proms)
 
         for (const { module, modulePath } of moduleAndPaths) {
-            for (const [propertyKey, ids] in Object.entries(modulePathToIds[modulePath])) {
+            for (const [propertyKey, ids] of Object.entries(modulePathToIds[modulePath])) {
                 const plugins = pluginsMap[propertyKey] || {}
                 const pluginConfigures = pluginDatasMap[propertyKey]
                 for (const id in ids) {
                     const pluginConfigure = pluginConfigures[id]
+                    // @ts-ignore
                     const plugin = isVoid(pluginConfigure.moduleName) ? module : module[pluginConfigure.moduleName]
                     plugins[id] = plugin
 
@@ -127,6 +133,7 @@ class PluginsManagerBuilder {
 
         }
 
+        // @ts-ignore
         return new this.managerClass(pluginsMap, urls)
 
 
@@ -142,11 +149,13 @@ class PluginsManagerBuilder {
             return modulePath
 
         }
+
         const targetPaths = []
         if (isVoid(basedir) === false) {
             targetPaths.push(basedir)
         }
         targetPaths.push(modulePath)
+        // @ts-ignore
         const targetPath = path.resolve(...targetPaths)
         return path.relative(__dirname, targetPath).replaceAll('\\', '/')
     }

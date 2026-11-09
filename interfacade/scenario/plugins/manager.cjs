@@ -1,30 +1,29 @@
-const { isVoid } = require("../../../src/util/is_void.cjs")
-const { ScenarioPluginPack } = require("./pluginpack.cjs")
-const path = require('node:path')
+
 
 /**
  * @typedef {"executors"| "workflows"} PropertyKey
  */
 class PluginPackManager {
     /**
-     * @type {{[k in string]:import("../../../protocol/plugin/protocol").PluginMager }}
+     * @type {{[k in string]:import("../../../protocol/plugin/protocol").PluginManager }}
      */
     workflows
 
     /**
-      * @type {{[k in string]:import("../../../protocol/plugin/protocol").PluginMager }}
+      * @type {{[k in string]:import("../../../protocol/plugin/protocol").PluginManager }}
       */
     executors
 
     /**
-     * @type {string[]}
+     * @type {any[]}
      */
     urls
     /**
      * 
      * @param {Object} param0 
-     * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginMager }} param0.workflows 
-     * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginMager }} param0.executors 
+     * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginManager }} param0.workflows 
+     * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginManager }} param0.executors
+     * @param {*} urls 
      */
     constructor({ workflows, executors }, urls) {
         this.workflows = workflows
@@ -73,4 +72,4 @@ class PluginPackManager {
 
 
 
-module.exports = { PluginPackManagerBuilder, PluginPackManager }
+module.exports = { PluginPackManager }
