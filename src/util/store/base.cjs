@@ -31,7 +31,7 @@ class StoreTemplate {
      */
     async set(key, value, epoc) {
 
-        const _key = this.namespace + ':' + key
+        const _key = this._createKeyWithNamespace(key)
         return this._set(_key, value, epoc)
 
     }

@@ -47,6 +47,21 @@ class LinerStore extends StoreTemplate {
         }
         return res
     }
+    _set(key, value, epoc) {
+        let index = 0
+        const len = this.stores.length
+        while (index < len) {
+            const store = this.stores[index]
+            index++
+            store.set(key, value, epoc)
+
+
+        }
+
+    }
+    _createKeyWithNamespace(key) {
+        return key
+    }
 }
 
 module.exports = { LinerStore }
