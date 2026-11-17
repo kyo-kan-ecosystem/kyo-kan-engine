@@ -1,3 +1,7 @@
-const { ResolverParseContext } = require("../src/resolver/exports.cjs")
+/**
+ *@type {import('../src/index.cjs')} 
+ */
+const Src = require('../src/index.cjs')
 
-module.exports = { ResolverParseContext }
+
+module.exports = { Src } 

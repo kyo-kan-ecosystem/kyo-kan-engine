@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const { Stack, StackTree } = require('./stack.cjs');
+const { Stack, StackTree } = require('./classes.cjs');
 
 describe('Stack', () => {
     it('should initialize an empty stack', () => {

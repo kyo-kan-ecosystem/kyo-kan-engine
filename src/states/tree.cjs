@@ -1,5 +1,5 @@
 
-const { StackSuperimpositionLinkTree } = require('../util/stack/stack.cjs');
+const { StackSuperimpositionLinkTree } = require('../util/stack/classes.cjs');
 const { StateBranch } = require('./branch.cjs');
 const { ControllState } = require('./controll_state.cjs')
 

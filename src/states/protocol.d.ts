@@ -3,7 +3,7 @@ import { WorkflowState, WorkflowStateMember } from "../workflow/protocol";
 import { ExecuteMode } from "../sequence/protocol";
 
 
-export type { Context } from "../context/index.cjs";
+export type { Context } from "../context/class.cjs";
 
 export type ControllStateType = {
     executorId?: string,

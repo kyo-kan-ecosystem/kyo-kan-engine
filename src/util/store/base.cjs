@@ -48,9 +48,9 @@ class StoreTemplate {
     /**
      * @abstract
      * @param {*} key
-     * @returns {{value?:any ,}}
+     * @returns {import("./protocol").StoreGetResponse}
      */
-    get(key) {
+    async get(key) {
         const _key = this._createKeyWithNamespace(key)
         // @ts-ignore
         return this._get(_key)
@@ -60,7 +60,7 @@ class StoreTemplate {
     }
     /**
      * @abstract
-     * @param {*} key      
+     * @param {import("./protocol").StoreGetResponse} key      
      * */
     _get(key) {
         throw 'Not Implement'

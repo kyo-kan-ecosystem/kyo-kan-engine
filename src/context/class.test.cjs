@@ -1,15 +1,15 @@
 const { assert, expect } = require('chai')
 const sinon = require('sinon')
-const { Context } = require('./index.cjs')
+const { Context } = require('./class.cjs')
 const { ContextBridgeResolver } = require('../resolver/context/index.cjs')
 const { Bords } = require('../bords/bords.cjs')
 const { HistoriesContext: Histories } = require('../history/context.cjs')
-const { States } = require('../states/states.cjs')
+const { States } = require('../states/tree.cjs')
 const { WorkflowsContext } = require('../workflow/context.cjs')
 const { ExecutorsContext } = require('../executor/context.cjs')
 const { EngineContext } = require('../engine/context.cjs')
 
-describe('Context (repositries/engine/src/context/index.cjs)', function () {
+describe('Context', function () {
     /**
      * @type {{ restore: () => void; spy: (arg0: ContextBridgeResolver | undefined, arg1: string | undefined) => any; stub: (arg0: Bords | States<import("../states/controll_state.cjs").ControllState> | Context<any, any, ContextBridgeResolver> | undefined, arg1: string | undefined) => { (): any; new (): any; returns: { (arg0: string | boolean): void; new (): any; }; }; }}
      */

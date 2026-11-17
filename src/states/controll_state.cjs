@@ -1,16 +1,16 @@
 const { ControllStateValueNotExistError } = require("./protocl.class.cjs")
 
-const { createId } = require("../util/create_id.cjs")
+
 
 
 class ControllState {
     /**
-     * @type {import("./states.cjs").StatesType}
+     * @type {import("./tree.cjs").StatesType}
      */
     _state
     /**
      * 
-     * @param {import("./states.cjs").StatesType} state 
+     * @param {import("./tree.cjs").StatesType} state 
      */
     constructor(state) {
         this._state = state

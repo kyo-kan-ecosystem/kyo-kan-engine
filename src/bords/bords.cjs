@@ -1,5 +1,5 @@
 const deepmerge = require("deepmerge")
-const { StackSuperimpositionLinkTree } = require("../util/stack/stack.cjs")
+const { StackSuperimpositionLinkTree } = require("../util/stack/classes.cjs")
 const { BordsBranch } = require("./bords_branch.cjs")
 
 

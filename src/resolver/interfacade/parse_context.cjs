@@ -40,7 +40,7 @@ class ResolverParseContext {
     parentConfigurePath
     /**
      * 
-     * @param {import('../../context/index.cjs').Context} context 
+     * @param {import('../../context/class.cjs').Context} context 
      */
     constructor(context) {
         this.context = context

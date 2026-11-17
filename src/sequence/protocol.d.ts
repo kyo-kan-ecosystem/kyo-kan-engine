@@ -1,4 +1,4 @@
-import type { Context } from "../context/index.cjs"
+import type { Context } from "../context/class.cjs"
 import type { AbstractDispatcher } from "./protocol.class.cjs"
 
 export type StepResult = Context | false

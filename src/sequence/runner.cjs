@@ -23,7 +23,7 @@ class SequenceRunner {
     _contexts
 
     /**
-     * @type { import("../context/index.cjs").Context<any, any> }
+     * @type { import("../context/class.cjs").Context<any, any> }
      * */
 
     _context
@@ -31,7 +31,7 @@ class SequenceRunner {
     /**
      * 
      * @param {{[k in string]:import("./protocol").DispatchFunction}} dispatcher 
-     * @param {import("../context/index.cjs").Context<any, any>} context 
+     * @param {import("../context/class.cjs").Context<any, any>} context 
      * @param {*} request 
      * @param {import("./protocol").ProcessCounter?} processCounter
      * @param {import("../util/single_event.cjs").SingleEvent<(request:any, contexts:any[])=>void>} processEndEvent

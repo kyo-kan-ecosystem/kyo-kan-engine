@@ -1,6 +1,6 @@
 import { MaybeContexts } from "../../../protocol/index.protocol"
 import { PluginConfigureProtocol, PluginConfigureReadableProtocolBase, PluginConfigureReadablInPlaceProtocol } from "../../../protocol/plugin/protocol"
-import type { ResolverParseContext } from "../../resolver/exports.cjs"
+import type { ResolverParseContext } from "../../resolver/index.cjs"
 import type { Context } from "../../states/protocol"
 
 

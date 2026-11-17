@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const { Context } = require('../../context/index.cjs')
+const { Context } = require('../../context/class.cjs')
 const { ResolverParseContext } = require('./parse_context.cjs')
 const { log } = require('console')
 

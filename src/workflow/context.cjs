@@ -69,7 +69,7 @@ class WorkflowsContext {
 
     /**
      * 
-     * @param {import("../context/index.cjs").Context<any, any>} context
+     * @param {import("../context/class.cjs").Context<any, any>} context
      * @param {import("../states/protocol").StateType} state
      * @param {any} request
      * @returns {import("../../protocol/index.protocol").MaybeContexts}
@@ -82,7 +82,7 @@ class WorkflowsContext {
     }
     /**
      * 
-     * @param {import("../context/index.cjs").Context<any, any>} context
+     * @param {import("../context/class.cjs").Context<any, any>} context
      * @param {import("../states/protocol").StateType} state
      * @param {undefined} request
      */
@@ -92,7 +92,7 @@ class WorkflowsContext {
     }
     /**
      * 
-     * @param {import("../context/index.cjs").Context<any, any>} context
+     * @param {import("../context/class.cjs").Context<any, any>} context
      * @param {import("../states/protocol").StateType} state
      * @param {undefined} request
      */
@@ -115,7 +115,7 @@ class WorkflowsContext {
 
     /**
      * 
-     * @param {import("../context/index.cjs").Context<any, any>} context
+     * @param {import("../context/class.cjs").Context<any, any>} context
      * @param {import("../states/protocol").StateType} state
      * @param {undefined} request
     */

@@ -5,13 +5,13 @@ const { MapedHistory } = require("../../history/maped_history.cjs");
  */
 class ContextHistory extends MapedHistory {
     /**
-     * @type {import("../index.cjs").Context}
+     * @type {import("../class.cjs").Context}
      */
     // @ts-ignore
     _context
 
     /**
-     * @param {import("../index.cjs").Context} context
+     * @param {import("../class.cjs").Context} context
      */
     setContext(context) {
         this._context = context
