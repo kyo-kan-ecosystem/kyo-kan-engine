@@ -1,4 +1,4 @@
-import AbstractRecursiveBuilder from "./base.cjs";
+const { AbstractRecursiveBuilder } = require('./base.cjs')
 
 class RecursiveBuilderMerge extends AbstractRecursiveBuilder {
     classFunction

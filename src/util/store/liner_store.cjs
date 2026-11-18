@@ -1,7 +1,7 @@
-import { isVoid } from "../is_void.cjs"
-import { StoreTemplate } from "./base.cjs"
+const { isVoid } = require("../is_void.cjs")
 
-class LinerStore extends StoreTemplate {
+
+class LinerStore {
     /**
      * @type {import('./protocol.d.ts').StoreInterface[]}
      */
@@ -14,7 +14,7 @@ class LinerStore extends StoreTemplate {
     constructor(stores = []) {
         this.stores = stores
     }
-    async _get(key) {
+    async get(key) {
         let index = 0
         const len = this.stores.length
         /**
@@ -47,7 +47,7 @@ class LinerStore extends StoreTemplate {
         }
         return res
     }
-    _set(key, value, epoc) {
+    set(key, value, epoc) {
         let index = 0
         const len = this.stores.length
         while (index < len) {
@@ -59,9 +59,7 @@ class LinerStore extends StoreTemplate {
         }
 
     }
-    _createKeyWithNamespace(key) {
-        return key
-    }
+
 }
 
 module.exports = { LinerStore }

@@ -1,11 +1,5 @@
-/**
- * @type {import('./base.cjs')}
- */
-const Base = require('./base.cjs')
 
-/**
- * @type {import('./merge.cjs')}
- */
-const Merge = require('./merge.cjs')
+const { AbstractRecursiveBuilder } = require('./base.cjs')
+const { RecursiveBuilderMerge } = require('./merge.cjs')
 
-module.exports = { Base, Merge }
+module.exports = { AbstractRecursiveBuilder, RecursiveBuilderMerge }

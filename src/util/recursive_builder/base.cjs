@@ -44,4 +44,4 @@ class AbstractRecursiveBuilder {
 
 }
 
-module.exports = AbstractRecursiveBuilder
+module.exports = { AbstractRecursiveBuilder }
