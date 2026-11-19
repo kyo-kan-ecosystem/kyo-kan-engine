@@ -1,17 +1,17 @@
 const { assert, expect } = require('chai')
 const sinon = require('sinon')
 const { Context } = require('./class.cjs')
-const { ContextBridgeResolver } = require('../resolver/context/index.cjs')
-const { Bords } = require('../bords/bords.cjs')
+const { ContextBridgeResolver } = require('../resolver/context/bridge_resolver.cjs')
+const { BordsContext: Bords } = require('../bords/context.cjs')
 const { HistoriesContext: Histories } = require('../history/context.cjs')
-const { States } = require('../states/tree.cjs')
+const { StatesContext } = require('../states/context.cjs')
 const { WorkflowsContext } = require('../workflow/context.cjs')
 const { ExecutorsContext } = require('../executor/context.cjs')
 const { EngineContext } = require('../engine/context.cjs')
 
 describe('Context', function () {
     /**
-     * @type {{ restore: () => void; spy: (arg0: ContextBridgeResolver | undefined, arg1: string | undefined) => any; stub: (arg0: Bords | States<import("../states/controll_state.cjs").ControllState> | Context<any, any, ContextBridgeResolver> | undefined, arg1: string | undefined) => { (): any; new (): any; returns: { (arg0: string | boolean): void; new (): any; }; }; }}
+     * @type {{ restore: () => void; spy: (arg0: ContextBridgeResolver | undefined, arg1: string | undefined) => any; stub: (arg0: Bords | StatesContext<import("../states/controll_state.cjs").ControllState> | Context<any, any, ContextBridgeResolver> | undefined, arg1: string | undefined) => { (): any; new (): any; returns: { (arg0: string | boolean): void; new (): any; }; }; }}
      */
     let sandbox
 
@@ -29,7 +29,7 @@ describe('Context', function () {
 
             assert.instanceOf(context.bords, Bords)
             assert.instanceOf(context.engine, EngineContext)
-            assert.instanceOf(context.states, States)
+            assert.instanceOf(context.states, StatesContext)
             assert.instanceOf(context.workflows, WorkflowsContext)
             assert.instanceOf(context.histories, Histories)
             assert.instanceOf(context.executors, ExecutorsContext)
@@ -102,7 +102,7 @@ describe('Context', function () {
             }
             const inheritance = {
                 bords: { id: 'mockBords' },
-                states: { id: 'mockStates' },
+                states: { id: 'mockStatesContext' },
                 histories: mockHistories,
                 branches: { 2: {} },
                 reporter: { id: 'mockReporter' },
@@ -154,9 +154,9 @@ describe('Context', function () {
             // @ts-ignore
             const CustomBords = sandbox.stub().returns(customBordsInstance)
 
-            const customStatesInstance = { getBranchId: () => 20 }
+            const customStatesContextInstance = { getBranchId: () => 20 }
             // @ts-ignore
-            const CustomStates = sandbox.stub().returns(customStatesInstance)
+            const CustomStatesContext = sandbox.stub().returns(customStatesContextInstance)
 
             const customHistoriesInstance = {
                 // @ts-ignore
@@ -185,7 +185,7 @@ describe('Context', function () {
 
             const customClasses = {
                 bords: CustomBords,
-                states: CustomStates,
+                states: CustomStatesContext,
                 histories: CustomHistories,
                 engine: CustomEngine,
                 workflows: CustomWorkflows,
@@ -199,7 +199,7 @@ describe('Context', function () {
             // @ts-ignore
             assert.isTrue(CustomBords.calledOnce)
             // @ts-ignore
-            assert.isTrue(CustomStates.calledOnce)
+            assert.isTrue(CustomStatesContext.calledOnce)
             // @ts-ignore
             assert.isTrue(CustomHistories.calledOnce)
             // @ts-ignore
@@ -212,7 +212,7 @@ describe('Context', function () {
             assert.isTrue(CustomResolver.calledOnce)
 
             assert.equal(context.bords, customBordsInstance)
-            assert.equal(context.states, customStatesInstance)
+            assert.equal(context.states, customStatesContextInstance)
             // @ts-ignore
             assert.equal(context.histories, customHistoriesInstance)
             assert.equal(context.engine, customEngineInstance)
@@ -298,14 +298,14 @@ describe('Context', function () {
             const initialCount = context._countRef.n
 
             const mockBords = { getBranchId: () => 101 }
-            const mockStates = { getBranchId: () => 102 }
+            const mockStatesContext = { getBranchId: () => 102 }
             const mockHistories = { getBranchId: () => 103 }
 
             const newId = context._createIdMap({
                 // @ts-ignore
                 bords: mockBords,
                 // @ts-ignore
-                states: mockStates,
+                states: mockStatesContext,
                 // @ts-ignore
                 histories: mockHistories
             })
@@ -377,7 +377,7 @@ describe('Context', function () {
 
         it('should perform states.fork and histories.fork inside _fork', function () {
             // @ts-ignore
-            const forkedStates = { getBranchId: () => 1, fork: sandbox.stub() }
+            const forkedStatesContext = { getBranchId: () => 1, fork: sandbox.stub() }
             const forkedHistories = {
                 getBranchId: () => 2,
                 // @ts-ignore
@@ -390,7 +390,7 @@ describe('Context', function () {
 
             const customClasses = {
                 bords: class { getBranchId() { return 0 } fork() { return forkedBords } },
-                states: class { getBranchId() { return 0 } fork() { return forkedStates } },
+                states: class { getBranchId() { return 0 } fork() { return forkedStatesContext } },
                 histories: class {
                     constructor() { this.context = { setContext: () => { } } }
                     getBranchId() { return 0 }
@@ -414,7 +414,7 @@ describe('Context', function () {
 
         it('should pass step parameter to histories.fork in _fork', function () {
             // @ts-ignore
-            const forkedStates = { getBranchId: () => 1, fork: sandbox.stub() }
+            const forkedStatesContext = { getBranchId: () => 1, fork: sandbox.stub() }
             // @ts-ignore
             const historiesForkSpy = sandbox.stub().returns({
                 getBranchId: () => 2,
@@ -432,7 +432,7 @@ describe('Context', function () {
 
             const customClasses = {
                 bords: class { getBranchId() { return 0 } fork() { return forkedBords } },
-                states: class { getBranchId() { return 0 } fork() { return forkedStates } },
+                states: class { getBranchId() { return 0 } fork() { return forkedStatesContext } },
                 histories: class {
                     constructor() { this.context = { setContext: () => { } } }
                     getBranchId() { return 0 }

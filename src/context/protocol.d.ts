@@ -1,5 +1,5 @@
-import type { States } from "../states/tree.cjs"
-import type { Bords } from "../bords/bords.cjs"
+import type { States } from "../states/context.cjs"
+import type { Bords } from "../bords/context.cjs"
 
 import type { WorkflowsContext } from "../workflow/context.cjs"
 import type { HistoriesContext } from "../history/context.cjs"

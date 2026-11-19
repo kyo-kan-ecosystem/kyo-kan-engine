@@ -1,7 +1,7 @@
-const { ContextBridgeResolver } = require("../resolver/context/index.cjs")
-const { Bords } = require("../bords/bords.cjs")
+const { ContextBridgeResolver } = require("../resolver/context/bridge_resolver.cjs")
+const { BordsContext: Bords } = require("../bords/context.cjs")
 const { HistoriesContext: Histories } = require("../history/context.cjs")
-const { States } = require("../states/tree.cjs")
+const { StatesContext } = require("../states/context.cjs")
 const { WorkflowsContext } = require("../workflow/context.cjs")
 const { ExecutorsContext } = require("../executor/context.cjs")
 const { EngineContext } = require("../engine/context.cjs")
@@ -17,7 +17,7 @@ const { isVoid } = require("../util/is_void.cjs")
  * @typedef {{
  *      bords:typeof Bords,
  *      engine:typeof EngineContext
- *      states: typeof States,
+ *      states: typeof StatesContext,
  *      workflows: typeof WorkflowsContext,
  *      histories: typeof Histories,
  *      executors: typeof ExecutorsContext,
@@ -30,7 +30,7 @@ const { isVoid } = require("../util/is_void.cjs")
 const DEFAULT_CLASSES = {
     bords: Bords,
     engine: EngineContext,
-    states: States,
+    states: StatesContext,
     workflows: WorkflowsContext,
     histories: Histories,
     executors: ExecutorsContext,
@@ -55,7 +55,7 @@ const DEFAULT_CLASSES = {
  */
 class Context {
     /**
-     * @type {States}
+     * @type {StatesContext}
      */
     states
 
@@ -416,7 +416,7 @@ class Context {
     /**
      * @param {Object} param0
      * @param {Bords?} [param0.bords] 
-     * @param { import("../states/tree.cjs").StatesType?} [param0.states] 
+     * @param { import("../states/context.cjs").StatesContextType?} [param0.states] 
      * @param {Histories?} [param0.histories] 
      * @returns 
      */

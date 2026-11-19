@@ -9,7 +9,7 @@ const { ControllState } = require('./controll_state.cjs')
  * @extends {StackSuperimpositionLinkTree<StateBranch>} 
  *
  */
-class States extends StackSuperimpositionLinkTree {
+class StatesContext extends StackSuperimpositionLinkTree {
     /**
      * @type {ControllStateType}
      */
@@ -62,6 +62,6 @@ class States extends StackSuperimpositionLinkTree {
 }
 
 /**
- * @typedef {States<ControllState>} StatesType
+ * @typedef {StatesContext<ControllState>} StatesType
  */
-module.exports = { States }
+module.exports = { StatesContext }

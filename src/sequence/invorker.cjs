@@ -1,5 +1,5 @@
-import { SequenceDispatcherBase } from "./dispatcher.cjs";
-import { SequenceRunner } from "./runner.cjs";
+const { SequenceDispatcherBase } = require("./dispatcher.cjs")
+const { SequenceRunner } = require("./runner.cjs")
 
 /**
  * @param {any} request

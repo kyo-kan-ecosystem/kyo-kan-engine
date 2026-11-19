@@ -1,7 +1,7 @@
 /**
- * @type {import('./interfacade/parse_context.cjs')}
+ * @type {import('./interfacade/index.cjs')}
  */
-const InterFacade = require('./interfacade/parse_context.cjs')
+const InterFacade = require('./interfacade/index.cjs')
 /**
  * @type {import('./context/index.cjs')}
  */

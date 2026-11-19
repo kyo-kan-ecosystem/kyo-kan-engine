@@ -1,19 +1,16 @@
-/**
- * @type {import('./dispatcher.cjs')}
- */
-const Dispatcher = require('./dispatcher.cjs')
 
-/**
- * @type {import('./invorker.cjs')}
- */
-const Invorker = require('./invorker.cjs')
+const { SequenceDispatcherBase } = require('./dispatcher.cjs')
 
-/**
- * @type {import('./runner.cjs')}
- */
-const Runner = require('./runner.cjs')
+
+const { invokeSequence } = require('./invorker.cjs')
+
+
+const { SequenceRunner } = require('./runner.cjs')
 /**
  * @type {import('./protocol.error.cjs')}
  */
 const Errors = require('./protocol.error.cjs')
-module.exports = { Dispatcher, Invorker, Runner, Errors }
+
+const { AbstractDispatcher } = require('./protocol.class.cjs')
+
+module.exports = { SequenceDispatcherBase, invokeSequence, SequenceRunner, Errors, AbstractDispatcher }

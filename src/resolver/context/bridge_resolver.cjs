@@ -1,0 +1,110 @@
+const { assertIsNotVoid } = require("../../util/is_void.cjs")
+const { ConfigureIdIsInvalidError, SubworkflowNameIsInvalidError, SubworkflowNameDoesNotExistsError, SubworflowsDoesNotExistError } = require("./errors.cjs")
+
+
+class ContextBridgeResolver {
+    /**
+     * @type {import("../../context/protocol").ContextDataInterFace}
+     */
+    _context
+    /**
+     * @param {import("../../context/protocol").ContextDataInterFace} context
+     */
+    constructor(context) {
+        this._context = context
+
+
+    }
+    resolveInContextSubworkflowId() {
+        const subworkflowName = this._context.states.controll.getSubworkflowName()
+        const configureId = this._context.states.controll.getExecutorId()
+        const subworkflowId = this.resolveSubworkflowId(configureId, subworkflowName)
+        return subworkflowId
+
+
+    }
+    /**
+     * @param {any} configureId
+     * @param {any} name
+     */
+    resolveSubworkflowId(configureId, name) {
+
+        assertIsNotVoid(configureId, ConfigureIdIsInvalidError)
+
+
+        assertIsNotVoid(name, SubworkflowNameIsInvalidError)
+
+
+
+        const subworkflows = this._context.executors.getConfigure(configureId).subworkflows
+        assertIsNotVoid(subworkflows, SubworflowsDoesNotExistError, {})
+        assertIsNotVoid(subworkflows, SubworkflowNameDoesNotExistsError)
+        // @ts-ignore
+        return subworkflows[name]
+
+
+
+
+    }
+    /**
+     * 
+     * @param {*} workflowId
+     * @param {*} subworkflowInit  
+     */
+    resolveGoSubProcess(workflowId = undefined, subworkflowInit = undefined) {
+        const id = workflowId || this.resolveInContextSubworkflowId()
+        const initState = this._context.states.controll.getSubworkflowInitState()
+        this._context.states.now.push({ workflow: { id, initState } })
+        this._context.bords.push(subworkflowInit || this._context.states.controll.getSubworkflowInit())
+
+    }
+    /**
+     * 
+     * @param {*} request 
+     * @returns 
+     */
+    resolveReturnFromSubProcess(request) {
+
+
+        const subworkflowState = this._context.states.now.pop()
+        const workflowState = this._context.states.now.get()
+
+        this._context.bords.returnFromSub()
+
+        return this._context.workflows.returnFromSub(workflowState, subworkflowState, this._context, request)
+
+
+    }
+    resolveStartProcess() {
+        const rootWorkflow = this._context.engine.configure.get().root.workflow.id
+        this._context.states.now.push({ workflow: { id: rootWorkflow } })
+        this._context.states.controll.setExecuteMode('start')
+
+
+    }
+    resolveWaitToResumeProcess() {
+        const resumeMode = this._context.engine.configure.get().sequence.resume
+        this._context.states.controll.setExecuteMode(resumeMode)
+
+
+
+    }
+    resolveResumeToCallbackProcess() {
+        const callbackMode = this._context.engine.configure.get().sequence.callback
+        this._context.states.controll.setExecuteMode(callbackMode)
+
+
+    }
+    resolveGetExecutorWithConfigure() {
+        const configureId = this._context.states.controll.getExecutorId()
+        return this._context.executors.getOptionsAndExecutor(configureId)
+
+    }
+
+
+
+
+
+}
+
+module.exports = { ContextBridgeResolver }

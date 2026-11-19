@@ -3,9 +3,7 @@
  */
 const Histrory = require('./history/class.cjs')
 
-/**
- * @type {import('./class.cjs')}
- */
-const Class = require('./class.cjs')
 
-module.exports = { Histrory, Class }
+const { Context } = require('./class.cjs')
+
+module.exports = { Histrory, Class: Context }

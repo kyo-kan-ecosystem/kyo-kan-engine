@@ -48,8 +48,8 @@ const DEFAULT_HISTORY_CLASSES = {
  * @typedef {Required<HistoryInits>} HistoryInheritance
  */
 /**
- * @typedef {import('../states/tree.cjs').StatesType} States 
- * @typedef {import("../bords/bords.cjs").Bords} Bords 
+ * @typedef {import('../states/context.cjs').StatesType} States 
+ * @typedef {import("../bords/context.cjs").BordsContext} Bords 
  */
 class HistoriesContext {
 
@@ -76,13 +76,13 @@ class HistoriesContext {
 
 
     /**
-     * @type {import('../states/tree.cjs').StatesType}
+     * @type {import('../states/context.cjs').StatesType}
      * 
      */
     _statesTree
 
     /**
-     * @type {import('../bords/bords.cjs').Bords}
+     * @type {import('../bords/context.cjs').BordsContext}
      */
     _bordsTree
 

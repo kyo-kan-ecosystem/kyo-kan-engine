@@ -1,6 +1,4 @@
 const { KeyValueRepositry } = require("../../repositry/key_value.cjs")
-
-
 /**
  * @extends {KeyValueRepositry<import("./protocol").EngineConfigure>}
  */

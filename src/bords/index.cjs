@@ -1,18 +1,16 @@
-/**
- * @type {import('./bords_branch.cjs')}
- */
-const Branch = require('./bords_branch.cjs')
+
+const { BordsBranch } = require('./branch.cjs')
 
 
 /**
- * @type {import('./bords.cjs')}
+ * @type {import('./context.cjs')}
  */
 
-const { Bords: Tree } = require('./bords.cjs')
+const { BordsContext } = require('./context.cjs')
 
 /**
  * @type {import('./history/index.cjs')}
  */
 const Histrory = require('./history/index.cjs')
 
-module.exports = { Branch, Tree, Histrory }
+module.exports = { BordsBranch, BordsContext, Histrory }

@@ -7,6 +7,6 @@ const { ControllState } = require('./controll_state.cjs')
 
 const { StateHistory } = require('./history.cjs')
 
-const { States } = require('./tree.cjs')
+const { StatesContext } = require('./context.cjs')
 
-module.exports = { StateBranch, ControllState, States }
+module.exports = { StateBranch, ControllState, StatesContext }

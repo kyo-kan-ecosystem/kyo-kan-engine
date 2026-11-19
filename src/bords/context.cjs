@@ -1,6 +1,6 @@
 const deepmerge = require("deepmerge")
 const { StackSuperimpositionLinkTree } = require("../util/stack/classes.cjs")
-const { BordsBranch } = require("./bords_branch.cjs")
+const { BordsBranch } = require("./branch.cjs")
 
 
 
@@ -14,7 +14,7 @@ const { BordsBranch } = require("./bords_branch.cjs")
 /**
  * @extends StackSuperimpositionLinkTree<BordsBranch>
  */
-class Bords extends StackSuperimpositionLinkTree {
+class BordsContext extends StackSuperimpositionLinkTree {
 
     /**
      * @type {any}
@@ -238,4 +238,4 @@ class Bords extends StackSuperimpositionLinkTree {
 
 }
 
-module.exports = { Bords }
+module.exports = { BordsContext }

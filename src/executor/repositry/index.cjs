@@ -1,16 +1,9 @@
-/**
- * @type {import('./boot.cjs')}
- */
-const Boot = require('./boot.cjs')
 
-/**
- * @type {import('./configure.cjs')}
- */
-const Configure = require('./configure.cjs')
+const { BootExecutorConfigureRepositry } = require('./boot.cjs')
 
-/**
- * @type {import('./plugin.cjs')}
- */
-const Plugin = require('./plugin.cjs')
+const { ExecutorConfigureRepositry } = require('./configure.cjs')
 
-module.exports = { Boot, Configure, Plugin }
+
+const { ExecutorPluginRepositry } = require('./plugin.cjs')
+
+module.exports = { BootExecutorConfigureRepositry, ExecutorConfigureRepositry, ExecutorPluginRepositry }
