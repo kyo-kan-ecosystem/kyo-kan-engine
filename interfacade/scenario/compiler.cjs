@@ -1,4 +1,4 @@
-const { PluginsManagerBuilder } = require("./plugins/manager_builder.cjs")
+const { PluginsManagerBuilder } = require("./plugins/pluginpuck_manager_builder.cjs")
 const { Scenario } = require("./scenario.cjs")
 class ScenarioCompiler {
     /**

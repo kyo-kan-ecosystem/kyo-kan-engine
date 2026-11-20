@@ -94,14 +94,7 @@ class ScenarioPluginPack {
     }
 
 
-    /**
-     * @param {string | number} id
-     * @param {import('../../../protocol/plugin/protocol.js').PluginManager} manager
-     */
-    addWorkflowPluginManager(id, manager) {
-        this.workflows[id] = { manager }
 
-    }
     checkIsEmpty() {
         return this._isEmpty
     }

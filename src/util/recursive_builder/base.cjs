@@ -16,13 +16,19 @@ class AbstractRecursiveBuilder {
      * 
      * @param {import("./protocol").RecursiveBuilderArgs} argObject 
      */
-    build(argObject) {
+    build({ args = {}, dependArgs = {} }) {
+        /**
+         * @type {Object<any, any>}
+         */
         const dependObjects = {}
-        for (const dependKey in argObject.dependArgs || {}) {
+        const dependBulders = this.config.dependClasses || {}
+        for (const dependKey in dependBulders) {
 
 
-            const dependArg = argObject.dependArgs[dependKey]
-            const dependBuilder = this.config.dependClasses[dependKey]
+            const dependArg = dependArgs[dependKey]
+            const dependBuilder = dependBulders[dependKey]
+
+
             dependObjects[dependKey] = dependBuilder(dependArg)
 
 
@@ -30,13 +36,15 @@ class AbstractRecursiveBuilder {
 
 
         }
-        return this._constructObject(dependObjects, argObject.args)
+        return this._constructObject(dependObjects, args)
 
 
 
     }
     /**
      * @abstract
+     * @param {any} dependObjects
+     * @param {any} args
      */
     _constructObject(dependObjects, args) {
         throw 'Not Implement'

@@ -20,7 +20,7 @@ class PluginPackLoader {
     /**
      * 
      * @param {import("./resolver/protocol.class.cjs").AbstractScenarioPluginpackResolver } resolver
-     * @param {string} [defaultPluginPackName=]  
+     * @param {string} defaultPluginPackName  
      */
     constructor(resolver, defaultPluginPackName = DEFAULT_PLUGINPACK_NAME) {
         this.resolver = resolver

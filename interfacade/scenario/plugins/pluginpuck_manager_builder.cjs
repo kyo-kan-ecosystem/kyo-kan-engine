@@ -1,6 +1,6 @@
 const { default: path } = require("node:path")
 const { isVoid } = require("../../../src/util/is_void.cjs")
-const { PluginPackManager } = require("./manager.cjs")
+const { PluginPackManager } = require("./pluginpack_manager.cjs")
 const { ScenarioPluginPack } = require("./pluginpack.cjs")
 
 class PluginsManagerBuilder {

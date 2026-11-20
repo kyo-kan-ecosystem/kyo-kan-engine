@@ -58,7 +58,7 @@ class Controller {
      * @param {*} api 
      */
     _getContetxtFromState(id, request, api) {
-        const scenario = this.sceanrioLoader
+        const scenario = this.sceanrioLoader.load(id)
 
     }
     /**
