@@ -96,11 +96,13 @@ class Context {
     /**
      * @type {ContextFunctionsType}
      */
+    // @ts-ignore
     functions
 
     /**
      * @type {ReporterType}
      */
+    // @ts-ignore
     reporter
 
     /**
@@ -161,9 +163,7 @@ class Context {
 
             this.setBranchId(inheritance?.branchId)
 
-            const { functions, reporter } = this._forkApi(inheritance?.reporter, inheritance?.functions)
-            this.functions = functions
-            this.reporter = reporter
+            this.setApi(inheritance)
 
             return
         }
@@ -205,9 +205,8 @@ class Context {
             this.setBranchId(datas._branchId)
 
         }
-        const { functions = {}, reporter = {} } = this._forkApi(api?.reporter, api?.functions)
-        this.functions = functions
-        this.reporter = reporter
+        this.setApi(api)
+
 
 
 
@@ -217,7 +216,15 @@ class Context {
 
 
     }
-
+    /**
+     * 
+     * @param {import("./protocol.js").ContextApi?} api
+     */
+    setApi(api) {
+        const { functions = {}, reporter = {} } = this._forkApi(api?.reporter, api?.functions)
+        this.functions = functions
+        this.reporter = reporter
+    }
 
     /**
      * @returns {import("./protocol.js").ContextSerializableData}
@@ -416,7 +423,7 @@ class Context {
     /**
      * @param {Object} param0
      * @param {Bords?} [param0.bords] 
-     * @param { import("../states/context.cjs").StatesContextType?} [param0.states] 
+     * @param {import("../states/context.cjs").StatesContext?} [param0.states] 
      * @param {Histories?} [param0.histories] 
      * @returns 
      */

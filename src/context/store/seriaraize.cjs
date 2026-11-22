@@ -9,6 +9,7 @@ class ContextStoreSeriaraize extends AbtractSeriaraizableStore {
         super(store)
         this.contextClass = contextClass
     }
+
     /**
      * @param {string} value
      */
@@ -27,5 +28,27 @@ class ContextStoreSeriaraize extends AbtractSeriaraizableStore {
     }
 }
 
+class ContextStoreSeriaraizeBuilder {
+    /**
+     * @param {any} seriaraizedDataStoreBuilder
+     * @param {typeof ContextStoreSeriaraize} [seriaraizeStoreClass=ContextStoreSeriaraize] 
+     */
+    constructor(seriaraizedDataStoreBuilder, seriaraizeStoreClass = ContextStoreSeriaraize) {
+        this.seriaraizedDataStoreBuilder = seriaraizedDataStoreBuilder
+        this.seriaraizeStoreClass = seriaraizeStoreClass
+        this.build = this.build.bind(this)
+    }
+    /**
+     * 
+     * @param {*} nameSpace 
+     * @param {*} epoc 
+     */
+    build(nameSpace, epoc) {
+        const store = this.seriaraizedDataStoreBuilder(nameSpace, epoc)
+        return new this.seriaraizeStoreClass(nameSpace, epoc)
 
-module.exports = { ContextStoreSeriaraize } 
+
+    }
+
+}
+module.exports = { ContextStoreSeriaraizeBuilder, ContextStoreSeriaraize } 
