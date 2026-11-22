@@ -3,8 +3,8 @@ export type StracturedId = {
     value: any
 }
 
-export type StateLoader = {
-    load: (id) => Promise<any> | any
+export type ContextStore = {
+    get: (id) => Promise<any> | any
 }
 
 export type ScenarioLoader = {

@@ -48,7 +48,7 @@ class StoreTemplate {
     /**
      * @abstract
      * @param {*} key
-     * @returns {import("./protocol").StoreGetResponse}
+     * @returns {Promise<import("./protocol").StoreGetResponse>}
      */
     async get(key) {
         const _key = this._createKeyWithNamespace(key)

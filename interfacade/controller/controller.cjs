@@ -1,8 +1,8 @@
 class Controller {
     /**
-     * @type {import("./protocol").StateLoader}
+     * @type {import("./protocol").ContextStore}
      */
-    stateLoader
+    contextStore
 
 
     /**
@@ -13,12 +13,12 @@ class Controller {
     sceanrioLoader
 
     /**
-     * @param {import("./protocol").StateLoader} stateLoader
+     * @param {import("./protocol").ContextStore} contextStore
      * @param {import("./protocol").ScenarioLoader} scenarioLoader
      */
-    constructor(stateLoader, scenarioLoader) {
+    constructor(contextStore, scenarioLoader) {
         this.sceanrioLoader = scenarioLoader
-        this.stateLoader = stateLoader
+        this.contextStore = contextStore
 
     }
 
@@ -46,8 +46,8 @@ class Controller {
      * @param {*} api 
      * @returns 
      */
-    runFromState(id, request, api = {}) {
-        const context = this._getContetxtFromState(id, request, api)
+    runContext(id, request, api = {}) {
+        const context = this._getContextFromState(id, request, api)
         return this._run(context, request)
 
     }
@@ -57,7 +57,7 @@ class Controller {
      * @param {*} request 
      * @param {*} api 
      */
-    _getContetxtFromState(id, request, api) {
+    _getContextFromState(id, request, api) {
         const scenario = this.sceanrioLoader.load(id)
 
     }
