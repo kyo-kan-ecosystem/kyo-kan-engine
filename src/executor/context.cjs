@@ -27,12 +27,12 @@ class ExecutorsContext {
     /**
      * @param {Object} param0
      * @param {any?} [param0.plugins=null]
-     * @param {import("./protocol").ExecutorConfigures?}[param0.configures=null]
+     * @param {import("./protocol").ExecutorConfigures?}[param0.configures=undefined]
      * @param {typeof ExecutorConfigureRepositry} [param0.configuresRepositryClass=ExecutorConfigureRepositry]
      * @param {typeof ExecutorPluginRepositry} [param0.pluginsRepositryClass=ExecutorPluginRepositry]
      * @param {typeof BootExecutorConfigureRepositry} [param0.bootPluginRepositryClass=BootExecutorConfigureRepositry]
      */
-    constructor({ configures = null, plugins = null, configuresRepositryClass = ExecutorConfigureRepositry, pluginsRepositryClass = ExecutorPluginRepositry, bootPluginRepositryClass = BootExecutorConfigureRepositry } = {}) {
+    constructor({ configures = undefined, plugins = undefined, configuresRepositryClass = ExecutorConfigureRepositry, pluginsRepositryClass = ExecutorPluginRepositry, bootPluginRepositryClass = BootExecutorConfigureRepositry } = {}) {
 
 
         this.pluginConfigures = new configuresRepositryClass(configures?.plugins)
@@ -113,6 +113,25 @@ class ExecutorsContext {
         return results
 
 
+    }
+    /**
+     * @returns {{configures:import("./protocol").ExecutorConfigures}}
+     */
+    getSeriaraizableData() {
+        return {
+            configures: {
+                boots: this.bootConfigures.getDatas(),
+                plugins: this.pluginConfigures.getDatas()
+            }
+        }
+
+    }
+    /**
+     * 
+     * @param {*} plugins 
+     */
+    setPlugins(plugins) {
+        this.plugins.setAll(plugins)
     }
 
 }

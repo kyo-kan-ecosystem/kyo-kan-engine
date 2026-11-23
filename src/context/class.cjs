@@ -236,6 +236,7 @@ class Context {
             histories: this.histories.getSerializableData(),
             branches: this._branches,
             engine: this.engine.getSerializableData(),
+            executors: this.executors,
             _countRef: this._countRef,
             _linkMap: this._linkMap,
 
@@ -325,6 +326,28 @@ class Context {
         const bords = this.bords.fork(branch?.bords)
         return this._fork(id, branch, bords)
 
+
+    }
+    getImutableData() {
+        /**
+        * @type {import("./protocol.js").ImutableData}
+        */
+        const inheritance = {
+
+
+
+            engine: this.engine.getSerializableData(),
+            workflows: this.workflows.getSeriaraizableData(),
+            executors: this.executors
+        }
+    }
+    /**
+     * @param {*} workflowPlugins 
+     * @param {*} executorPlugins 
+     */
+    setPlugins(workflowPlugins, executorPlugins) {
+        this.workflows.setPlugins(workflowPlugins)
+        this.workflows.setPlugins(executorPlugins)
 
     }
 

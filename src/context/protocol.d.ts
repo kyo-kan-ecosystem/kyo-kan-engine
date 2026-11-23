@@ -16,6 +16,10 @@ export type ImutableDataContexts = {
     engine: EngineContext
 }
 
+export type ImutableData = {
+    [k in keyof ImutableDataContexts]: any
+}
+
 export type MutableDataContexts = {
     bords: Bords,
     histories: HistoriesContext,

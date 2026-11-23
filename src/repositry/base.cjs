@@ -43,6 +43,14 @@ class Repositry {
     getDatas() {
         return this._datas
     }
+    /**
+     * 
+     * @param {any} datas 
+     */
+    setAll(datas) {
+        this._datas = Object.assign({}, this._datas, datas)
+
+    }
 }
 
 module.exports = { Repositry }

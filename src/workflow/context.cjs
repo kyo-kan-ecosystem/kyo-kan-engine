@@ -27,7 +27,7 @@ class WorkflowsContext {
      * @param {import("./protocol").WorkflowContextInit} param0 
      * 
      */
-    constructor({ plugins = null, configures = null, pluginsClass = WorkflowPluginRepositry, configuresClass = WorkflowConfiguresRepositry } = {}) {
+    constructor({ plugins = undefined, configures = undefined, pluginsClass = WorkflowPluginRepositry, configuresClass = WorkflowConfiguresRepositry } = {}) {
         this.plugins = new pluginsClass(plugins)
         this.configures = new configuresClass(configures)
 
@@ -72,7 +72,7 @@ class WorkflowsContext {
      * @param {import("../context/class.cjs").Context<any, any>} context
      * @param {import("../states/protocol").StateType} state
      * @param {any} request
-     * @returns {import("../../protocol/index.protocol").MaybeContexts}
+     * @returns {import("../../protocol/index.protocol").Context.MaybeContexts}
      * */
     go(context, state, request) {
 
@@ -146,7 +146,7 @@ class WorkflowsContext {
      * @param {*} request     * 
      * @param {import("../states/protocol").StateType} subworkflowState
      * @param {import("../states/protocol").StateType} workflowState
-     * @returns {import("../../protocol/index.protocol").MaybeContexts}
+     * @returns {import("../../protocol/index.protocol").Context.MaybeContexts}
      */
     returnFromSub(subworkflowState, workflowState, context, request) {
         const { workflow, configure } = this.getWorkflowFromState(subworkflowState)
@@ -173,6 +173,24 @@ class WorkflowsContext {
      */
     getConfigure(id) {
         return this.configures.get(id)
+    }
+    /**
+     * 
+     * @returns {import("./protocol").WorkflowContextInit}
+     */
+    getSeriaraizableData() {
+        return {
+            plugins: this.plugins.getDatas(),
+            configures: this.configures.getDatas()
+        }
+    }
+    /**
+     * 
+     * @param {*} plugins 
+     */
+    setPlugins(plugins) {
+        this.plugins.setAll(plugins)
+
     }
 
 
