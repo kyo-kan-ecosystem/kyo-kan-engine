@@ -58,7 +58,7 @@ class AbtractSeriaraizableStore {
         }
         return {
             isExist: true,
-            value: this._deseriaraize(JSON.stringify(result.value))
+            value: await this._deseriaraize(JSON.parse(result.value))
 
         }
 

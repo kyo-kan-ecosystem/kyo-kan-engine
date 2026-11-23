@@ -3,40 +3,63 @@ const { Context } = require("../class.cjs")
 
 class ContextStoreSeriaraize extends AbtractSeriaraizableStore {
     /**
-     * @param {import("../../util/store/protocol").StoreInterface} store
+     * @type {import('../../../interfacade/scenario/loader/protocol').ScenarioLoaderInterFace}
      */
-    constructor(store, contextClass = Context) {
+    scenarioLoader
+    /**
+     * @param {import("../../util/store/protocol").StoreInterface} store
+     * @param {import("../../../interfacade/scenario/loader/protocol").ScenarioLoaderInterFace} sceanrioLoader
+     */
+    constructor(store, sceanrioLoader, contextClass = Context) {
         super(store)
         this.contextClass = contextClass
+        this.scenarioLoader = sceanrioLoader
     }
 
     /**
-     * @param {string} value
+     * @param {import('./protocol').ContextStoreSeriaraizedValue} value
+     * @returns {Promise<import('./protocol').ContextStoreValue>}
      */
-    _deseriaraize(value) {
+    async _deseriaraize(value) {
         // @ts-ignore
-        return new this.contextClass(value)
+        const context = new this.contextClass({ datas: value.context })
+        const plugins = await this.scenarioLoader.loadPlugins(value.scenarioId)
+        context.setPlugins(plugins.workflows, plugins.executors)
+        return { context, scenarioId: value.scenarioId }
+
 
     }
     /**
      * 
-     * @param {Context} value 
+     * @param {import('./protocol').ContextStoreValue} value
+     * @returns {import('./protocol').ContextStoreSeriaraizedValue} 
      */
     _seriaraize(value) {
-        return value.getSerializableData()
+        return {
+            context: value.context.getSerializableData(),
+            scenarioId: value.scenarioId
+        }
 
     }
 }
 
 class ContextStoreSeriaraizeBuilder {
     /**
-     * @param {any} seriaraizedDataStoreBuilder
-     * @param {typeof ContextStoreSeriaraize} [seriaraizeStoreClass=ContextStoreSeriaraize] 
+     * @type {import('../../../interfacade/scenario/loader/protocol').ScenarioLoaderInterFace}
      */
-    constructor(seriaraizedDataStoreBuilder, seriaraizeStoreClass = ContextStoreSeriaraize) {
+    scenarioLoader
+
+    /**
+     * @param {any} seriaraizedDataStoreBuilder
+     * @param {typeof ContextStoreSeriaraize} [seriaraizeStoreClass]
+     * @param {import("../../../interfacade/scenario/loader/protocol").ScenarioLoaderInterFace} sceanrioLoader
+     */
+    constructor(seriaraizedDataStoreBuilder, sceanrioLoader, seriaraizeStoreClass = ContextStoreSeriaraize) {
         this.seriaraizedDataStoreBuilder = seriaraizedDataStoreBuilder
         this.seriaraizeStoreClass = seriaraizeStoreClass
+        this.scenarioLoader = sceanrioLoader
         this.build = this.build.bind(this)
+
     }
     /**
      * 
