@@ -3,7 +3,7 @@ export type StoreGetResponse<ValueType = any> = { value?: ValueType, isExist: bo
 export interface StoreInterface<ValueType = any> {
 
     get(key: string): Promise<StoreGetResponse<ValueType>>
-    set(key: string, value: any, epoc: number | undefined): Promise<void>
+    set(key: string, value: any, epoc?: number | undefined): Promise<void>
 
 
 

@@ -15,7 +15,7 @@ class Controller {
     sceanrioLoader
 
     /**
-     * @param {import("./protocol").ContextStore} contextStore
+     * @param {import("../../src/context/store/protocol").ContextStore} contextStore
      * @param {import("./protocol").ScenarioLoader} scenarioLoader
      */
     constructor(contextStore, scenarioLoader) {
