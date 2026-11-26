@@ -1,5 +1,5 @@
 const { PluginsManagerBuilder } = require("./plugins/pluginpuck_manager_builder.cjs")
-const { Scenario } = require("./scenario.cjs")
+
 class ScenarioCompiler {
     /**
      * @type {import("./plugins/loader/loader.cjs").PluginPackLoader}
@@ -20,17 +20,7 @@ class ScenarioCompiler {
         this.pluginPackLoader = pluginPackLoader
         this.pluginsManagerBuilder = pluginsPackManagerBuilder || new PluginsManagerBuilder()
     }
-    /**
-     * 
-     * @param {import("./protocol").ScenarioJsonFormat} seriaraizedScenario 
-     */
-    async compileFromSeriaraized(seriaraizedScenario) {
-        const pluginPacks = await this.pluginPackLoader.load(seriaraizedScenario.pluginPacks)
-        const pluginsManager = await this.pluginsManagerBuilder.convertFromObjects(pluginPacks)
-        return Object.assign({ pluginsManager }, seriaraizedScenario)
 
-
-    }
     /**
      * 
      * @param {import('./scenario.cjs').Scenario} scenarioObject 

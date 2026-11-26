@@ -1,4 +1,4 @@
-import { WithConfigurePath } from "../../interfacade/configure/protocol"
+import { WithScenarioPath } from "../../interfacade/scenario_path/protocol"
 import type { Registrator } from "../../interfacade/scenario/scenario.cjs"
 import { JSONSchema4 } from "@types/json-schema"
 
@@ -23,4 +23,4 @@ export type PluginConfigureLink = { id: any }
 export type PluginConfigureReadablInPlaceProtocol<OptionsType = any, ExtendType = {}> = PluginConfigureBase<OptionsType, ExtendType>
 export type PluginConfigureReadableProtocolBase<OptionsType = any, ExtendType = {}> = PluginConfigureReadablInPlaceProtocol<OptionsType, ExtendType> | PluginConfigureLink
 
-export type PluginConfigureProtocol<OptionsType = any, ExtendType = any> = PluginConfigureBase<OptionsType, ExtendType> & WithConfigurePath
+export type PluginConfigureProtocol<OptionsType = any, ExtendType = any> = PluginConfigureBase<OptionsType, ExtendType> & WithScenarioPath

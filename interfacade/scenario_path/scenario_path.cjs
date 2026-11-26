@@ -1,13 +1,13 @@
 
 /**
  * 
- * @param {import("./protocol").WithConfigurePath} data 
+ * @param {import("./protocol").WithScenarioPath} data 
  * @param {*} configures 
  */
 function getConfigureFromPath(data, configures) {
 
-    let result = configures[data.configurePath.root]
-    const pathExpressions = data.configurePath.expressions
+    let result = configures[data.scenarioPath.root]
+    const pathExpressions = data.scenarioPath.expressions
     for (const pathExpression of pathExpressions) {
         result = result[pathExpression]
 
@@ -19,9 +19,9 @@ function getConfigureFromPath(data, configures) {
  * @template RootType
  * @param {RootType} root
  * @param {any[]|undefined} expressions
- * @returns {import("./protocol").ConfigurePath<RootType>}  
+ * @returns {import("./protocol").ScenarioPath<RootType>}  
 */
-function createConfigurePath(root, expressions = undefined) {
+function createScenarioPath(root, expressions = undefined) {
     return {
         root,
         expressions: expressions || []
@@ -29,41 +29,41 @@ function createConfigurePath(root, expressions = undefined) {
     }
 
 }
-function createRootConfigurePath() {
+function createRootScenarioPath() {
     /**
      * @type {import("./protocol").DefaultRootType}
      */
     const root = 'root'
-    return createConfigurePath(root)
+    return createScenarioPath(root)
 }
-function createBootConfigurePath() {
+function createBootScenarioPath() {
     /**
      * @type {import("./protocol").DefaultRootType}
      */
     const root = 'boots'
-    return createConfigurePath(root)
+    return createScenarioPath(root)
 }
-function createWorkflowConfigurePath() {
+function createWorkflowScenarioPath() {
     /**
      * @type {import("./protocol").DefaultRootType}
      */
     const root = 'workflows'
-    return createConfigurePath(root)
+    return createScenarioPath(root)
 }
-function createExecutorConfigurePath() {
+function createExecutorScenarioPath() {
     /**
      * @type {import("./protocol").DefaultRootType}
      */
     const root = 'executors'
-    return createConfigurePath(root)
+    return createScenarioPath(root)
 }
 /**
  * 
- * @param {import("./protocol").ConfigurePath<any>} parent 
+ * @param {import("./protocol").ScenarioPath<any>} parent 
  * @param {any[]} expressions
- * @returns {import("./protocol").ConfigurePath<any>}
+ * @returns {import("./protocol").ScenarioPath<any>}
  */
-function extendConfigurePath(parent, expressions) {
+function extendScenarioPath(parent, expressions) {
     return {
         root: parent.root,
         expressions: parent.expressions.concat(expressions)
@@ -74,10 +74,10 @@ function extendConfigurePath(parent, expressions) {
 
 module.exports = {
     getConfigureFromPath,
-    extendConfigurePath,
-    createBootConfigurePath,
-    createConfigurePath,
-    createExecutorConfigurePath,
-    createWorkflowConfigurePath,
-    createRootConfigurePath
+    extendScenarioPath,
+    createBootScenarioPath,
+    createScenarioPath,
+    createExecutorScenarioPath,
+    createWorkflowScenarioPath,
+    createRootScenarioPath
 }

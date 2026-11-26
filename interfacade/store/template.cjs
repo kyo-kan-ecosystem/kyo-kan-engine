@@ -1,5 +1,5 @@
 // @ts-ignore
-const { dynamicDefault, isVoid } = require("../is_void.cjs")
+const { dynamicDefault, isVoid } = require("../../src/util/is_void.cjs")
 
 
 class StoreTemplate {

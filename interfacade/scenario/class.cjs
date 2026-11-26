@@ -1,15 +1,6 @@
 const { isVoid } = require('../../src/util/is_void.cjs')
 
 
-
-
-
-
-
-
-
-
-
 class Scenario {
 
     /**
@@ -90,13 +81,13 @@ class Scenario {
     }
     /**
      * 
-     * @returns {import('./protocol.d.ts').ScenarioJsonFormat}
+     * @returns {import('./protocol.js').ScenarioJsonFormat}
      */
     getSeriaraizableData() {
         const pluginPacks = []
         for (const pluginPack of this.pluginPacks) {
             /**
-             * @type {import("./protocol.d.ts").ScenarioPluginPackUrlFormat}
+             * @type {import('./protocol.js').ScenarioPluginPackUrlFormat}
              */
             const pluginPackURL = { url: pluginPack.url }
             if (isVoid(pluginPack.packageModuleName) === false) {

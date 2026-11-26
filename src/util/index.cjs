@@ -1,8 +1,4 @@
-/**
- * @type {import('./store/index.cjs')}
- */
 
-const Store = require('./store/index.cjs')
 
 /**
  * @type {import('./recursive_builder/index.cjs')}
@@ -24,4 +20,4 @@ const VoidUtil = require('./is_void.cjs')
 
 
 const { SingleEvent } = require('./single_event.cjs')
-module.exports = { Store, RecursiveBuilder, CountId, Deepcopy, VoidUtil, SingleEvent }
+module.exports = { RecursiveBuilder, CountId, Deepcopy, VoidUtil, SingleEvent }

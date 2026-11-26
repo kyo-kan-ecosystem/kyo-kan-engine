@@ -42,7 +42,7 @@ describe('ResolverParseContext test', function () {
 
         assert.equal(pushed.id, id, 'id should be applyed')
         assert.equal(pushed.configure, configure, 'confiure shoud be applyed')
-        assert.deepEqual(pushed.configurePath, { root: 'executors', expressions: [id] }, 'confiurePath shoud be applyed')
+        assert.deepEqual(pushed.scenarioPath, { root: 'executors', expressions: [id] }, 'confiurePath shoud be applyed')
 
 
 
@@ -59,7 +59,7 @@ describe('ResolverParseContext test', function () {
 
         assert.equal(pushed.id, id, 'id should be applyed')
         assert.equal(pushed.configure, configure, 'confiure shoud be applyed')
-        assert.deepEqual(pushed.configurePath, { root: 'workflows', expressions: [id] }, 'confiurePath shoud be applyed')
+        assert.deepEqual(pushed.scenarioPath, { root: 'workflows', expressions: [id] }, 'confiurePath shoud be applyed')
 
 
 
@@ -77,7 +77,7 @@ describe('ResolverParseContext test', function () {
 
         assert.equal(pushed.id, rootWorkflowConfigure.id, 'id should be applyed')
         assert.deepEqual(pushed.configure, { plugin: rootWorkflowConfigure.plugin }, 'confiure shoud be applyed')
-        assert.deepEqual(pushed.configurePath, { root: 'root', expressions: [] }, 'confiurePath shoud be applyed')
+        assert.deepEqual(pushed.scenarioPath, { root: 'root', expressions: [] }, 'confiurePath shoud be applyed')
 
 
 
@@ -95,7 +95,7 @@ describe('ResolverParseContext test', function () {
 
         assert.equal(pushed.id, 0, 'id should be applyed')
         assert.equal(pushed.configure, configure, 'confiure shoud be applyed')
-        assert.deepEqual(pushed.configurePath, { root: 'boots', expressions: [0] }, 'confiurePath shoud be applyed')
+        assert.deepEqual(pushed.scenarioPath, { root: 'boots', expressions: [0] }, 'confiurePath shoud be applyed')
 
 
 
@@ -116,7 +116,7 @@ describe('ResolverParseContext test', function () {
         const pushed = resolver.executorDatas[0]
         assert.equal(pushed.id, 0, 'id should be applyed')
         assert.equal(pushed.configure, configure2, 'confiure shoud be applyed')
-        assert.deepEqual(pushed.configurePath, { root: 'boots', expressions: [0] }, 'confiurePath shoud be applyed')
+        assert.deepEqual(pushed.scenarioPath, { root: 'boots', expressions: [0] }, 'confiurePath shoud be applyed')
 
 
 

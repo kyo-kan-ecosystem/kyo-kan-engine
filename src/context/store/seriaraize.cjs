@@ -1,4 +1,4 @@
-const { AbtractSeriaraizableStore } = require('../../util/store/seriaraizable.cjs')
+const { AbtractSeriaraizableStore } = require('../../../interfacade/store/seriaraizable.cjs')
 const { Context } = require("../class.cjs")
 
 class ContextStoreSeriaraize extends AbtractSeriaraizableStore {
@@ -7,7 +7,7 @@ class ContextStoreSeriaraize extends AbtractSeriaraizableStore {
      */
     scenarioLoader
     /**
-     * @param {import("../../util/store/protocol").StoreInterface} store
+     * @param {import("../../../interfacade/store/protocol").StoreInterface} store
      * @param {import("../../../interfacade/scenario/loader/protocol").ScenarioLoaderInterFace} sceanrioLoader
      */
     constructor(store, sceanrioLoader, contextClass = Context) {

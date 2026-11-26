@@ -1,10 +1,7 @@
-export type StracturedId = {
-    type: 'scenalio' | 'state';
-    value: any
-}
 
-export type ContextStore = {
+export interface ContextStore = {
     get: (id) => Promise<any> | any
+    set: (id, context) => Promise<any> | any
 }
 
 export type ScenarioLoader = {

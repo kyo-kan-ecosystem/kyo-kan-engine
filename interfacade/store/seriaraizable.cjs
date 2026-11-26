@@ -1,7 +1,7 @@
 
 /**
  * 
- * @typedef {import('./protocol.d.ts').StoreInterface} StoreInterface
+ * @typedef {import('./protocol.js').StoreInterface} StoreInterface
  * @implements {StoreInterface}
  * @abstract
  */
@@ -48,7 +48,7 @@ class AbtractSeriaraizableStore {
     /**
      * 
      * @param {*} key 
-     * @returns {Promise<import('./protocol.d.ts').StoreGetResponse>}
+     * @returns {Promise<import('./protocol.js').StoreGetResponse>}
      */
     async get(key) {
 

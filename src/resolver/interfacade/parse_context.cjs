@@ -1,10 +1,10 @@
-const { extendConfigurePath, createWorkflowConfigurePath, createExecutorConfigurePath, createBootConfigurePath, createRootConfigurePath } = require('../../../interfacade/configure/configure_path.cjs')
+const { extendScenarioPath, createWorkflowScenarioPath, createExecutorScenarioPath, createBootScenarioPath, createRootScenarioPath } = require('../../../interfacade/scenario_path/scenario_path.cjs')
 const { CountId } = require('../../util/count_id.cjs')
 
 
 
 /**
- * @typedef {{id:any, configure:any, configurePath:import('../../../interfacade/configure/protocol').ConfigurePath}} ConfigureData
+ * @typedef {{id:any, configure:any, scenarioPath:import('../../../interfacade/scenario_path/protocol').ScenarioPath}} ConfigureData
  * @typedef {ConfigureData[]} ConfigureDatas
  */
 class ResolverParseContext {
@@ -35,9 +35,9 @@ class ResolverParseContext {
     workflowDatas
 
     /**
-     * @type {import('../../../interfacade/configure/protocol').ConfigurePath?}
+     * @type {import('../../../interfacade/scenario_path/protocol').ScenarioPath?}
      */
-    parentConfigurePath
+    parentScenarioPath
     /**
      * 
      * @param {import('../../context/class.cjs').Context} context 
@@ -53,7 +53,7 @@ class ResolverParseContext {
 
         this.executorDatas = []
         this.workflowDatas = []
-        this.parentConfigurePath = null
+        this.parentScenarioPath = null
 
 
 
@@ -61,22 +61,22 @@ class ResolverParseContext {
     /**
      * 
      * @param {import('../../workflow/protocol').WorkflowPluginConfigureReadable} configure
-     * @param {any[]} configurePathExpression
+     * @param {any[]} scenarioPathExpression
      *  
      * 
      * 
      */
-    pushWorkflowdata(configure, configurePathExpression) {
+    pushWorkflowdata(configure, scenarioPathExpression) {
 
 
 
         const { isLink, id } = this.filterAndGetWorkflowId(configure)
         if (isLink === false) {
             // @ts-ignore
-            const configurePath = extendConfigurePath(this.parentConfigurePath, configurePathExpression)
+            const scenarioPath = extendScenarioPath(this.parentScenarioPath, scenarioPathExpression)
 
             // @ts-ignore
-            this.workflowDatas.push({ id, configure, configurePath })
+            this.workflowDatas.push({ id, configure, scenarioPath })
 
 
         }
@@ -92,31 +92,31 @@ class ResolverParseContext {
      * @param {any} configure
      */
     pushNamedWorkflow(id, configure) {
-        const configurePath = createWorkflowConfigurePath()
-        configurePath.expressions.push(id)
-        this.workflowDatas.push({ id, configure, configurePath })
+        const scenarioPath = createWorkflowScenarioPath()
+        scenarioPath.expressions.push(id)
+        this.workflowDatas.push({ id, configure, scenarioPath })
 
 
     }
     /**
      * 
      * @param {import('../../workflow/protocol').WorkflowPluginConfigureReadable} configure
-     * @param {any[]} configurePathExpression
+     * @param {any[]} scenarioPathExpression
      *  
      * 
      * 
      */
-    pushExecutordata(configure, configurePathExpression) {
+    pushExecutordata(configure, scenarioPathExpression) {
 
 
 
         const { isLink, id } = this.filterAndGetExcutorId(configure)
         if (isLink === false) {
             // @ts-ignore
-            const configurePath = extendConfigurePath(this.parentConfigurePath, configurePathExpression)
+            const scenarioPath = extendScenarioPath(this.parentScenarioPath, scenarioPathExpression)
 
 
-            this.workflowDatas.push({ id, configure, configurePath })
+            this.workflowDatas.push({ id, configure, scenarioPath })
 
 
         }
@@ -132,9 +132,9 @@ class ResolverParseContext {
      * @param {any} configure
      */
     pushNamedExecutor(id, configure) {
-        const configurePath = createExecutorConfigurePath()
-        configurePath.expressions.push(id)
-        this.executorDatas.push({ id, configure, configurePath })
+        const scenarioPath = createExecutorScenarioPath()
+        scenarioPath.expressions.push(id)
+        this.executorDatas.push({ id, configure, scenarioPath })
 
 
     }
@@ -152,9 +152,9 @@ class ResolverParseContext {
             if (isLink === true) {
                 continue
             }
-            const configurePath = createBootConfigurePath()
-            configurePath.expressions.push(id)
-            this.executorDatas.push({ id, configure, configurePath })
+            const scenarioPath = createBootScenarioPath()
+            scenarioPath.expressions.push(id)
+            this.executorDatas.push({ id, configure, scenarioPath })
         }
 
 
@@ -171,8 +171,8 @@ class ResolverParseContext {
          */
         const defaultConfigure = { plugin: engineWorkflowConfigure.plugin }
         const configure = Object.assign({}, defaultConfigure, rootConfigure)
-        const configurePath = createRootConfigurePath()
-        this.workflowDatas.push({ id, configurePath, configure })
+        const scenarioPath = createRootScenarioPath()
+        this.workflowDatas.push({ id, scenarioPath, configure })
 
 
     }
@@ -185,7 +185,7 @@ class ResolverParseContext {
             while (this.workflowDatas.length > workflowDataIndex) {
 
                 const workflowData = this.workflowDatas[workflowDataIndex]
-                this.parentConfigurePath = workflowData.configurePath
+                this.parentScenarioPath = workflowData.scenarioPath
                 workflowDataIndex++
                 const workflowPlugin = this.context.workflows.getPluginFromConfigure(workflowData.configure)
 
@@ -197,7 +197,7 @@ class ResolverParseContext {
                 this.context.workflows.addConfigure(
                     workflowData.id,
                     {
-                        configurePath: workflowData.configurePath,
+                        scenarioPath: workflowData.scenarioPath,
                         flowDatas,
                         options: workflowData.configure.options,
                         plugin: workflowData.configure.plugin
@@ -209,7 +209,7 @@ class ResolverParseContext {
                 const executorData = this.executorDatas[executorDataIndex]
                 executorDataIndex++
                 const plugin = this.context.executors.getPluginFromConfigure(executorData.configure)
-                this.parentConfigurePath = executorData.configurePath
+                this.parentScenarioPath = executorData.scenarioPath
                 /**
                  * @type {import('../../executor/protocol').ExecutorConfigureProtocol}
                  */
@@ -217,7 +217,7 @@ class ResolverParseContext {
 
                     plugin: executorData.configure.plugin,
                     options: executorData.configure.options,
-                    configurePath: executorData.configurePath
+                    scenarioPath: executorData.scenarioPath
                 }
                 if ('processConfigure' in plugin === true) {
                     // @ts-ignore

@@ -1,6 +1,8 @@
+const { ContextNotFoundError } = require("./error.cjs")
+
 class Controller {
     /**
-     * @type {import("./protocol").ContextStore}
+     * @type {import("../../src/context/store/protocol").ContextStore}
      */
     contextStore
 
@@ -27,10 +29,13 @@ class Controller {
      * 
      * @param {*} id 
      * @param {*} request 
-     * @param {*} api 
+     * @param {*} api
+     * @param {*} contextId  
      */
-    runFromScenarioId(id, request, api = {}) {
-        const context = this._getContetxtFromScenario(id, request, api)
+    async runFromScenarioId(id, contextId, request, api = {}) {
+        const context = await this._getContetxtFromScenario(id, request, api)
+        await this.contextStore.set(contextId, { context, scenarioId: id })
+        return await this._run(context, request)
     }
     /**
      * 
@@ -47,7 +52,7 @@ class Controller {
      * @returns 
      */
     runContext(id, request, api = {}) {
-        const context = this._getContextFromState(id, request, api)
+        const context = this._getContext(id, request, api)
         return this._run(context, request)
 
     }
@@ -57,8 +62,14 @@ class Controller {
      * @param {*} request 
      * @param {*} api 
      */
-    _getContextFromState(id, request, api) {
-        const scenario = this.sceanrioLoader.load(id)
+    async _getContext(id, request, api) {
+        const res = await this.contextStore.get(id)
+        if (res.isExist === false) {
+            throw new ContextNotFoundError(id)
+        }
+        const context = res.value?.context
+        context?.setApi(api)
+        return context
 
     }
     /**

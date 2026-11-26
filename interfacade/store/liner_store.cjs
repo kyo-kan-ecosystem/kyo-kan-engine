@@ -1,15 +1,15 @@
-const { isVoid, dynamicDefault } = require("../is_void.cjs")
+const { isVoid, dynamicDefault } = require("../../src/util/is_void.cjs")
 
 
 class LinerStore {
     /**
-     * @type {import('./protocol.d.ts').StoreInterface[]}
+     * @type {import('./protocol.js').StoreInterface[]}
      */
     stores
 
     /**
      * 
-     * @param {import('./protocol.d.ts').StoreInterface[]} stores 
+     * @param {import('./protocol.js').StoreInterface[]} stores 
      */
     constructor(stores = []) {
         this.stores = stores
@@ -21,7 +21,7 @@ class LinerStore {
         let index = 0
         const len = this.stores.length
         /**
-         * @type {import("./protocol.d.ts").StoreGetResponse}
+         * @type {import("./protocol.js").StoreGetResponse}
          */
         const res = { isExist: false }
         while (index < len) {
@@ -85,7 +85,7 @@ class LinerStoreBuilder {
      * 
      * @param {any} nameSpace
      * @param {any} epoc
-     * @returns {import("./protocol.d.ts").StoreInterface} 
+     * @returns {import("./protocol.js").StoreInterface} 
      */
     build(nameSpace, epoc) {
 

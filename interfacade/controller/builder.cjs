@@ -1,11 +1,17 @@
+const { StoreDependencyRegistrator } = require("../store/dependency_registator.cjs")
 
 /**
- * 
- * @param {*} memoryStore 
- * @param {*} seriaraizeStore 
- * @param {*} senarioLoaders 
+ * @param {*} memoryStoreBuilder
+ * @param {*} temporaryStoreBuilder
+ * @param {*} senarioLoaderBuilder
+ * @param {any} consistantStoreBuilder
  */
-function Builder(memoryStore, seriaraizeStore, senarioLoaders) {
+function Builder(memoryStoreBuilder, temporaryStoreBuilder, consistantStoreBuilder, senarioLoaderBuilder) {
+    StoreDependencyRegistrator.registerMemoryStoreBuilder(memoryStoreBuilder)
+    StoreDependencyRegistrator.registerTemporaryStoreBuilder(temporaryStoreBuilder)
+    StoreDependencyRegistrator.registorPersistantStoreBuilder(consistantStoreBuilder)
+    const sceanrioLoader = senarioLoaderBuilder()
+    c
 
 }
 

@@ -22,7 +22,7 @@ export type WorkflowConfigure<ExecutorIdsType = any, OptionsType = any> = Plugin
 
 
 
-export type WorkflowMemberExecutorData = { id: any, executorConfig: any, configurePath: any[] }
+export type WorkflowMemberExecutorData = { id: any, executorConfig: any, scenarioPath: any[] }
 export type WorkflowMemberExecutorDatas = WorkflowMemberExecutorData[]
 
 

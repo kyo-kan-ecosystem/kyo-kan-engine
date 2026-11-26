@@ -1,4 +1,4 @@
-import { WithConfigurePath } from "../../interfacade/configure/protocol";
+import { WithScenarioPath } from "../../interfacade/scenario_path/protocol";
 import { PluginConfigureReadableProtocolBase, PluginConfigureBase } from "../../protocol/plugin/protocol.d.ts"
 
 export * from './plugin/protocol.d.ts'

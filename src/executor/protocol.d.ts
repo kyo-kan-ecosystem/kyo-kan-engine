@@ -1,4 +1,4 @@
-import { WithConfigurePath } from "../../interfacade/configure/protocol"
+import { WithScenarioPath } from "../../interfacade/scenario_path/protocol"
 import type { ExecutorsContext } from "./context.cjs"
 import { PluginConfigureReadableProtocolBase, PluginConfigureProtocol } from "../../protocol/plugin/protocol"
 
