@@ -33,6 +33,7 @@ class Controller {
      * @param {*} contextId  
      */
     async runFromScenarioId(id, contextId, request, api = {}) {
+
         const context = await this._getContetxtFromScenario(id, request, api)
         await this.contextStore.set(contextId, { context, scenarioId: id })
         return await this._run(context, request)

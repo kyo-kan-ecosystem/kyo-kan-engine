@@ -1,4 +1,4 @@
-const { PluginsManagerBuilder } = require("./plugins/pluginpuck_manager_builder.cjs")
+const { PluginBundleBuilder } = require("./plugins/bundle/builder.cjs")
 
 class ScenarioCompiler {
     /**
@@ -7,18 +7,18 @@ class ScenarioCompiler {
     pluginPackLoader
 
     /**
-     * @type { PluginsManagerBuilder }
+     * @type { PluginBundleBuilder }
      */
     pluginsManagerBuilder
 
     /**
      * 
      * @param {import("./plugins/loader/loader.cjs").PluginPackLoader} pluginPackLoader 
-     * @param {PluginsManagerBuilder?} pluginsPackManagerBuilder 
+     * @param {PluginBundleBuilder?} pluginsPackManagerBuilder 
      */
     constructor(pluginPackLoader, pluginsPackManagerBuilder) {
         this.pluginPackLoader = pluginPackLoader
-        this.pluginsManagerBuilder = pluginsPackManagerBuilder || new PluginsManagerBuilder()
+        this.pluginsManagerBuilder = pluginsPackManagerBuilder || new PluginBundleBuilder()
     }
 
     /**
@@ -27,7 +27,7 @@ class ScenarioCompiler {
      */
     async conpileFromObject(scenarioObject) {
 
-        const pluginsManager = await this.pluginsManagerBuilder.convertFromObjects(scenarioObject.pluginPacks)
+        const pluginsManager = await this.pluginsManagerBuilder.build(scenarioObject.pluginPacks)
         return Object.assign({ pluginsManager }, scenarioObject.getSeriaraizableData())
 
 

@@ -10,11 +10,32 @@ class RoutingLoader {
      */
     loaderMap
 
+    /**
+     * 
+     * @param {*} interMidiateStore 
+     * @param {*} compiler  
+     * @param {*} loaderMap 
+     */
+    constructor(interMidiateStore, compiler, loaderMap = {},) {
+        this.loaderMap = Object.assign({}, loaderMap)
 
-    constructor(loaderMap = {}) {
-        this.loaderMap = loaderMap
+        this.interMidiateStore = interMidiateStore
+        this.compiler = compiler
 
 
+    }
+    /**
+     * @param {any} ScenarioID
+     */
+    async loadPlugins(ScenarioID) {
+
+
+    }
+    /**
+     * @param {any} ScenarioID
+     */
+    async loadScenario(ScenarioID) {
+        throw new Error("Method not implemented.")
     }
     /**
      * @param {import("./protocol").ScenarioID} scenarioId
@@ -27,7 +48,14 @@ class RoutingLoader {
         return await this.loaderMap[scenarioId.nameSpace].loadContext(scenarioId)
 
     }
-    async loa
+    /**
+     * @param {import("./protocol").ScenarioID} scenarioId
+     */
+    _generateId(scenarioId) {
+        return `${scenarioId.nameSpace}:${scenarioId.id}`
+
+    }
+
 }
 
 module.exports = { RoutingLoader }

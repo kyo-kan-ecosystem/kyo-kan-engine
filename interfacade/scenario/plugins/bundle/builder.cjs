@@ -1,21 +1,21 @@
 const { default: path } = require("node:path")
-const { isVoid } = require("../../../src/util/is_void.cjs")
-const { PluginPackManager } = require("./pluginpack_manager.cjs")
-const { ScenarioPluginPack } = require("./pluginpack.cjs")
+const { isVoid } = require("../../../../src/util/is_void.cjs")
+const { PluginBundle } = require("./class.cjs")
+const { ScenarioPluginPack } = require("../pluginpack.cjs")
 
-class PluginsManagerBuilder {
-    constructor(managerClass = PluginPackManager) {
-        this.managerClass = managerClass
+class PluginBundleBuilder {
+    constructor(bundleClass = PluginBundle) {
+        this.bundleClass = bundleClass
     }
 
     /**
      * 
      * @param {ScenarioPluginPack[]} packs 
      */
-    async convertFromObjects(packs) {
+    async build(packs) {
 
         /**
-         * @type {{[id in string]:import("./protocol").PluginPackageDataTypes}}
+         * @type {{[id in string]:import("../protocol").PluginPackageDataTypes}}
          */
         const pluginDatasMap = {}
 
@@ -24,7 +24,7 @@ class PluginsManagerBuilder {
         for (const pack of packs) {
 
             /**
-             * @type {[import("./protocol").PluginPackageDataTypes,string][]}
+             * @type {[import("../protocol").PluginPackageDataTypes,string][]}
              */
             const pluginAndPropertyKeys = [[pack.getWorkflows(), 'workflows'], [pack.getExecutors(), 'executors']]
             for (const [pluginDatas, propertyKey] of pluginAndPropertyKeys) {
@@ -134,7 +134,7 @@ class PluginsManagerBuilder {
         }
 
         // @ts-ignore
-        return new this.managerClass(pluginsMap, urls)
+        return new this.bundleClass(pluginsMap, urls)
 
 
 
@@ -174,4 +174,4 @@ class PluginsManagerBuilder {
     }
 }
 
-module.exports = { PluginsManagerBuilder }
+module.exports = { PluginBundleBuilder }

@@ -3,32 +3,28 @@
 /**
  * @typedef {"executors"| "workflows"} PropertyKey
  */
-class PluginPackManager {
+class PluginBundle {
     /**
-     * @type {{[k in string]:import("../../../protocol/plugin/protocol").PluginManager }}
+     * @type {{[k in string]:import("../../../../protocol/plugin/protocol").PluginManager }}
      */
     workflows
 
     /**
-      * @type {{[k in string]:import("../../../protocol/plugin/protocol").PluginManager }}
+      * @type {{[k in string]:import("../../../../protocol/plugin/protocol").PluginManager }}
       */
     executors
 
-    /**
-     * @type {any[]}
-     */
-    urls
+
     /**
      * 
      * @param {Object} param0 
-     * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginManager }} param0.workflows 
-     * @param {{[k in string]:import("../../../protocol/plugin/protocol").PluginManager }} param0.executors
-     * @param {*} urls 
+     * @param {{[k in string]:import("../../../../protocol/plugin/protocol").PluginManager }} param0.workflows 
+     * @param {{[k in string]:import("../../../../protocol/plugin/protocol").PluginManager }} param0.executors
+     * 
      */
-    constructor({ workflows, executors }, urls) {
+    constructor({ workflows, executors }) {
         this.workflows = workflows
         this.executors = executors
-        this.urls = urls
 
     }
     /**
@@ -39,7 +35,7 @@ class PluginPackManager {
 
 
         /**
-         * @type {{[id in string]:import("../../../protocol/plugin/protocol").PluginManager}}
+         * @type {{[id in string]:import("../../../../protocol/plugin/protocol").PluginManager}}
          */
         const target = this[key]
 
@@ -47,7 +43,7 @@ class PluginPackManager {
         for (const id in target) {
 
             /**
-             * @type {import("../../../protocol/plugin/protocol").PluginManager}
+             * @type {import("../../../../protocol/plugin/protocol").PluginManager}
              */
             const manager = target[id];
             proms.push(this._buildPlugin(id, manager))
@@ -61,7 +57,7 @@ class PluginPackManager {
     }
     /**
      * @param {*} id 
-     * @param {import("../../../protocol/plugin/protocol").PluginManager} manager 
+     * @param {import("../../../../protocol/plugin/protocol").PluginManager} manager 
      */
     async _buildPlugin(id, manager) {
         const plugin = await manager.build()
@@ -72,4 +68,4 @@ class PluginPackManager {
 
 
 
-module.exports = { PluginPackManager }
+module.exports = { PluginBundle }

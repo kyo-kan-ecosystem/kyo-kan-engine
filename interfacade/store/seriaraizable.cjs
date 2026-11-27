@@ -26,8 +26,10 @@ class AbtractSeriaraizableStore {
      * @param {string} value
      * @param {number | undefined} [epoc]
      */
+    // @ts-ignore
     async set(key, value, epoc) {
         const seriaraized = JSON.stringify(this._seriaraize(value))
+        // @ts-ignore
         await this.store.set(key, seriaraized, epoc)
 
     }
