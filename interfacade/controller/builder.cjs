@@ -11,7 +11,7 @@ function Builder(memoryStoreBuilder, temporaryStoreBuilder, consistantStoreBuild
     StoreDependencyRegistrator.registerTemporaryStoreBuilder(temporaryStoreBuilder)
     StoreDependencyRegistrator.registorPersistantStoreBuilder(consistantStoreBuilder)
     const sceanrioLoader = senarioLoaderBuilder()
-    c
+
 
 }
 

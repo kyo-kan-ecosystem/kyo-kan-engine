@@ -25,7 +25,6 @@ class EngineContext {
     getSerializableData() {
         return { configureInit: this.configure.getSerializableData() }
     }
-
 }
 
 module.exports = { EngineContext }

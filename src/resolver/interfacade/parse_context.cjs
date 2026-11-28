@@ -1,6 +1,6 @@
 const { extendScenarioPath, createWorkflowScenarioPath, createExecutorScenarioPath, createBootScenarioPath, createRootScenarioPath } = require('../../../interfacade/scenario_path/scenario_path.cjs')
 const { CountId } = require('../../util/count_id.cjs')
-
+const { Context } = require('../../context/class.cjs')
 
 
 /**
@@ -40,7 +40,7 @@ class ResolverParseContext {
     parentScenarioPath
     /**
      * 
-     * @param {import('../../context/class.cjs').Context} context 
+     * @param {Context} context 
      */
     constructor(context) {
         this.context = context
@@ -302,4 +302,36 @@ class ResolverParseContext {
 
 }
 
-module.exports = { ResolverParseContext }
+class ResolverParseContextBuildeClass {
+    /**
+     * @type {typeof Context}
+     */
+    contextClass
+    /**
+     * @type {any}
+     */
+    buildTarget
+    constructor(buildTarget = ResolverParseContextBuildeClass, contextClass = Context) {
+        this.contextClass = Context
+        this.buildTarget = buildTarget
+
+    }
+    /**
+     * 
+     * @param {Object} param0 
+     * @param {*} param0.workflowPlugins 
+     * @param {*} param0.executorPlugins 
+     * @param {{}} [param0.engineConfigure={}] 
+     * @returns {ResolverParseContext}
+     */
+    build({ workflowPlugins, executorPlugins, engineConfigure = {} }) {
+        const context = new this.contextClass()
+        context.workflows.setPlugins(workflowPlugins)
+        context.executors.setPlugins(executorPlugins)
+        context.engine.configure.set(engineConfigure)
+        return new this.buildTarget(context)
+
+    }
+}
+
+module.exports = { ResolverParseContext, ResolverParseContextBuildeClass }

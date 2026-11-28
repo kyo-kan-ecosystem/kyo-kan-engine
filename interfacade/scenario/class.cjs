@@ -128,7 +128,3 @@ class Scenario {
 }
 
 module.exports = { Scenario }
-
-const t = Object.assign({ a: 1 }, require('./plugins/pluginpack.cjs'))
-
-module.exports.t = t

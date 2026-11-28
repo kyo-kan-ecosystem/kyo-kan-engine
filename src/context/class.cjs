@@ -136,7 +136,7 @@ class Context {
      * @param {import("./protocol.js").ContextInheritance?} [param0.inheritance]
      * 
      */
-    constructor({ datas = null, api = null, inheritance = null, classes = DEFAULT_CLASSES }) {
+    constructor({ datas = null, api = null, inheritance = null, classes = DEFAULT_CLASSES } = {}) {
         this._classes = classes
         // @ts-ignore
         this.resolver = new classes.resolver(this)
@@ -332,14 +332,15 @@ class Context {
         /**
         * @type {import("./protocol.js").ImutableData}
         */
-        const inheritance = {
+        const datas = {
 
 
 
             engine: this.engine.getSerializableData(),
             workflows: this.workflows.getSeriaraizableData(),
-            executors: this.executors
+            executors: this.executors.getSeriaraizableData()
         }
+        return datas
     }
     /**
      * @param {*} workflowPlugins 

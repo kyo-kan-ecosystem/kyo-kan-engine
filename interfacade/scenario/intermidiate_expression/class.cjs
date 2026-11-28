@@ -1,8 +1,6 @@
-const { Context } = require("../../src/index.cjs")
+const { Context } = require("../../../src/index.cjs")
 
-
-
-class ScenarioIntermidiate {
+class ScenarioIntermidiateExpression {
     /**
      * @type {any}
      */
@@ -20,9 +18,9 @@ class ScenarioIntermidiate {
      */
     boots
     /**
-     * @type {any}
+     * @type {import('../plugins/bundle/class.cjs').PluginBundle}
      */
-    pluginBuindings
+    pluginBundle
     /**
      * @type {any}
      */
@@ -36,13 +34,14 @@ class ScenarioIntermidiate {
      * @param {*} param0 1
      *       
      */
-    constructor({ executors, workflows, root, pluginBuindings, datas, contextClass = Context.Class }) {
+    constructor({ executors, workflows, root, boots, pluginBundle, datas, contextClass = Context.Class }) {
         this.root = root
         this.executors = executors
         this.workflows = workflows
-        this.pluginBuindings = pluginBuindings
+        this.pluginBundle = pluginBundle
         this.datas = datas
         this.contextClass = contextClass
+        this.boots = boots
 
     }
     /**
@@ -66,4 +65,4 @@ class ScenarioIntermidiate {
     }
 }
 
-module.exports = { ScenarioIntermidiate }
+module.exports = { ScenarioIntermidiateExpression }

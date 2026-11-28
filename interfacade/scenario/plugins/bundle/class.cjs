@@ -27,6 +27,12 @@ class PluginBundle {
         this.executors = executors
 
     }
+    getWorkflowPlugins() {
+        return this._getPlugins('workflows')
+    }
+    getExecutorPlugins() {
+        return this._getPlugins('executors')
+    }
     /**
      * 
      * @param {PropertyKey} key 
@@ -62,6 +68,41 @@ class PluginBundle {
     async _buildPlugin(id, manager) {
         const plugin = await manager.build()
         return [id, plugin]
+
+    }
+    /**
+     * 
+     * @returns {Promise<{[k in PropertyKey]:any}>}
+     */
+    async getWorkflowAndExecutorPlugins() {
+        const promsMap = {}
+        /**
+         * @type {PropertyKey[]}
+         */
+        const keys = ['executors', 'workflows']
+        const result = {}
+        for (const key of keys) {
+            // @ts-ignore
+            promsMap[key] = this._getPlugins(key)
+
+
+
+        }
+        for (const key in promsMap) {
+
+
+            // @ts-ignore
+            const prom = promsMap[key]
+            //@ts-ignore
+            result[key] = await prom
+
+
+
+        }
+        // @ts-ignore
+        return result
+
+
 
     }
 }
